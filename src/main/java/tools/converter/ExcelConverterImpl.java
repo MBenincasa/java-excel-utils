@@ -19,7 +19,7 @@ public class ExcelConverterImpl implements ExcelConverter {
 
         /* Create workbook and sheet */
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet(clazz.getName());
+        Sheet sheet = workbook.createSheet(clazz.getSimpleName());
 
         Field[] fields = clazz.getDeclaredFields();
         this.setFieldsAccessible(fields);

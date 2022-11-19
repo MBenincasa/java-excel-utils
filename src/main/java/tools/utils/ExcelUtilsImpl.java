@@ -19,6 +19,11 @@ public class ExcelUtilsImpl implements ExcelUtils {
 
     @Override
     public Integer countAllRows(File file, Boolean alsoEmptyRows) throws Exception {
+        return  countAllRows(file, alsoEmptyRows, null);
+    }
+
+    @Override
+    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws Exception {
 
         /* Check extension */
         String extension = FilenameUtils.getExtension(file.getName());
@@ -29,7 +34,9 @@ public class ExcelUtilsImpl implements ExcelUtils {
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
         Workbook workbook = openWorkbook(fileInputStream, extension);
-        Sheet sheet = workbook.getSheetAt(0);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? workbook.getSheetAt(0)
+                : workbook.getSheet(sheetName);
 
         /* Count all rows */
         int numRows = alsoEmptyRows

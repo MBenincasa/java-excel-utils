@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6d968341-5aa2-4688-bef5-9c7af7c03c88" name="Changes" comment="I developed a first method that converts a list of objects into an Excel file">
-      <change afterPath="$PROJECT_DIR$/src/main/java/exceptions/ExtensionNotValidException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/samples/countAllRows/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" afterDir="false" />
+    <list default="true" id="6d968341-5aa2-4688-bef5-9c7af7c03c88" name="Changes" comment="I developed a method to count all rows in an Excel file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Employee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/converter/ExcelConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/converter/ExcelConverterImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/samples/countAllRows/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/countAllRows/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +91,7 @@
       <option name="presentableId" value="Default" />
       <updated>1668853646599</updated>
       <workItem from="1668853647757" duration="7866000" />
-      <workItem from="1668865866179" duration="4562000" />
+      <workItem from="1668865866179" duration="5906000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1668859475698</created>
@@ -111,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668859664585</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="I developed a method to count all rows in an Excel file">
+      <created>1668870477722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1668870477722</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -131,6 +134,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="I developed a first method that converts a list of objects into an Excel file" />
-    <option name="LAST_COMMIT_MESSAGE" value="I developed a first method that converts a list of objects into an Excel file" />
+    <MESSAGE value="I developed a method to count all rows in an Excel file" />
+    <option name="LAST_COMMIT_MESSAGE" value="I developed a method to count all rows in an Excel file" />
   </component>
 </project>

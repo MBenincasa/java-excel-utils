@@ -22,6 +22,7 @@ public class Main {
             File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/employee.xlsx", true);
             System.out.println("The file is ready");
         } catch (IllegalAccessException | IOException e) {
+            System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);
         }
     }
