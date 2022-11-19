@@ -1,4 +1,4 @@
-package utils.converter;
+package tools.converter;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,7 +19,7 @@ public class ExcelConverterImpl implements ExcelConverter {
 
         /* Create workbook and sheet */
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("sheet");
+        Sheet sheet = workbook.createSheet(clazz.getName());
 
         Field[] fields = clazz.getDeclaredFields();
         this.setFieldsAccessible(fields);
