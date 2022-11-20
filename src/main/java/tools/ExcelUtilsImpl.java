@@ -1,5 +1,6 @@
 package tools;
 
+import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -11,23 +12,26 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 public class ExcelUtilsImpl implements ExcelUtils {
 
-    private static final String XLS = "xls";
-    private static final String XLSX = "xlsx";
-
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws Exception {
-        return  countAllRows(file, alsoEmptyRows, null);
+    public Integer countAllRows(File file) throws ExtensionNotValidException, IOException {
+        return countAllRows(file, true, null);
     }
 
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws Exception {
+    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException {
+        return countAllRows(file, alsoEmptyRows, null);
+    }
+
+    @Override
+    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException {
 
         /* Check extension */
         String extension = FilenameUtils.getExtension(file.getName());
-        if(!extension.equalsIgnoreCase(XLS) && !extension.equalsIgnoreCase(XLSX)) {
+        if(!extension.equalsIgnoreCase(Extension.XLS.getExt()) && !extension.equalsIgnoreCase(Extension.XLSX.getExt())) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
 
@@ -50,12 +54,12 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return numRows;
     }
 
-    private Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws Exception {
+    private Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException {
         Workbook workbook;
         switch (extension) {
-            case XLS -> workbook = new HSSFWorkbook(fileInputStream);
-            case XLSX -> workbook = new XSSFWorkbook(fileInputStream);
-            default -> throw new Exception();
+            case "xls" -> workbook = new HSSFWorkbook(fileInputStream);
+            case "xlsx" -> workbook = new XSSFWorkbook(fileInputStream);
+            default -> throw new ExtensionNotValidException();
         }
         return workbook;
     }
