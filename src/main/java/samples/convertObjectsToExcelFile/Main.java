@@ -1,7 +1,8 @@
 package samples.convertObjectsToExcelFile;
 
-import tools.converter.ExcelConverter;
-import tools.converter.ExcelConverterImpl;
+import enums.Extension;
+import tools.ExcelConverter;
+import tools.ExcelConverterImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Main {
 
         try {
             System.out.println("Start the conversation...");
-            File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/employee.xlsx", true);
+            File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/", "employee", Extension.XLSX, true);
             System.out.println("The file is ready");
         } catch (IllegalAccessException | IOException e) {
             System.err.println("There was an error. Check the console");

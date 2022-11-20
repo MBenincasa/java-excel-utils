@@ -1,7 +1,7 @@
 package samples.countAllRows;
 
-import tools.utils.ExcelUtils;
-import tools.utils.ExcelUtilsImpl;
+import tools.ExcelUtils;
+import tools.ExcelUtilsImpl;
 
 import java.io.File;
 

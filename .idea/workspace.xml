@@ -4,13 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6d968341-5aa2-4688-bef5-9c7af7c03c88" name="Changes" comment="I developed a method to count all rows in an Excel file">
+    <list default="true" id="6d968341-5aa2-4688-bef5-9c7af7c03c88" name="Changes" comment="Changes to the method that converts objects to an Excel file.">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/enums/Extension.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Employee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/convertObjectsToExcelFile/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/samples/countAllRows/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/samples/countAllRows/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/ExcelConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/converter/ExcelConverterImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/ExcelConverterImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/ExcelUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/utils/ExcelUtilsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/ExcelUtilsImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,14 +27,12 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.txt" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -40,15 +43,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last.edited.regexp": "Sample Text"
   }
-}</component>
-  <component name="RunManager" selected="Application.samples.countAllRows.Main">
+}]]></component>
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="samples.convertObjectsToExcelFile.Main" />
       <module name="java-excel-utils" />
@@ -77,8 +81,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.samples.countAllRows.Main" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.samples.countAllRows.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -91,7 +95,8 @@
       <option name="presentableId" value="Default" />
       <updated>1668853646599</updated>
       <workItem from="1668853647757" duration="7866000" />
-      <workItem from="1668865866179" duration="5906000" />
+      <workItem from="1668865866179" duration="6305000" />
+      <workItem from="1668955160350" duration="3235000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1668859475698</created>
@@ -114,7 +119,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668870477722</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="The method that counts all the rows now also accepts the sheet name as input. If not passed, then the first sheet will be selected.">
+      <created>1668872104463</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1668872104463</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,6 +147,8 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="I developed a first method that converts a list of objects into an Excel file" />
     <MESSAGE value="I developed a method to count all rows in an Excel file" />
-    <option name="LAST_COMMIT_MESSAGE" value="I developed a method to count all rows in an Excel file" />
+    <MESSAGE value="The method that counts all the rows now also accepts the sheet name as input. If not passed, then the first sheet will be selected." />
+    <MESSAGE value="Changes to the method that converts objects to an Excel file." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes to the method that converts objects to an Excel file." />
   </component>
 </project>

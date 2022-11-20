@@ -1,4 +1,4 @@
-package tools.utils;
+package tools;
 
 import exceptions.ExtensionNotValidException;
 import org.apache.commons.io.FilenameUtils;
