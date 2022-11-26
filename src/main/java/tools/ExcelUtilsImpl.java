@@ -1,9 +1,13 @@
 package tools;
 
-import enums.Extension;
+import enums.ExcelExtension;
 import exceptions.ExtensionNotValidException;
+import exceptions.OpenWorkbookException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
+import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -17,21 +21,21 @@ import java.io.IOException;
 public class ExcelUtilsImpl implements ExcelUtils {
 
     @Override
-    public Integer countAllRows(File file) throws ExtensionNotValidException, IOException {
+    public Integer countAllRows(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         return countAllRows(file, true, null);
     }
 
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException {
+    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         return countAllRows(file, alsoEmptyRows, null);
     }
 
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException {
+    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException {
 
         /* Check extension */
         String extension = FilenameUtils.getExtension(file.getName());
-        if(!extension.equalsIgnoreCase(Extension.XLS.getExt()) && !extension.equalsIgnoreCase(Extension.XLSX.getExt())) {
+        if(!isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
 
@@ -54,14 +58,47 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return numRows;
     }
 
-    private Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException {
-        Workbook workbook;
+    @Override
+    public Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+
+        /* Check the extension */
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open workbook */
+        try {
+            return new XSSFWorkbook(fileInputStream);
+        } catch (OfficeXmlFileException | OLE2NotOfficeXmlFileException e) {
+            try {
+                return new HSSFWorkbook(fileInputStream);
+            } catch (NotOLE2FileException ex) {
+                throw new OpenWorkbookException("The workbook could not be opened", ex);
+            }
+        }
+    }
+
+    @Override
+    public Workbook createWorkbook(String extension) throws ExtensionNotValidException {
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+        return createWorkbook(ExcelExtension.getExcelExtension(extension));
+    }
+
+    @Override
+    public Workbook createWorkbook(ExcelExtension extension) {
+        Workbook workbook = null;
         switch (extension) {
-            case "xls" -> workbook = new HSSFWorkbook(fileInputStream);
-            case "xlsx" -> workbook = new XSSFWorkbook(fileInputStream);
-            default -> throw new ExtensionNotValidException();
+            case XLS -> workbook = new HSSFWorkbook();
+            case XLSX -> workbook = new XSSFWorkbook();
         }
         return workbook;
+    }
+
+    @Override
+    public Boolean isValidExcelExtension(String extension) {
+        return extension.equalsIgnoreCase(ExcelExtension.XLS.getExt()) || extension.equalsIgnoreCase(ExcelExtension.XLSX.getExt());
     }
 
     private int removeEmptyRows(Sheet sheet) {

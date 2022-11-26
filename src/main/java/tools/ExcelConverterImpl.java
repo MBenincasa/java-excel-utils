@@ -1,12 +1,10 @@
 package tools;
 
-import enums.Extension;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import enums.ExcelExtension;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,34 +16,35 @@ public class ExcelConverterImpl implements ExcelConverter {
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, "./", clazz.getSimpleName(), Extension.XLSX, true);
+        return convertObjectsToExcelFile(objects, clazz, "./", clazz.getSimpleName(), ExcelExtension.XLSX, true);
     }
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, "./", filename, Extension.XLSX, true);
+        return convertObjectsToExcelFile(objects, clazz, "./", filename, ExcelExtension.XLSX, true);
     }
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, path, filename, Extension.XLSX, true);
+        return convertObjectsToExcelFile(objects, clazz, path, filename, ExcelExtension.XLSX, true);
     }
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, path, filename, Extension.XLSX, writeHeader);
+        return convertObjectsToExcelFile(objects, clazz, path, filename, ExcelExtension.XLSX, writeHeader);
     }
 
     @Override
-    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException {
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename, ExcelExtension extension) throws IllegalAccessException, IOException {
         return convertObjectsToExcelFile(objects, clazz, path, filename, extension, true);
     }
 
     @Override
-    public File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException {
+    public File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException {
 
         /* Create workbook and sheet */
-        Workbook workbook = this.createWorkbook(extension);
+        ExcelUtils excelUtils = new ExcelUtilsImpl();
+        Workbook workbook = excelUtils.createWorkbook(extension);
         Sheet sheet = workbook.createSheet(clazz.getSimpleName());
 
         Field[] fields = clazz.getDeclaredFields();
@@ -75,15 +74,6 @@ public class ExcelConverterImpl implements ExcelConverter {
         return file;
     }
 
-    private Workbook createWorkbook(Extension extension) {
-        Workbook workbook = null;
-        switch (extension) {
-            case XLS -> workbook = new HSSFWorkbook();
-            case XLSX -> workbook = new XSSFWorkbook();
-        }
-        return workbook;
-    }
-
     private void setFieldsAccessible(Field[] fields) {
         for (Field field : fields) {
             field.setAccessible(true);
@@ -106,7 +96,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
     }
 
-    private String getPathname(String path, String filename, Extension extension) {
+    private String getPathname(String path, String filename, ExcelExtension extension) {
         path = path.replaceAll("\\\\", "/");
         if(path.charAt(path.length() - 1) != '/') {
             path += '/';

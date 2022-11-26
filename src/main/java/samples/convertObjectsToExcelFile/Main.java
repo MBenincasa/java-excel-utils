@@ -1,6 +1,6 @@
 package samples.convertObjectsToExcelFile;
 
-import enums.Extension;
+import enums.ExcelExtension;
 import tools.ExcelConverter;
 import tools.ExcelConverterImpl;
 
@@ -20,8 +20,8 @@ public class Main {
 
         try {
             System.out.println("Start the conversation...");
-            File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/", "employee", Extension.XLSX, true);
-            System.out.println("The file is ready");
+            File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/", "employee", ExcelExtension.XLSX, true);
+            System.out.println("The file is ready. Path: " + report.getAbsolutePath());
         } catch (IllegalAccessException | IOException e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);
