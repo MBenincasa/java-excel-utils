@@ -16,12 +16,12 @@ public class ExcelConverterImpl implements ExcelConverter {
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, "./", clazz.getSimpleName(), ExcelExtension.XLSX, true);
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), ExcelExtension.XLSX, true);
     }
 
     @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException {
-        return convertObjectsToExcelFile(objects, clazz, "./", filename, ExcelExtension.XLSX, true);
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), filename, ExcelExtension.XLSX, true);
     }
 
     @Override

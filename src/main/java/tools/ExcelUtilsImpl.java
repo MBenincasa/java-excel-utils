@@ -3,6 +3,7 @@ package tools;
 import enums.ExcelExtension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
+import exceptions.SheetNotFoundException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
@@ -21,17 +22,17 @@ import java.io.IOException;
 public class ExcelUtilsImpl implements ExcelUtils {
 
     @Override
-    public Integer countAllRows(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Integer countAllRows(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         return countAllRows(file, true, null);
     }
 
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Integer countAllRows(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         return countAllRows(file, alsoEmptyRows, null);
     }
 
     @Override
-    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
         String extension = FilenameUtils.getExtension(file.getName());
@@ -46,10 +47,14 @@ public class ExcelUtilsImpl implements ExcelUtils {
                 ? workbook.getSheetAt(0)
                 : workbook.getSheet(sheetName);
 
+        if(sheet == null) {
+            throw new SheetNotFoundException("No sheet was found");
+        }
+
         /* Count all rows */
         int numRows = alsoEmptyRows
                 ? sheet.getPhysicalNumberOfRows()
-                : removeEmptyRows(sheet);
+                : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
         fileInputStream.close();
@@ -79,6 +84,11 @@ public class ExcelUtilsImpl implements ExcelUtils {
     }
 
     @Override
+    public Workbook createWorkbook() {
+        return createWorkbook(ExcelExtension.XLSX);
+    }
+
+    @Override
     public Workbook createWorkbook(String extension) throws ExtensionNotValidException {
         if(!isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
@@ -101,7 +111,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return extension.equalsIgnoreCase(ExcelExtension.XLS.getExt()) || extension.equalsIgnoreCase(ExcelExtension.XLSX.getExt());
     }
 
-    private int removeEmptyRows(Sheet sheet) {
+    private int countOnlyRowsNotEmpty(Sheet sheet) {
         int numRows = sheet.getPhysicalNumberOfRows();
         for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
             Row row = sheet.getRow(i);
