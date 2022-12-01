@@ -18,6 +18,10 @@ public class Main {
             System.out.println("Total: " + totalSheets);
             List<String> sheetnames = excelUtils.getAllSheetNames(file);
             System.out.println("Sheet names: " + sheetnames.toString());
+            int sheetIndex = excelUtils.getSheetIndex(file, "Employee");
+            System.out.println("Sheet index: " + sheetIndex);
+            String sheetName = excelUtils.getSheetNameAtPosition(file, 0);
+            System.out.println("Sheet name: " + sheetName);
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);

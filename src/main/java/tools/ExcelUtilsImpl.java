@@ -163,6 +163,58 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return sheetNames;
     }
 
+    @Override
+    public Integer getSheetIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+
+        /* Check extension */
+        String extension = FilenameUtils.getExtension(file.getName());
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open file excel */
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = openWorkbook(fileInputStream, extension);
+
+        int sheetIndex = workbook.getSheetIndex(sheetName);
+
+        /* Close file */
+        fileInputStream.close();
+        workbook.close();
+
+        if(sheetIndex < 0) {
+            throw new SheetNotFoundException("No sheet was found");
+        }
+        return sheetIndex;
+    }
+
+    @Override
+    public String getSheetNameAtPosition(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+
+        /* Check extension */
+        String extension = FilenameUtils.getExtension(file.getName());
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open file excel */
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = openWorkbook(fileInputStream, extension);
+
+        String sheetName;
+        try {
+            sheetName = workbook.getSheetName(position);
+        } catch (IllegalArgumentException e) {
+            throw new SheetNotFoundException("Sheet index is out of range");
+        }
+
+        /* Close file */
+        fileInputStream.close();
+        workbook.close();
+
+        return sheetName;
+    }
+
     private int countOnlyRowsNotEmpty(Sheet sheet) {
         int numRows = sheet.getPhysicalNumberOfRows();
         for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {

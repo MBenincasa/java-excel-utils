@@ -32,4 +32,8 @@ public interface ExcelUtils {
     Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 
     List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
+
+    Integer getSheetIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
+
+    String getSheetNameAtPosition(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
 }
