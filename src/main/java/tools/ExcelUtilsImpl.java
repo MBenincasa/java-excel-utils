@@ -38,10 +38,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     public Integer countAllRows(File file, Boolean alsoEmptyRows, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
-        String extension = FilenameUtils.getExtension(file.getName());
-        if(!isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
+        String extension = checkExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -60,8 +57,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        fileInputStream.close();
-        workbook.close();
+        closeFile(workbook, fileInputStream);
 
         return numRows;
     }
@@ -116,11 +112,9 @@ public class ExcelUtilsImpl implements ExcelUtils {
 
     @Override
     public Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+
         /* Check extension */
-        String extension = FilenameUtils.getExtension(file.getName());
-        if(!isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
+        String extension = checkExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -129,8 +123,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         Integer totalSheets = workbook.getNumberOfSheets();
 
         /* Close file */
-        fileInputStream.close();
-        workbook.close();
+        closeFile(workbook, fileInputStream);
 
         return totalSheets;
     }
@@ -139,10 +132,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     public List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
 
         /* Check extension */
-        String extension = FilenameUtils.getExtension(file.getName());
-        if(!isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
+        String extension = checkExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -157,8 +147,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         }
 
         /* Close file */
-        fileInputStream.close();
-        workbook.close();
+        closeFile(workbook, fileInputStream);
 
         return sheetNames;
     }
@@ -167,10 +156,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     public Integer getSheetIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
-        String extension = FilenameUtils.getExtension(file.getName());
-        if(!isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
+        String extension = checkExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -179,8 +165,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         int sheetIndex = workbook.getSheetIndex(sheetName);
 
         /* Close file */
-        fileInputStream.close();
-        workbook.close();
+        closeFile(workbook, fileInputStream);
 
         if(sheetIndex < 0) {
             throw new SheetNotFoundException("No sheet was found");
@@ -192,10 +177,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     public String getSheetNameAtPosition(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
-        String extension = FilenameUtils.getExtension(file.getName());
-        if(!isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
+        String extension = checkExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -209,8 +191,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         }
 
         /* Close file */
-        fileInputStream.close();
-        workbook.close();
+        closeFile(workbook, fileInputStream);
 
         return sheetName;
     }
@@ -236,5 +217,18 @@ public class ExcelUtilsImpl implements ExcelUtils {
         }
 
         return numRows;
+    }
+
+    private String checkExtension(String filename) throws ExtensionNotValidException {
+        String extension = FilenameUtils.getExtension(filename);
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+        return extension;
+    }
+
+    private void closeFile(Workbook workbook, FileInputStream fileInputStream) throws IOException {
+        fileInputStream.close();
+        workbook.close();
     }
 }
