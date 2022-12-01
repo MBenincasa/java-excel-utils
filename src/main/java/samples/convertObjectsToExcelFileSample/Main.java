@@ -1,4 +1,4 @@
-package samples.convertObjectsToExcelFile;
+package samples.convertObjectsToExcelFileSample;
 
 import enums.ExcelExtension;
 import tools.ExcelConverter;

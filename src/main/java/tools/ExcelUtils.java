@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public interface ExcelUtils {
 
@@ -27,4 +28,8 @@ public interface ExcelUtils {
     Workbook createWorkbook(ExcelExtension extension);
 
     Boolean isValidExcelExtension(String extension);
+
+    Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
+
+    List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 }

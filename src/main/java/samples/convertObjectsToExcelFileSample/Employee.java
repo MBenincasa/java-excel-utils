@@ -1,4 +1,4 @@
-package samples.convertObjectsToExcelFile;
+package samples.convertObjectsToExcelFileSample;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;

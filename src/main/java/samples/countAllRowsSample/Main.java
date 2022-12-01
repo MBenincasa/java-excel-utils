@@ -1,4 +1,4 @@
-package samples.countAllRows;
+package samples.countAllRowsSample;
 
 import tools.ExcelUtils;
 import tools.ExcelUtilsImpl;

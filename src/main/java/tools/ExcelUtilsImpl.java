@@ -18,6 +18,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ExcelUtilsImpl implements ExcelUtils {
 
@@ -109,6 +112,55 @@ public class ExcelUtilsImpl implements ExcelUtils {
     @Override
     public Boolean isValidExcelExtension(String extension) {
         return extension.equalsIgnoreCase(ExcelExtension.XLS.getExt()) || extension.equalsIgnoreCase(ExcelExtension.XLSX.getExt());
+    }
+
+    @Override
+    public Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+        /* Check extension */
+        String extension = FilenameUtils.getExtension(file.getName());
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open file excel */
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = openWorkbook(fileInputStream, extension);
+
+        Integer totalSheets = workbook.getNumberOfSheets();
+
+        /* Close file */
+        fileInputStream.close();
+        workbook.close();
+
+        return totalSheets;
+    }
+
+    @Override
+    public List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+
+        /* Check extension */
+        String extension = FilenameUtils.getExtension(file.getName());
+        if(!isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open file excel */
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = openWorkbook(fileInputStream, extension);
+
+        /* Iterate all the sheets */
+        Iterator<Sheet> sheetIterator = workbook.iterator();
+        List<String> sheetNames = new LinkedList<>();
+        while (sheetIterator.hasNext()) {
+            Sheet sheet = sheetIterator.next();
+            sheetNames.add(sheet.getSheetName());
+        }
+
+        /* Close file */
+        fileInputStream.close();
+        workbook.close();
+
+        return sheetNames;
     }
 
     private int countOnlyRowsNotEmpty(Sheet sheet) {
