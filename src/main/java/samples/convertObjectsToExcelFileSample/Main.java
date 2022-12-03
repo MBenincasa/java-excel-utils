@@ -5,7 +5,6 @@ import tools.ExcelConverter;
 import tools.ExcelConverterImpl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +14,14 @@ public class Main {
 
         ExcelConverter excelConverter = new ExcelConverterImpl();
         List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee("Mario", "Rossi", 27, 28000.00));
+        employees.add(new Employee("Mario", "Rossi", 25, 28000.00));
         employees.add(new Employee("Giuseppe", "Verdi", 22, 23670.89));
 
         try {
             System.out.println("Start the conversation...");
             File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/", "employee", ExcelExtension.XLSX, true);
             System.out.println("The file is ready. Path: " + report.getAbsolutePath());
-        } catch (IllegalAccessException | IOException e) {
+        } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);
         }
