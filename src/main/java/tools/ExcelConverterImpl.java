@@ -1,12 +1,11 @@
 package tools;
 
-import annotations.ExcelHeader;
+import annotations.ExcelBodyStyle;
+import annotations.ExcelField;
+import annotations.ExcelHeaderStyle;
 import enums.ExcelExtension;
 import exceptions.FileAlreadyExistsException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,12 +62,14 @@ public class ExcelConverterImpl implements ExcelConverter {
 
         /* Write header */
         if(writeHeader) {
-            this.writeExcelHeader(sheet, fields, cRow++);
+            CellStyle headerCellStyle = createHeaderCellStyle(workbook, clazz);
+            this.writeExcelHeader(sheet, fields, cRow++, headerCellStyle);
         }
 
         /* Write body */
         for (Object object : objects) {
-            this.writeExcelBody(sheet, fields, object, cRow++);
+            CellStyle bodyCellStyle = createBodyStyle(workbook, clazz);
+            this.writeExcelBody(sheet, fields, object, cRow++, bodyCellStyle, clazz);
         }
 
         /* Write file */
@@ -87,20 +88,62 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
     }
 
-    private void writeExcelHeader(Sheet sheet, Field[] fields, int cRow) {
+    private void writeExcelHeader(Sheet sheet, Field[] fields, int cRow, CellStyle cellStyle) {
         Row headerRow = sheet.createRow(cRow);
         for (int i = 0; i < fields.length; i++) {
             Cell cell = headerRow.createCell(i);
-            ExcelHeader excelHeader = fields[i].getAnnotation(ExcelHeader.class);
-            cell.setCellValue(excelHeader != null ? excelHeader.name() : fields[i].getName());
+            cell.setCellStyle(cellStyle);
+            ExcelField excelField = fields[i].getAnnotation(ExcelField.class);
+            cell.setCellValue(excelField != null ? excelField.name() : fields[i].getName());
         }
     }
 
-    private void writeExcelBody(Sheet sheet, Field[] fields, Object object, int cRow) throws IllegalAccessException {
+    private CellStyle createHeaderCellStyle(Workbook workbook, Class<? extends Object> clazz) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
+        if (excelHeaderStyle == null) {
+            return cellStyle;
+        }
+        return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
+    }
+
+    private void writeExcelBody(Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<? extends Object> clazz) throws IllegalAccessException {
         Row row = sheet.createRow(cRow);
         for (int i = 0; i < fields.length; i++) {
             Cell cell = row.createCell(i);
+            cell.setCellStyle(cellStyle);
             cell.setCellValue(String.valueOf(fields[i].get(object)));
+        }
+
+        /* Set auto-size columns */
+        setAutoSizeColumn(sheet, fields, clazz);
+    }
+
+    private CellStyle createBodyStyle(Workbook workbook, Class<? extends Object> clazz) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        ExcelBodyStyle excelBodyStyle = clazz.getAnnotation(ExcelBodyStyle.class);
+        if (excelBodyStyle == null) {
+            return cellStyle;
+        }
+        return createCellStyle(cellStyle, excelBodyStyle.cellColor(), excelBodyStyle.horizontal(), excelBodyStyle.vertical());
+    }
+
+    private CellStyle createCellStyle(CellStyle cellStyle, IndexedColors indexedColors, HorizontalAlignment horizontal, VerticalAlignment vertical) {
+        cellStyle.setFillForegroundColor(indexedColors.getIndex());
+        cellStyle.setFillPattern(FillPatternType.BIG_SPOTS);
+        cellStyle.setAlignment(horizontal);
+        cellStyle.setVerticalAlignment(vertical);
+        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+
+        return cellStyle;
+    }
+
+    private void setAutoSizeColumn(Sheet sheet, Field[] fields, Class<? extends Object> clazz) {
+        ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
+        if (excelHeaderStyle != null && excelHeaderStyle.autoSize()) {
+            for (int i = 0; i < fields.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
         }
     }
 
