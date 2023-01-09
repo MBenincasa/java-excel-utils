@@ -1,11 +1,12 @@
 package samples.convertObjectsToExcelFileSample;
 
 import enums.ExcelExtension;
-import tools.ExcelConverter;
-import tools.ExcelConverterImpl;
+import tools.interfaces.ExcelConverter;
+import tools.implementations.ExcelConverterImpl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -14,8 +15,8 @@ public class Main {
 
         ExcelConverter excelConverter = new ExcelConverterImpl();
         List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee("Mario", "Rossi", 25, 28000.00));
-        employees.add(new Employee("Giuseppe", "Verdi", 22, 23670.89));
+        employees.add(new Employee("Mario", "Rossi", 25, new Date(), 28000.00));
+        employees.add(new Employee("Giuseppe", "Verdi", 22, new Date(), 23670.89));
 
         try {
             System.out.println("Start the conversation...");

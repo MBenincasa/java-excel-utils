@@ -9,6 +9,8 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @ToString
 @ExcelHeaderStyle(cellColor = IndexedColors.ORANGE, horizontal = HorizontalAlignment.RIGHT, vertical = VerticalAlignment.BOTTOM, autoSize = true)
@@ -21,6 +23,8 @@ public class Employee {
     private String name;
     @ExcelField(name = "AGE")
     private Integer age;
+    @ExcelField(name = "HIRE DATE")
+    private Date hireDate;
     @ExcelField(name = "SALARY (€)")
     private Double salary;
 }

@@ -1,4 +1,4 @@
-package tools;
+package tools.implementations;
 
 import annotations.ExcelBodyStyle;
 import annotations.ExcelField;
@@ -6,11 +6,14 @@ import annotations.ExcelHeaderStyle;
 import enums.ExcelExtension;
 import exceptions.FileAlreadyExistsException;
 import org.apache.poi.ss.usermodel.*;
+import tools.interfaces.ExcelConverter;
+import tools.interfaces.ExcelWorkbookUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 
 public class ExcelConverterImpl implements ExcelConverter {
@@ -36,8 +39,38 @@ public class ExcelConverterImpl implements ExcelConverter {
     }
 
     @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), ExcelExtension.XLSX, writeHeader);
+    }
+
+    @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), filename, ExcelExtension.XLSX, writeHeader);
+    }
+
+    @Override
     public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
         return convertObjectsToExcelFile(objects, clazz, path, filename, extension, true);
+    }
+
+    @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, true);
+    }
+
+    @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, writeHeader);
+    }
+
+    @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String filename, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, true);
+    }
+
+    @Override
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+        return convertObjectsToExcelFile(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, writeHeader);
     }
 
     @Override
@@ -52,8 +85,8 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         /* Create workbook and sheet */
-        ExcelUtils excelUtils = new ExcelUtilsImpl();
-        Workbook workbook = excelUtils.createWorkbook(extension);
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        Workbook workbook = excelWorkbookUtils.createWorkbook(extension);
         Sheet sheet = workbook.createSheet(clazz.getSimpleName());
 
         Field[] fields = clazz.getDeclaredFields();
@@ -69,7 +102,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         /* Write body */
         for (Object object : objects) {
             CellStyle bodyCellStyle = createBodyStyle(workbook, clazz);
-            this.writeExcelBody(sheet, fields, object, cRow++, bodyCellStyle, clazz);
+            this.writeExcelBody(workbook, sheet, fields, object, cRow++, bodyCellStyle, clazz);
         }
 
         /* Write file */
@@ -107,12 +140,30 @@ public class ExcelConverterImpl implements ExcelConverter {
         return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
     }
 
-    private void writeExcelBody(Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<? extends Object> clazz) throws IllegalAccessException {
+    private void writeExcelBody(Workbook workbook, Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<? extends Object> clazz) throws IllegalAccessException {
         Row row = sheet.createRow(cRow);
         for (int i = 0; i < fields.length; i++) {
             Cell cell = row.createCell(i);
             cell.setCellStyle(cellStyle);
-            cell.setCellValue(String.valueOf(fields[i].get(object)));
+
+            if (fields[i].get(object) instanceof Integer) {
+                CellStyle newStyle = cloneStyle(workbook, cellStyle);
+                newStyle.setDataFormat((short) 1);
+                cell.setCellStyle(newStyle);
+                cell.setCellValue(Integer.parseInt(String.valueOf(fields[i].get(object))));
+            } else if (fields[i].get(object) instanceof Double) {
+                CellStyle newStyle = cloneStyle(workbook, cellStyle);
+                newStyle.setDataFormat((short) 4);
+                cell.setCellStyle(newStyle);
+                cell.setCellValue(Double.parseDouble(String.valueOf(fields[i].get(object))));
+            } else if (fields[i].get(object) instanceof Date) {
+                CellStyle newStyle = cloneStyle(workbook, cellStyle);
+                newStyle.setDataFormat((short) 22);
+                cell.setCellStyle(newStyle);
+                cell.setCellValue((Date) fields[i].get(object));
+            } else {
+                cell.setCellValue(String.valueOf(fields[i].get(object)));
+            }
         }
 
         /* Set auto-size columns */
@@ -136,6 +187,12 @@ public class ExcelConverterImpl implements ExcelConverter {
         cellStyle.setBorderBottom(BorderStyle.MEDIUM);
 
         return cellStyle;
+    }
+
+    private CellStyle cloneStyle(Workbook workbook, CellStyle cellStyle) {
+        CellStyle newStyle = workbook.createCellStyle();
+        newStyle.cloneStyleFrom(cellStyle);
+        return newStyle;
     }
 
     private void setAutoSizeColumn(Sheet sheet, Field[] fields, Class<? extends Object> clazz) {

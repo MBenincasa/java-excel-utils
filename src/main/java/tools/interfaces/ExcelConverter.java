@@ -1,4 +1,4 @@
-package tools;
+package tools.interfaces;
 
 import enums.ExcelExtension;
 import exceptions.FileAlreadyExistsException;
@@ -17,7 +17,19 @@ public interface ExcelConverter {
 
     File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
 
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
     File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String filename, ExcelExtension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+
+    File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
 
     File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
 }

@@ -1,7 +1,7 @@
 package samples.sheetSample;
 
-import tools.ExcelUtils;
-import tools.ExcelUtilsImpl;
+import tools.interfaces.ExcelSheetUtils;
+import tools.implementations.ExcelSheetUtilsImpl;
 
 import java.io.File;
 import java.util.List;
@@ -10,17 +10,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ExcelUtils excelUtils = new ExcelUtilsImpl();
+        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
         File file = new File("./src/main/resources/employee.xlsx");
 
         try {
-            int totalSheets = excelUtils.countAllSheets(file);
+            int totalSheets = excelSheetUtils.countAllSheets(file);
             System.out.println("Total: " + totalSheets);
-            List<String> sheetnames = excelUtils.getAllSheetNames(file);
+            List<String> sheetnames = excelSheetUtils.getAllSheetNames(file);
             System.out.println("Sheet names: " + sheetnames.toString());
-            int sheetIndex = excelUtils.getSheetIndex(file, "Employee");
+            int sheetIndex = excelSheetUtils.getSheetIndex(file, "Employee");
             System.out.println("Sheet index: " + sheetIndex);
-            String sheetName = excelUtils.getSheetNameAtPosition(file, 0);
+            String sheetName = excelSheetUtils.getSheetNameAtPosition(file, 0);
             System.out.println("Sheet name: " + sheetName);
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
