@@ -7,10 +7,12 @@ import enums.ExcelExtension;
 import exceptions.ExtensionNotValidException;
 import exceptions.FileAlreadyExistsException;
 import exceptions.OpenWorkbookException;
+import exceptions.SheetNotFoundException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import tools.interfaces.ExcelConverter;
+import tools.interfaces.ExcelSheetUtils;
 import tools.interfaces.ExcelUtils;
 import tools.interfaces.ExcelWorkbookUtils;
 
@@ -92,7 +94,8 @@ public class ExcelConverterImpl implements ExcelConverter {
         /* Create workbook and sheet */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         Workbook workbook = excelWorkbookUtils.create(extension);
-        Sheet sheet = workbook.createSheet(clazz.getSimpleName());
+        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
+        Sheet sheet = excelSheetUtils.create(workbook, clazz.getSimpleName());
 
         Field[] fields = clazz.getDeclaredFields();
         this.setFieldsAccessible(fields);
@@ -111,22 +114,22 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         /* Write file */
-        FileOutputStream outputStream = new FileOutputStream(file);
-        workbook.write(outputStream);
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        workbook.write(fileOutputStream);
 
         /* Close file */
-        closeFile(workbook, outputStream);
+        excelWorkbookUtils.close(workbook, fileOutputStream);
 
         return file;
     }
 
     @Override
-    public List<?> excelToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public List<?> excelToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SheetNotFoundException {
         return excelToObjects(file, clazz, null);
     }
 
     @Override
-    public List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+    public List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException {
 
         /* Check extension */
         String extension = checkExtension(file.getName());
@@ -135,9 +138,10 @@ public class ExcelConverterImpl implements ExcelConverter {
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         FileInputStream fileInputStream = new FileInputStream(file);
         Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? workbook.getSheetAt(0)
-                : workbook.getSheet(sheetName);
+                ? excelSheetUtils.open(workbook)
+                : excelSheetUtils.open(workbook, sheetName);
 
         /* Retrieving header names */
         Field[] fields = clazz.getDeclaredFields();
@@ -157,7 +161,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         return resultList;
     }
@@ -325,16 +329,6 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         return path + filename + '.' + extension.getExt();
-    }
-
-    private void closeFile(Workbook workbook, FileOutputStream outputStream) throws IOException {
-        outputStream.close();
-        workbook.close();
-    }
-
-    private void closeFile(Workbook workbook, FileInputStream fileInputStream) throws IOException {
-        fileInputStream.close();
-        workbook.close();
     }
 
     private String checkExtension(String filename) throws ExtensionNotValidException {

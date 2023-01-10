@@ -33,7 +33,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         Integer totalSheets = workbook.getNumberOfSheets();
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         return totalSheets;
     }
@@ -58,7 +58,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         }
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         return sheetNames;
     }
@@ -77,7 +77,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         int sheetIndex = workbook.getSheetIndex(sheetName);
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         if(sheetIndex < 0) {
             throw new SheetNotFoundException("No sheet was found");
@@ -104,9 +104,105 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         }
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         return sheetName;
+    }
+
+    @Override
+    public Sheet create(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+        return create(file, null);
+    }
+
+    @Override
+    public Sheet create(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+
+        /* Check extension */
+        String extension = checkExtension(file.getName());
+
+        /* Open file excel */
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+
+        /* Create sheet */
+        return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
+    }
+
+    @Override
+    public Sheet create(Workbook workbook) {
+        return create(workbook, null);
+    }
+
+    @Override
+    public Sheet create(Workbook workbook, String sheetName) {
+        return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
+    }
+
+    @Override
+    public Sheet open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+        return open(file, 0);
+    }
+
+    @Override
+    public Sheet open(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+
+        /* Check extension */
+        String extension = checkExtension(file.getName());
+
+        /* Open file excel */
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+
+        /* Open sheet */
+        Sheet sheet = workbook.getSheet(sheetName);
+        if (sheet == null)
+            throw new SheetNotFoundException();
+        return sheet;
+    }
+
+    @Override
+    public Sheet open(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+
+        /* Check extension */
+        String extension = checkExtension(file.getName());
+
+        /* Open file excel */
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+
+        /* Open sheet */
+        Sheet sheet = workbook.getSheetAt(position);
+        if (sheet == null)
+            throw new SheetNotFoundException();
+        return sheet;
+    }
+
+    @Override
+    public Sheet open(Workbook workbook) throws SheetNotFoundException {
+        return open(workbook, 0);
+    }
+
+    @Override
+    public Sheet open(Workbook workbook, String sheetName) throws SheetNotFoundException {
+
+        /* Open sheet */
+        Sheet sheet = workbook.getSheet(sheetName);
+        if (sheet == null)
+            throw new SheetNotFoundException();
+        return sheet;
+    }
+
+    @Override
+    public Sheet open(Workbook workbook, Integer position) throws SheetNotFoundException {
+
+        /* Open sheet */
+        Sheet sheet = workbook.getSheetAt(position);
+        if (sheet == null)
+            throw new SheetNotFoundException();
+        return sheet;
     }
 
     private String checkExtension(String filename) throws ExtensionNotValidException {
@@ -119,8 +215,4 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return extension;
     }
 
-    private void closeFile(Workbook workbook, FileInputStream fileInputStream) throws IOException {
-        fileInputStream.close();
-        workbook.close();
-    }
 }

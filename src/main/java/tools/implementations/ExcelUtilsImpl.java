@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import tools.interfaces.ExcelSheetUtils;
 import tools.interfaces.ExcelUtils;
 import tools.interfaces.ExcelWorkbookUtils;
 
@@ -38,13 +39,10 @@ public class ExcelUtilsImpl implements ExcelUtils {
         FileInputStream fileInputStream = new FileInputStream(file);
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? workbook.getSheetAt(0)
-                : workbook.getSheet(sheetName);
-
-        if(sheet == null) {
-            throw new SheetNotFoundException("No sheet was found");
-        }
+                ? excelSheetUtils.open(workbook)
+                : excelSheetUtils.open(workbook, sheetName);
 
         /* Count all rows */
         int numRows = alsoEmptyRows
@@ -52,7 +50,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        closeFile(workbook, fileInputStream);
+        excelWorkbookUtils.close(workbook, fileInputStream);
 
         return numRows;
     }
@@ -95,8 +93,4 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return extension;
     }
 
-    private void closeFile(Workbook workbook, FileInputStream fileInputStream) throws IOException {
-        fileInputStream.close();
-        workbook.close();
-    }
 }

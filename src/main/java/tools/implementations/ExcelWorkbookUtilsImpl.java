@@ -13,6 +13,7 @@ import tools.interfaces.ExcelUtils;
 import tools.interfaces.ExcelWorkbookUtils;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
@@ -60,5 +61,22 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
             case XLSX -> workbook = new XSSFWorkbook();
         }
         return workbook;
+    }
+
+    @Override
+    public void close(Workbook workbook) throws IOException {
+        workbook.close();
+    }
+
+    @Override
+    public void close(Workbook workbook, FileInputStream fileInputStream) throws IOException {
+        workbook.close();
+        fileInputStream.close();
+    }
+
+    @Override
+    public void close(Workbook workbook, FileOutputStream fileOutputStream) throws IOException {
+        workbook.close();
+        fileOutputStream.close();
     }
 }
