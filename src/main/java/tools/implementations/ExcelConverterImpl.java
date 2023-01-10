@@ -4,17 +4,22 @@ import annotations.ExcelBodyStyle;
 import annotations.ExcelField;
 import annotations.ExcelHeaderStyle;
 import enums.ExcelExtension;
+import exceptions.ExtensionNotValidException;
 import exceptions.FileAlreadyExistsException;
+import exceptions.OpenWorkbookException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import tools.interfaces.ExcelConverter;
+import tools.interfaces.ExcelUtils;
 import tools.interfaces.ExcelWorkbookUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class ExcelConverterImpl implements ExcelConverter {
 
@@ -74,7 +79,7 @@ public class ExcelConverterImpl implements ExcelConverter {
     }
 
     @Override
-    public File convertObjectsToExcelFile(List<? extends Object> objects, Class<? extends Object> clazz, String path, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File convertObjectsToExcelFile(List<?> objects, Class<?> clazz, String path, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
 
         /* Open file */
         String pathname = this.getPathname(path, filename, extension);
@@ -115,6 +120,103 @@ public class ExcelConverterImpl implements ExcelConverter {
         return file;
     }
 
+    @Override
+    public List<?> convertExcelFileToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        return convertExcelFileToObjects(file, clazz, null);
+    }
+
+    @Override
+    public List<?> convertExcelFileToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+
+        /* Check extension */
+        String extension = checkExtension(file.getName());
+
+        /* Open file excel */
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? workbook.getSheetAt(0)
+                : workbook.getSheet(sheetName);
+
+        /* Retrieving header names */
+        Field[] fields = clazz.getDeclaredFields();
+        this.setFieldsAccessible(fields);
+        Map<Integer, String> headerMap = getHeaderNames(sheet, fields);
+
+        /* Converting cells to objects */
+        List<Object> resultList = new ArrayList<>();
+        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) {
+                continue;
+            }
+
+            Object obj = convertCellValuesToObject(clazz, row, fields, headerMap);
+            resultList.add(obj);
+        }
+
+        /* Close file */
+        closeFile(workbook, fileInputStream);
+
+        return resultList;
+    }
+
+    private Map<Integer, String> getHeaderNames(Sheet sheet, Field[] fields) {
+        Map<String, String> fieldNames = new HashMap<>();
+        for (Field field : fields) {
+            ExcelField excelField = field.getAnnotation(ExcelField.class);
+            fieldNames.put(excelField == null ? field.getName() : excelField.name(), field.getName());
+        }
+
+        Row headerRow = sheet.getRow(0);
+        Map<Integer, String> headerMap = new TreeMap<>();
+        for (int i = 0; i < headerRow.getPhysicalNumberOfCells(); i++) {
+            Cell cell = headerRow.getCell(i);
+            if (fieldNames.containsKey(cell.getStringCellValue())) {
+                headerMap.put(i, fieldNames.get(cell.getStringCellValue()));
+            }
+        }
+
+        return headerMap;
+    }
+
+    private Object convertCellValuesToObject(Class<?> clazz, Row row, Field[] fields, Map<Integer, String> headerMap) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+        Object obj = clazz.getDeclaredConstructor().newInstance();
+        for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
+            String headerName = headerMap.get(j);
+            Cell cell = row.getCell(j);
+
+            switch (cell.getCellType()) {
+                case NUMERIC -> {
+                    Optional<Field> fieldOptional = Arrays.stream(fields).filter(f -> f.getName().equalsIgnoreCase(headerName)).findFirst();
+                    if (fieldOptional.isEmpty()) {
+                        throw new RuntimeException();
+                    }
+                    Field field = fieldOptional.get();
+
+                    if (Integer.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, (int) cell.getNumericCellValue());
+                    } else if (Double.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, cell.getNumericCellValue());
+                    } else if (Long.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, (long) cell.getNumericCellValue());
+                    } else if (Date.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, cell.getDateCellValue());
+                    } else if (LocalDateTime.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, cell.getLocalDateTimeCellValue());
+                    } else if (LocalDate.class.equals(field.getType())) {
+                        PropertyUtils.setSimpleProperty(obj, headerName, cell.getLocalDateTimeCellValue().toLocalDate());
+                    }
+
+                }
+                case BOOLEAN -> PropertyUtils.setSimpleProperty(obj, headerName, cell.getBooleanCellValue());
+                default -> PropertyUtils.setSimpleProperty(obj, headerName, cell.getStringCellValue());
+            }
+        }
+        return obj;
+    }
+
     private void setFieldsAccessible(Field[] fields) {
         for (Field field : fields) {
             field.setAccessible(true);
@@ -131,7 +233,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
     }
 
-    private CellStyle createHeaderCellStyle(Workbook workbook, Class<? extends Object> clazz) {
+    private CellStyle createHeaderCellStyle(Workbook workbook, Class<?> clazz) {
         CellStyle cellStyle = workbook.createCellStyle();
         ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
         if (excelHeaderStyle == null) {
@@ -140,13 +242,13 @@ public class ExcelConverterImpl implements ExcelConverter {
         return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
     }
 
-    private void writeExcelBody(Workbook workbook, Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<? extends Object> clazz) throws IllegalAccessException {
+    private void writeExcelBody(Workbook workbook, Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<?> clazz) throws IllegalAccessException {
         Row row = sheet.createRow(cRow);
         for (int i = 0; i < fields.length; i++) {
             Cell cell = row.createCell(i);
             cell.setCellStyle(cellStyle);
 
-            if (fields[i].get(object) instanceof Integer) {
+            if (fields[i].get(object) instanceof Integer || fields[i].get(object) instanceof Long) {
                 CellStyle newStyle = cloneStyle(workbook, cellStyle);
                 newStyle.setDataFormat((short) 1);
                 cell.setCellStyle(newStyle);
@@ -161,6 +263,18 @@ public class ExcelConverterImpl implements ExcelConverter {
                 newStyle.setDataFormat((short) 22);
                 cell.setCellStyle(newStyle);
                 cell.setCellValue((Date) fields[i].get(object));
+            } else if (fields[i].get(object) instanceof LocalDate) {
+                CellStyle newStyle = cloneStyle(workbook, cellStyle);
+                newStyle.setDataFormat((short) 14);
+                cell.setCellStyle(newStyle);
+                cell.setCellValue((LocalDate) fields[i].get(object));
+            } else if (fields[i].get(object) instanceof LocalDateTime) {
+                CellStyle newStyle = cloneStyle(workbook, cellStyle);
+                newStyle.setDataFormat((short) 22);
+                cell.setCellStyle(newStyle);
+                cell.setCellValue((LocalDateTime) fields[i].get(object));
+            } else if (fields[i].get(object) instanceof Boolean) {
+                cell.setCellValue((Boolean) fields[i].get(object));
             } else {
                 cell.setCellValue(String.valueOf(fields[i].get(object)));
             }
@@ -170,7 +284,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         setAutoSizeColumn(sheet, fields, clazz);
     }
 
-    private CellStyle createBodyStyle(Workbook workbook, Class<? extends Object> clazz) {
+    private CellStyle createBodyStyle(Workbook workbook, Class<?> clazz) {
         CellStyle cellStyle = workbook.createCellStyle();
         ExcelBodyStyle excelBodyStyle = clazz.getAnnotation(ExcelBodyStyle.class);
         if (excelBodyStyle == null) {
@@ -195,7 +309,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         return newStyle;
     }
 
-    private void setAutoSizeColumn(Sheet sheet, Field[] fields, Class<? extends Object> clazz) {
+    private void setAutoSizeColumn(Sheet sheet, Field[] fields, Class<?> clazz) {
         ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
         if (excelHeaderStyle != null && excelHeaderStyle.autoSize()) {
             for (int i = 0; i < fields.length; i++) {
@@ -216,5 +330,20 @@ public class ExcelConverterImpl implements ExcelConverter {
     private void closeFile(Workbook workbook, FileOutputStream outputStream) throws IOException {
         outputStream.close();
         workbook.close();
+    }
+
+    private void closeFile(Workbook workbook, FileInputStream fileInputStream) throws IOException {
+        fileInputStream.close();
+        workbook.close();
+    }
+
+    private String checkExtension(String filename) throws ExtensionNotValidException {
+        String extension = FilenameUtils.getExtension(filename);
+        ExcelUtils excelUtils = new ExcelUtilsImpl();
+
+        if(!excelUtils.isValidExcelExtension(extension)) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+        return extension;
     }
 }
