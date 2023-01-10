@@ -37,7 +37,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
-        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
                 ? workbook.getSheetAt(0)
                 : workbook.getSheet(sheetName);

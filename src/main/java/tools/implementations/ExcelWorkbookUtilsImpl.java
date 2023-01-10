@@ -18,7 +18,7 @@ import java.io.IOException;
 public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
 
     @Override
-    public Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Workbook open(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
 
         /* Check the extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
@@ -39,21 +39,21 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
     }
 
     @Override
-    public Workbook createWorkbook() {
-        return createWorkbook(ExcelExtension.XLSX);
+    public Workbook create() {
+        return create(ExcelExtension.XLSX);
     }
 
     @Override
-    public Workbook createWorkbook(String extension) throws ExtensionNotValidException {
+    public Workbook create(String extension) throws ExtensionNotValidException {
         ExcelUtils excelUtils = new ExcelUtilsImpl();
         if(!excelUtils.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
-        return createWorkbook(ExcelExtension.getExcelExtension(extension));
+        return create(ExcelExtension.getExcelExtension(extension));
     }
 
     @Override
-    public Workbook createWorkbook(ExcelExtension extension) {
+    public Workbook create(ExcelExtension extension) {
         Workbook workbook = null;
         switch (extension) {
             case XLS -> workbook = new HSSFWorkbook();

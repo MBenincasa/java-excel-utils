@@ -15,7 +15,7 @@ public class Main {
         try {
             System.out.println("Start the conversion...");
             ExcelConverter excelConverter = new ExcelConverterImpl();
-            List<Employee> employees = (List<Employee>) excelConverter.convertExcelFileToObjects(file, Employee.class);
+            List<Employee> employees = (List<Employee>) excelConverter.excelToObjects(file, Employee.class);
             System.out.println("The list is ready. List: " + employees.toString());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");

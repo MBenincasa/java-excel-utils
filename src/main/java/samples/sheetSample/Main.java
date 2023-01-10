@@ -14,13 +14,13 @@ public class Main {
         File file = new File("./src/main/resources/employee.xlsx");
 
         try {
-            int totalSheets = excelSheetUtils.countAllSheets(file);
+            int totalSheets = excelSheetUtils.countAll(file);
             System.out.println("Total: " + totalSheets);
-            List<String> sheetnames = excelSheetUtils.getAllSheetNames(file);
+            List<String> sheetnames = excelSheetUtils.getAllNames(file);
             System.out.println("Sheet names: " + sheetnames.toString());
-            int sheetIndex = excelSheetUtils.getSheetIndex(file, "Employee");
+            int sheetIndex = excelSheetUtils.getIndex(file, "Employee");
             System.out.println("Sheet index: " + sheetIndex);
-            String sheetName = excelSheetUtils.getSheetNameAtPosition(file, 0);
+            String sheetName = excelSheetUtils.getNameByIndex(file, 0);
             System.out.println("Sheet name: " + sheetName);
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");

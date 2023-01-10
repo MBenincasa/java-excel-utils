@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public interface ExcelWorkbookUtils {
 
-    Workbook openWorkbook(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException;
+    Workbook open(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 
-    Workbook createWorkbook();
+    Workbook create();
 
-    Workbook createWorkbook(String extension) throws ExtensionNotValidException;
+    Workbook create(String extension) throws ExtensionNotValidException;
 
-    Workbook createWorkbook(ExcelExtension extension);
+    Workbook create(ExcelExtension extension);
 }

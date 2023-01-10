@@ -20,7 +20,7 @@ import java.util.List;
 public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
 
     @Override
-    public Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Integer countAll(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
 
         /* Check extension */
         String extension = checkExtension(file.getName());
@@ -28,7 +28,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
 
         Integer totalSheets = workbook.getNumberOfSheets();
 
@@ -39,7 +39,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     }
 
     @Override
-    public List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public List<String> getAllNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
 
         /* Check extension */
         String extension = checkExtension(file.getName());
@@ -47,7 +47,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
 
         /* Iterate all the sheets */
         Iterator<Sheet> sheetIterator = workbook.iterator();
@@ -64,7 +64,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     }
 
     @Override
-    public Integer getSheetIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+    public Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
         String extension = checkExtension(file.getName());
@@ -72,7 +72,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
 
         int sheetIndex = workbook.getSheetIndex(sheetName);
 
@@ -86,7 +86,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     }
 
     @Override
-    public String getSheetNameAtPosition(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+    public String getNameByIndex(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
 
         /* Check extension */
         String extension = checkExtension(file.getName());
@@ -94,7 +94,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
         FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = excelWorkbookUtils.openWorkbook(fileInputStream, extension);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
 
         String sheetName;
         try {

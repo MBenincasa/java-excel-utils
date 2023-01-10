@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface ExcelSheetUtils {
 
-    Integer countAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
+    Integer countAll(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 
-    List<String> getAllSheetNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
+    List<String> getAllNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 
-    Integer getSheetIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
+    Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
 
-    String getSheetNameAtPosition(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
+    String getNameByIndex(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException;
 }

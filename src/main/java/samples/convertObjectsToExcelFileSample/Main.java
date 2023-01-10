@@ -22,7 +22,7 @@ public class Main {
 
         try {
             System.out.println("Start the conversion...");
-            File report = excelConverter.convertObjectsToExcelFile(employees, Employee.class, "./src/main/resources/", "employee", ExcelExtension.XLSX, true);
+            File report = excelConverter.objectsToExcel(employees, Employee.class, "./src/main/resources/", "employee", ExcelExtension.XLSX, true);
             System.out.println("The file is ready. Path: " + report.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
