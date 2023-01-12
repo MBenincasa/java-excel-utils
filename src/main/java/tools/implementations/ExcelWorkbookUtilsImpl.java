@@ -12,18 +12,26 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tools.interfaces.ExcelUtils;
 import tools.interfaces.ExcelWorkbookUtils;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
 
     @Override
-    public Workbook open(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public Workbook open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+        /* Check extension */
+        ExcelUtils excelUtils = new ExcelUtilsImpl();
+        String extension = excelUtils.checkExtension(file.getName());
 
+        /* Open file input stream */
+        FileInputStream fileInputStream = new FileInputStream(file);
+        return open(fileInputStream, extension);
+    }
+
+    @Override
+    public Workbook open(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check the extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        if(!excelUtils.isValidExcelExtension(extension)) {
+        if (!excelUtils.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
 
@@ -47,7 +55,7 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
     @Override
     public Workbook create(String extension) throws ExtensionNotValidException {
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        if(!excelUtils.isValidExcelExtension(extension)) {
+        if (!excelUtils.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
         return create(ExcelExtension.getExcelExtension(extension));

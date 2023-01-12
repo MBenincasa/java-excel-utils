@@ -5,11 +5,11 @@ import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public interface ExcelWorkbookUtils {
+
+    Workbook open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 
     Workbook open(FileInputStream fileInputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException;
 

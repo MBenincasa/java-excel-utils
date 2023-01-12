@@ -4,12 +4,8 @@ import annotations.ExcelBodyStyle;
 import annotations.ExcelField;
 import annotations.ExcelHeaderStyle;
 import enums.ExcelExtension;
-import exceptions.ExtensionNotValidException;
-import exceptions.FileAlreadyExistsException;
-import exceptions.OpenWorkbookException;
-import exceptions.SheetNotFoundException;
+import exceptions.*;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import tools.interfaces.ExcelConverter;
 import tools.interfaces.ExcelSheetUtils;
@@ -82,12 +78,11 @@ public class ExcelConverterImpl implements ExcelConverter {
 
     @Override
     public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, ExcelExtension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
-
         /* Open file */
         String pathname = this.getPathname(path, filename, extension);
         File file = new File(pathname);
 
-        if(file.exists()) {
+        if (file.exists()) {
             throw new FileAlreadyExistsException("There is already a file with this pathname: " + file.getAbsolutePath());
         }
 
@@ -102,14 +97,14 @@ public class ExcelConverterImpl implements ExcelConverter {
         int cRow = 0;
 
         /* Write header */
-        if(writeHeader) {
-            CellStyle headerCellStyle = createHeaderCellStyle(workbook, clazz);
+        if (writeHeader) {
+            CellStyle headerCellStyle = this.createHeaderCellStyle(workbook, clazz);
             this.writeExcelHeader(sheet, fields, cRow++, headerCellStyle);
         }
 
         /* Write body */
         for (Object object : objects) {
-            CellStyle bodyCellStyle = createBodyStyle(workbook, clazz);
+            CellStyle bodyCellStyle = this.createBodyStyle(workbook, clazz);
             this.writeExcelBody(workbook, sheet, fields, object, cRow++, bodyCellStyle, clazz);
         }
 
@@ -124,15 +119,15 @@ public class ExcelConverterImpl implements ExcelConverter {
     }
 
     @Override
-    public List<?> excelToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SheetNotFoundException {
+    public List<?> excelToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SheetNotFoundException, HeaderNotPresentException {
         return excelToObjects(file, clazz, null);
     }
 
     @Override
-    public List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException {
-
+    public List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException, HeaderNotPresentException {
         /* Check extension */
-        String extension = checkExtension(file.getName());
+        ExcelUtils excelUtils = new ExcelUtilsImpl();
+        String extension = excelUtils.checkExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -146,17 +141,16 @@ public class ExcelConverterImpl implements ExcelConverter {
         /* Retrieving header names */
         Field[] fields = clazz.getDeclaredFields();
         this.setFieldsAccessible(fields);
-        Map<Integer, String> headerMap = getHeaderNames(sheet, fields);
+        Map<Integer, String> headerMap = this.getHeaderNames(sheet, fields);
 
         /* Converting cells to objects */
         List<Object> resultList = new ArrayList<>();
-        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) {
+        for (Row row : sheet) {
+            if (row == null || row.getRowNum() == 0) {
                 continue;
             }
 
-            Object obj = convertCellValuesToObject(clazz, row, fields, headerMap);
+            Object obj = this.convertCellValuesToObject(clazz, row, fields, headerMap);
             resultList.add(obj);
         }
 
@@ -166,7 +160,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         return resultList;
     }
 
-    private Map<Integer, String> getHeaderNames(Sheet sheet, Field[] fields) {
+    private Map<Integer, String> getHeaderNames(Sheet sheet, Field[] fields) throws HeaderNotPresentException {
         Map<String, String> fieldNames = new HashMap<>();
         for (Field field : fields) {
             ExcelField excelField = field.getAnnotation(ExcelField.class);
@@ -174,11 +168,13 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         Row headerRow = sheet.getRow(0);
+        if (headerRow == null)
+            throw new HeaderNotPresentException("There is no header in the first row of the sheet.");
+
         Map<Integer, String> headerMap = new TreeMap<>();
-        for (int i = 0; i < headerRow.getPhysicalNumberOfCells(); i++) {
-            Cell cell = headerRow.getCell(i);
+        for (Cell cell : headerRow) {
             if (fieldNames.containsKey(cell.getStringCellValue())) {
-                headerMap.put(i, fieldNames.get(cell.getStringCellValue()));
+                headerMap.put(cell.getColumnIndex(), fieldNames.get(cell.getStringCellValue()));
             }
         }
 
@@ -187,9 +183,13 @@ public class ExcelConverterImpl implements ExcelConverter {
 
     private Object convertCellValuesToObject(Class<?> clazz, Row row, Field[] fields, Map<Integer, String> headerMap) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         Object obj = clazz.getDeclaredConstructor().newInstance();
-        for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
-            String headerName = headerMap.get(j);
-            Cell cell = row.getCell(j);
+        for (Cell cell : row) {
+            if (cell == null)
+                continue;
+
+            String headerName = headerMap.get(cell.getColumnIndex());
+            if (headerName == null || headerMap.isEmpty())
+                continue;
 
             switch (cell.getCellType()) {
                 case NUMERIC -> {
@@ -243,7 +243,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         if (excelHeaderStyle == null) {
             return cellStyle;
         }
-        return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
+        return this.createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
     }
 
     private void writeExcelBody(Workbook workbook, Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<?> clazz) throws IllegalAccessException {
@@ -285,7 +285,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         }
 
         /* Set auto-size columns */
-        setAutoSizeColumn(sheet, fields, clazz);
+        this.setAutoSizeColumn(sheet, fields, clazz);
     }
 
     private CellStyle createBodyStyle(Workbook workbook, Class<?> clazz) {
@@ -294,7 +294,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         if (excelBodyStyle == null) {
             return cellStyle;
         }
-        return createCellStyle(cellStyle, excelBodyStyle.cellColor(), excelBodyStyle.horizontal(), excelBodyStyle.vertical());
+        return this.createCellStyle(cellStyle, excelBodyStyle.cellColor(), excelBodyStyle.horizontal(), excelBodyStyle.vertical());
     }
 
     private CellStyle createCellStyle(CellStyle cellStyle, IndexedColors indexedColors, HorizontalAlignment horizontal, VerticalAlignment vertical) {
@@ -324,20 +324,10 @@ public class ExcelConverterImpl implements ExcelConverter {
 
     private String getPathname(String path, String filename, ExcelExtension extension) {
         path = path.replaceAll("\\\\", "/");
-        if(path.charAt(path.length() - 1) != '/') {
+        if (path.charAt(path.length() - 1) != '/') {
             path += '/';
         }
 
         return path + filename + '.' + extension.getExt();
-    }
-
-    private String checkExtension(String filename) throws ExtensionNotValidException {
-        String extension = FilenameUtils.getExtension(filename);
-        ExcelUtils excelUtils = new ExcelUtilsImpl();
-
-        if(!excelUtils.isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
-        return extension;
     }
 }

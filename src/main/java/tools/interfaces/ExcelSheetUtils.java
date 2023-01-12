@@ -39,4 +39,6 @@ public interface ExcelSheetUtils {
     Sheet open(Workbook workbook, String sheetName) throws SheetNotFoundException;
 
     Sheet open(Workbook workbook, Integer position) throws SheetNotFoundException;
+
+    Sheet openOrCreate(Workbook workbook, String sheetName);
 }
