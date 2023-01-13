@@ -3,6 +3,7 @@ package tools.implementations;
 import annotations.ExcelBodyStyle;
 import annotations.ExcelField;
 import annotations.ExcelHeaderStyle;
+import com.opencsv.CSVWriter;
 import enums.ExcelExtension;
 import exceptions.*;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -158,6 +159,63 @@ public class ExcelConverterImpl implements ExcelConverter {
         excelWorkbookUtils.close(workbook, fileInputStream);
 
         return resultList;
+    }
+
+    @Override
+    public File excelToCsv(File fileInput) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return excelToCsv(fileInput, System.getProperty("java.io.tmpdir"), fileInput.getName().split("\\.")[0].trim(), null);
+    }
+
+    @Override
+    public File excelToCsv(File fileInput, String sheetName) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return excelToCsv(fileInput, System.getProperty("java.io.tmpdir"), fileInput.getName().split("\\.")[0].trim(), sheetName);
+    }
+
+    @Override
+    public File excelToCsv(File fileInput, String path, String filename) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return excelToCsv(fileInput, path, filename, null);
+    }
+
+    @Override
+    public File excelToCsv(File fileInput, String path, String filename, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, FileAlreadyExistsException {
+        /* Check extension */
+        ExcelUtils excelUtils = new ExcelUtilsImpl();
+        String extension = excelUtils.checkExtension(fileInput.getName());
+
+        /* Open file excel */
+        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
+        FileInputStream fileInputStream = new FileInputStream(fileInput);
+        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? excelSheetUtils.open(workbook)
+                : excelSheetUtils.open(workbook, sheetName);
+
+        /* Create output file */
+        String pathname = this.getPathname(path, filename, "csv");
+        File csvFile = new File(pathname);
+
+        if (csvFile.exists()) {
+            throw new FileAlreadyExistsException("There is already a file with this pathname: " + csvFile.getAbsolutePath());
+        }
+
+        /* Write output file */
+        FileWriter fileWriter = new FileWriter(csvFile);
+        CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+        DataFormatter formatter = new DataFormatter(true);
+        for (Row row : sheet) {
+            List<String> data = new LinkedList<>();
+            for (int i = 0; i < row.getLastCellNum(); i++) {
+                data.add(formatter.formatCellValue(row.getCell(i)));
+            }
+            csvWriter.writeNext(data.toArray(data.toArray(new String[0])));
+        }
+
+        /* Close file */
+        excelWorkbookUtils.close(workbook, fileInputStream, csvWriter);
+
+        return csvFile;
     }
 
     private Map<Integer, String> getHeaderNames(Sheet sheet, Field[] fields) throws HeaderNotPresentException {
@@ -323,11 +381,15 @@ public class ExcelConverterImpl implements ExcelConverter {
     }
 
     private String getPathname(String path, String filename, ExcelExtension extension) {
+        return getPathname(path, filename, extension.getExt());
+    }
+
+    private String getPathname(String path, String filename, String extension) {
         path = path.replaceAll("\\\\", "/");
         if (path.charAt(path.length() - 1) != '/') {
             path += '/';
         }
 
-        return path + filename + '.' + extension.getExt();
+        return path + filename + '.' + extension;
     }
 }

@@ -208,4 +208,14 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         Sheet sheet = workbook.getSheet(sheetName);
         return sheet == null ? workbook.createSheet(sheetName) : sheet;
     }
+
+    @Override
+    public Boolean isPresent(Workbook workbook, String sheetName) {
+        return workbook.getSheet(sheetName) != null;
+    }
+
+    @Override
+    public Boolean isPresent(Workbook workbook, Integer position) {
+        return workbook.getSheetAt(position) != null;
+    }
 }

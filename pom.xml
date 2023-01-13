@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>java-excel-tools</name>
-    <description>Library with tools to work with excel files</description>
+    <description>Library with tools to work with Excel files</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -38,6 +38,11 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
         </dependency>
     </dependencies>
 </project>

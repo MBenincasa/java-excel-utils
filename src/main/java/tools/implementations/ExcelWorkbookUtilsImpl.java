@@ -1,5 +1,6 @@
 package tools.implementations;
 
+import com.opencsv.CSVWriter;
 import enums.ExcelExtension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
@@ -86,5 +87,19 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
     public void close(Workbook workbook, FileOutputStream fileOutputStream) throws IOException {
         workbook.close();
         fileOutputStream.close();
+    }
+
+    @Override
+    public void close(Workbook workbook, FileOutputStream fileOutputStream, FileInputStream fileInputStream) throws IOException {
+        workbook.close();
+        fileInputStream.close();
+        fileOutputStream.close();
+    }
+
+    @Override
+    public void close(Workbook workbook, FileInputStream fileInputStream, CSVWriter writer) throws IOException {
+        workbook.close();
+        fileInputStream.close();
+        writer.close();
     }
 }
