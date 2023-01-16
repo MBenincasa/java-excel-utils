@@ -1,7 +1,7 @@
 package tools.interfaces;
 
 import com.opencsv.CSVWriter;
-import enums.ExcelExtension;
+import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,7 +18,7 @@ public interface ExcelWorkbookUtils {
 
     Workbook create(String extension) throws ExtensionNotValidException;
 
-    Workbook create(ExcelExtension extension);
+    Workbook create(Extension extension);
 
     void close(Workbook workbook) throws IOException;
 

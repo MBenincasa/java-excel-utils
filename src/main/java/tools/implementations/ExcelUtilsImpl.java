@@ -1,6 +1,6 @@
 package tools.implementations;
 
-import enums.ExcelExtension;
+import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import exceptions.SheetNotFoundException;
@@ -29,7 +29,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     @Override
     public List<Integer> countAllRowsOfAllSheets(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
-        String extension = this.checkExtension(file.getName());
+        String extension = this.checkExcelExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -60,7 +60,7 @@ public class ExcelUtilsImpl implements ExcelUtils {
     @Override
     public Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
-        String extension = this.checkExtension(file.getName());
+        String extension = this.checkExcelExtension(file.getName());
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -84,11 +84,11 @@ public class ExcelUtilsImpl implements ExcelUtils {
 
     @Override
     public Boolean isValidExcelExtension(String extension) {
-        return extension.equalsIgnoreCase(ExcelExtension.XLS.getExt()) || extension.equalsIgnoreCase(ExcelExtension.XLSX.getExt());
+        return extension.equalsIgnoreCase(Extension.XLS.getExt()) || extension.equalsIgnoreCase(Extension.XLSX.getExt());
     }
 
     @Override
-    public String checkExtension(String filename) throws ExtensionNotValidException {
+    public String checkExcelExtension(String filename) throws ExtensionNotValidException {
         String extension = FilenameUtils.getExtension(filename);
         if (!isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");

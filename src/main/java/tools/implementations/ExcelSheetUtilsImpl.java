@@ -22,7 +22,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public Integer countAll(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -41,7 +41,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public List<String> getAllNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -66,7 +66,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -88,7 +88,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public String getNameByIndex(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -117,7 +117,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public Sheet create(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -147,7 +147,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public Sheet open(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
@@ -165,7 +165,7 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     public Sheet open(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file excel */
         ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();

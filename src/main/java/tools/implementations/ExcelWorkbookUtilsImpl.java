@@ -1,7 +1,7 @@
 package tools.implementations;
 
 import com.opencsv.CSVWriter;
-import enums.ExcelExtension;
+import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,7 +21,7 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
     public Workbook open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
         ExcelUtils excelUtils = new ExcelUtilsImpl();
-        String extension = excelUtils.checkExtension(file.getName());
+        String extension = excelUtils.checkExcelExtension(file.getName());
 
         /* Open file input stream */
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -50,7 +50,7 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
 
     @Override
     public Workbook create() {
-        return create(ExcelExtension.XLSX);
+        return create(Extension.XLSX);
     }
 
     @Override
@@ -59,11 +59,11 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
         if (!excelUtils.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
-        return create(ExcelExtension.getExcelExtension(extension));
+        return create(Extension.getExcelExtension(extension));
     }
 
     @Override
-    public Workbook create(ExcelExtension extension) {
+    public Workbook create(Extension extension) {
         Workbook workbook = null;
         switch (extension) {
             case XLS -> workbook = new HSSFWorkbook();

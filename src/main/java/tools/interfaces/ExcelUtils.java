@@ -20,5 +20,5 @@ public interface ExcelUtils {
 
     Boolean isValidExcelExtension(String extension);
 
-    String checkExtension(String filename) throws ExtensionNotValidException;
+    String checkExcelExtension(String filename) throws ExtensionNotValidException;
 }
