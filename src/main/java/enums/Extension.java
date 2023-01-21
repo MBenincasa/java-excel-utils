@@ -54,4 +54,12 @@ public enum Extension {
         }
         return extensionOptional.get();
     }
+
+    /**
+     * @return {@code true} if it has type EXCEL
+     * @since 0.1.1
+     */
+    public Boolean isExcelExtension() {
+        return this.getType().equalsIgnoreCase("EXCEL");
+    }
 }

@@ -1,5 +1,6 @@
 package tools.interfaces;
 
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import enums.Extension;
 import exceptions.ExtensionNotValidException;
@@ -97,4 +98,14 @@ public interface ExcelWorkbookUtils {
      * @throws IOException If an I/O error has occurred
      */
     void close(Workbook workbook, FileInputStream fileInputStream, CSVWriter writer) throws IOException;
+
+    /**
+     * Close a workbook
+     * @param workbook The {@code Workbook} to close
+     * @param fileOutputStream The {@code FileOutputStream} to close
+     * @param reader The {@code CSVReader} to close
+     * @throws IOException If an I/O error has occurred
+     * @since 0.1.1
+     */
+    void close(Workbook workbook, FileOutputStream fileOutputStream, CSVReader reader) throws IOException;
 }

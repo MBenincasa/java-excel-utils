@@ -39,9 +39,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, true);
     }
 
@@ -55,9 +56,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, true);
     }
 
@@ -72,9 +74,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, true);
     }
 
@@ -90,9 +93,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, writeHeader);
     }
 
@@ -106,9 +110,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, writeHeader);
     }
 
@@ -123,9 +128,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, writeHeader);
     }
 
@@ -141,9 +147,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, extension, true);
     }
 
@@ -157,9 +164,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, true);
     }
 
@@ -174,9 +182,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, writeHeader);
     }
 
@@ -191,9 +200,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, true);
     }
 
@@ -209,9 +219,10 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, writeHeader);
     }
 
@@ -227,9 +238,14 @@ public class ExcelConverterImpl implements ExcelConverter {
      * @throws IllegalAccessException {@inheritDoc}
      * @throws IOException {@inheritDoc}
      * @throws FileAlreadyExistsException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
-    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException {
+    public File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+        /* Check extension*/
+        if(!extension.isExcelExtension())
+            throw new ExtensionNotValidException("Select an extension for an Excel file");
+
         /* Open file */
         String pathname = this.getPathname(path, filename, extension);
         File file = new File(pathname);
@@ -552,7 +568,7 @@ public class ExcelConverterImpl implements ExcelConverter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        excelWorkbookUtils.close(workbook, fileOutputStream);
+        excelWorkbookUtils.close(workbook, fileOutputStream, csvReader);
 
         return outputFile;
     }

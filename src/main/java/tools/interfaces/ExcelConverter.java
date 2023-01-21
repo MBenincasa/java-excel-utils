@@ -25,8 +25,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -38,8 +39,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -52,8 +54,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -67,8 +70,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -80,8 +84,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -94,8 +99,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -109,8 +115,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -122,8 +129,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -136,8 +144,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -150,8 +159,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -165,8 +175,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -181,8 +192,9 @@ public interface ExcelConverter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
-    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException;
+    File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException;
 
     /**
      * Convert an Excel file into a list of objects<p>
