@@ -16,8 +16,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * {@code ExcelSheetUtilsImpl} is the standard implementation class of {@code ExcelSheetUtils}
+ * @author Mirko Benincasa
+ * @since 0.1.0
+ */
 public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public Integer countAll(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
@@ -37,6 +50,14 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return totalSheets;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public List<String> getAllNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
@@ -62,6 +83,16 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheetNames;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
@@ -84,6 +115,16 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheetIndex;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param position {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public String getNameByIndex(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
@@ -108,11 +149,28 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheetName;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public Sheet create(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         return create(file, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public Sheet create(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
@@ -128,21 +186,51 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Sheet create(Workbook workbook) {
         return create(workbook, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Sheet create(Workbook workbook, String sheetName) {
         return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         return open(file, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
@@ -161,6 +249,16 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheet;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param position {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
@@ -179,11 +277,25 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheet;
     }
 
+    /**
+     * {@inheritDoc}<p>
+     * If not specified, the first sheet will be opened
+     * @param workbook {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(Workbook workbook) throws SheetNotFoundException {
         return open(workbook, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(Workbook workbook, String sheetName) throws SheetNotFoundException {
         /* Open sheet */
@@ -193,6 +305,13 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheet;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param position {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     */
     @Override
     public Sheet open(Workbook workbook, Integer position) throws SheetNotFoundException {
         /* Open sheet */
@@ -202,6 +321,12 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheet;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Sheet openOrCreate(Workbook workbook, String sheetName) {
         /* Open sheet */
@@ -209,11 +334,23 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
         return sheet == null ? workbook.createSheet(sheetName) : sheet;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Boolean isPresent(Workbook workbook, String sheetName) {
         return workbook.getSheet(sheetName) != null;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param workbook {@inheritDoc}
+     * @param position {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Boolean isPresent(Workbook workbook, Integer position) {
         return workbook.getSheetAt(position) != null;

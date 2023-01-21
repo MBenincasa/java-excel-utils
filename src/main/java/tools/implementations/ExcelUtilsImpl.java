@@ -19,13 +19,36 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * {@code ExcelUtilsImpl} is the standard implementation class of {@code ExcelUtils}
+ * @author Mirko Benincasa
+ * @since 0.1.0
+ */
 public class ExcelUtilsImpl implements ExcelUtils {
 
+    /**
+     * {@inheritDoc}<p>
+     * If not specified, empty lines will also be included
+     * @param file {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public List<Integer> countAllRowsOfAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         return countAllRowsOfAllSheets(file, true);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param alsoEmptyRows {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     */
     @Override
     public List<Integer> countAllRowsOfAllSheets(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
@@ -52,11 +75,33 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return values;
     }
 
+    /**
+     * {@inheritDoc}<p>
+     * If not specified, empty lines will also be included
+     * @param file {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
     @Override
     public Integer countAllRows(File file, String sheetName) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return countAllRows(file, sheetName, true);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param file {@inheritDoc}
+     * @param sheetName {@inheritDoc}
+     * @param alsoEmptyRows {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws OpenWorkbookException {@inheritDoc}
+     * @throws SheetNotFoundException {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
     @Override
     public Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Check extension */
@@ -82,11 +127,22 @@ public class ExcelUtilsImpl implements ExcelUtils {
         return numRows;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param extension {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Boolean isValidExcelExtension(String extension) {
         return extension.equalsIgnoreCase(Extension.XLS.getExt()) || extension.equalsIgnoreCase(Extension.XLSX.getExt());
     }
 
+    /**
+     * {@inheritDoc}
+     * @param filename {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
+     */
     @Override
     public String checkExcelExtension(String filename) throws ExtensionNotValidException {
         String extension = FilenameUtils.getExtension(filename);
