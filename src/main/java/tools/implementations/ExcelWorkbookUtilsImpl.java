@@ -85,7 +85,7 @@ public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
      * {@inheritDoc}
      * @param extension {@inheritDoc}
      * @return {@inheritDoc}
-     * @throws {@inheritDoc}
+     * @throws ExtensionNotValidException {@inheritDoc}
      */
     @Override
     public Workbook create(String extension) throws ExtensionNotValidException {
