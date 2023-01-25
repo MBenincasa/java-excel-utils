@@ -9,10 +9,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import tools.implementations.ExcelSheetUtilsImpl;
-import tools.implementations.ExcelWorkbookUtilsImpl;
-import tools.interfaces.ExcelSheetUtils;
-import tools.interfaces.ExcelWorkbookUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,8 +51,7 @@ public class ExcelUtility {
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
-        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
-        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
 
         List<Integer> values = new LinkedList<>();
         for (Sheet sheet : workbook) {
@@ -69,7 +64,7 @@ public class ExcelUtility {
         }
 
         /* Close file */
-        excelWorkbookUtils.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook, fileInputStream);
 
         return values;
     }
@@ -106,12 +101,10 @@ public class ExcelUtility {
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
-        ExcelWorkbookUtils excelWorkbookUtils = new ExcelWorkbookUtilsImpl();
-        Workbook workbook = excelWorkbookUtils.open(fileInputStream, extension);
-        ExcelSheetUtils excelSheetUtils = new ExcelSheetUtilsImpl();
+        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? excelSheetUtils.open(workbook)
-                : excelSheetUtils.open(workbook, sheetName);
+                ? SheetUtility.open(workbook)
+                : SheetUtility.open(workbook, sheetName);
 
         /* Count all rows */
         int numRows = alsoEmptyRows
@@ -119,7 +112,7 @@ public class ExcelUtility {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        excelWorkbookUtils.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook, fileInputStream);
 
         return numRows;
     }
