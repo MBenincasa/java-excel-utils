@@ -222,6 +222,10 @@ public class SheetUtility {
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null)
             throw new SheetNotFoundException();
+
+        /* Close workbook */
+        WorkbookUtility.close(workbook, fileInputStream);
+
         return sheet;
     }
 
@@ -247,6 +251,10 @@ public class SheetUtility {
         Sheet sheet = workbook.getSheetAt(position);
         if (sheet == null)
             throw new SheetNotFoundException();
+
+        /* Close workbook */
+        WorkbookUtility.close(workbook, fileInputStream);
+
         return sheet;
     }
 
@@ -321,5 +329,25 @@ public class SheetUtility {
      */
     public static Boolean isPresent(Workbook workbook, Integer position) {
         return workbook.getSheetAt(position) != null;
+    }
+
+    /**
+     * Check if the sheet is empty
+     * @param workbook The {@code Workbook} where there is the sheet
+     * @param sheetName The sheet name in the workbook
+     * @return {@code true} if is empty
+     */
+    public static Boolean isNull(Workbook workbook, String sheetName) {
+        return workbook.getSheet(sheetName) == null;
+    }
+
+    /**
+     * Check if the sheet is empty
+     * @param workbook The {@code Workbook} where there is the sheet
+     * @param position The index in the workbook
+     * @return {@code true} if is empty
+     */
+    public static Boolean isNull(Workbook workbook, Integer position) {
+        return workbook.getSheetAt(position) == null;
     }
 }

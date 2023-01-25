@@ -38,7 +38,11 @@ public class WorkbookUtility {
 
         /* Open file input stream */
         FileInputStream fileInputStream = new FileInputStream(file);
-        return open(fileInputStream, extension);
+        Workbook workbook = open(fileInputStream, extension);
+
+        /* Close the stream before return */
+        fileInputStream.close();
+        return workbook;
     }
 
     /**
