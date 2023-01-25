@@ -25,9 +25,12 @@ import java.util.*;
 
 /**
  * {@code ExcelConverterImpl} is the standard implementation class of {@code ExcelConverter}
+ * @deprecated since version 0.2.0. View here {@link tools.Converter}
+ * @see tools.Converter
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public class ExcelConverterImpl implements ExcelConverter {
 
     /**

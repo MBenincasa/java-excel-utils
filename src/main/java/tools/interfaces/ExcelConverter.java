@@ -11,9 +11,12 @@ import java.util.List;
 
 /**
  * The {@code ExcelConverter} interface groups methods that convert objects or files to Excel files and vice versa
+ * @deprecated since version 0.2.0. View here {@link tools.Converter}
+ * @see tools.Converter
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public interface ExcelConverter {
 
     /**

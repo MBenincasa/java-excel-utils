@@ -21,9 +21,12 @@ import java.util.List;
 
 /**
  * {@code ExcelUtilsImpl} is the standard implementation class of {@code ExcelUtils}
+ * @deprecated since version 0.2.0. View here {@link tools.ExcelUtility}
+ * @see tools.ExcelUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public class ExcelUtilsImpl implements ExcelUtils {
 
     /**

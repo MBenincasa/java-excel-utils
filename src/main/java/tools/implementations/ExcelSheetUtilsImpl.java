@@ -18,9 +18,12 @@ import java.util.List;
 
 /**
  * {@code ExcelSheetUtilsImpl} is the standard implementation class of {@code ExcelSheetUtils}
+ * @deprecated since version 0.2.0. View here {@link tools.SheetUtility}
+ * @see tools.SheetUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
 
     /**
@@ -208,7 +211,8 @@ public class ExcelSheetUtilsImpl implements ExcelSheetUtils {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}<p>
+     * If not specified, the first sheet will be opened
      * @param file {@inheritDoc}
      * @return {@inheritDoc}
      * @throws ExtensionNotValidException {@inheritDoc}

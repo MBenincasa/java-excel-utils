@@ -11,9 +11,12 @@ import java.io.*;
 
 /**
  * The {@code ExcelWorkbookUtils} interface groups methods that work with workbooks
+ * @deprecated since version 0.2.0. View here {@link tools.WorkbookUtility}
+ * @see tools.WorkbookUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public interface ExcelWorkbookUtils {
 
     /**

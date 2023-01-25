@@ -18,9 +18,12 @@ import java.io.*;
 
 /**
  * {@code ExcelWorkbookUtilsImpl} is the standard implementation class of {@code ExcelWorkbookUtils}
+ * @deprecated since version 0.2.0. View here {@link tools.WorkbookUtility}
+ * @see tools.WorkbookUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public class ExcelWorkbookUtilsImpl implements ExcelWorkbookUtils {
 
     /**

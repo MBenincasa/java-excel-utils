@@ -1,7 +1,6 @@
 package samples.convertExcelFileToObjectsSample;
 
-import tools.implementations.ExcelConverterImpl;
-import tools.interfaces.ExcelConverter;
+import tools.Converter;
 
 import java.io.File;
 import java.util.List;
@@ -14,8 +13,7 @@ public class Main {
 
         try {
             System.out.println("Start the conversion...");
-            ExcelConverter excelConverter = new ExcelConverterImpl();
-            List<Car> employees = (List<Car>) excelConverter.excelToObjects(file, Car.class);
+            List<Car> employees = (List<Car>) Converter.excelToObjects(file, Car.class);
             System.out.println("The list is ready. List: " + employees.toString());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");

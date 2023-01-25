@@ -12,9 +12,12 @@ import java.util.List;
 
 /**
  * The {@code ExcelSheetUtils} interface groups methods that work with sheets
+ * @deprecated since version 0.2.0. View here {@link tools.SheetUtility}
+ * @see tools.SheetUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public interface ExcelSheetUtils {
 
     /**

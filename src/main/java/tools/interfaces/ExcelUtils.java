@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * The {@code ExcelUtils} interface groups utility methods
+ * The {@code ExcelUtils} interface groups utility methods<p>
+ * @deprecated since version 0.2.0. View here {@link tools.ExcelUtility}
+ * @see tools.ExcelUtility
  * @author Mirko Benincasa
  * @since 0.1.0
  */
+@Deprecated
 public interface ExcelUtils {
 
     /**
