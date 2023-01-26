@@ -140,6 +140,95 @@ public class ExcelUtility {
         return extension.equalsIgnoreCase(Extension.XLS.getExt()) || extension.equalsIgnoreCase(Extension.XLSX.getExt());
     }
 
+    /**
+     * This method is used to recover the position of the last row of the Sheet. Note the count starts at 1<p>
+     * By default, the first Sheet is chosen
+     * @param file file An Excel file
+     * @return The position of the last row of the Sheet
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastRow(File file) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return getIndexLastRow(file, null);
+    }
+
+    /**
+     * This method is used to recover the position of the last row of the Sheet. Note the count starts at 1
+     * @param file file An Excel file
+     * @param sheetName The name of the sheet to open
+     * @return The position of the last row of the Sheet
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastRow(File file, String sheetName) throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.open(file) : SheetUtility.open(file, sheetName);
+        return sheet.getLastRowNum() + 1;
+    }
+
+    /**
+     * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
+     * By default, the first sheet and the first row are chosen
+     * @param file file An Excel file
+     * @return The position of the last column of the chosen row
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastColumn(File file) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return getIndexLastColumn(file, null, 0);
+    }
+
+    /**
+     * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
+     * By default, the first row is chosen
+     * @param file file An Excel file
+     * @param sheetName The name of the sheet to open
+     * @return The position of the last column of the chosen row
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastColumn(File file, String sheetName) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return getIndexLastColumn(file, sheetName, 0);
+    }
+
+    /**
+     * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
+     * By default, the first sheet is chosen
+     * @param file file An Excel file
+     * @param indexRow the row index
+     * @return The position of the last column of the chosen row
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastColumn(File file, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        return getIndexLastColumn(file, null, indexRow);
+    }
+
+    /**
+     * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1
+     * @param file file An Excel file
+     * @param sheetName The name of the sheet to open
+     * @param indexRow the row index
+     * @return The position of the last column of the chosen row
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws SheetNotFoundException If the sheet to open is not found
+     * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
+     * @throws IOException If an I/O error occurs
+     */
+    public static Integer getIndexLastColumn(File file, String sheetName, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
+        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.open(file) : SheetUtility.open(file, sheetName);
+        return (int) sheet.getRow(indexRow).getLastCellNum();
+    }
+
     private static int countOnlyRowsNotEmpty(Sheet sheet) {
         int numRows = sheet.getLastRowNum() + 1;
         for (int i = 0; i < sheet.getLastRowNum(); i++) {
