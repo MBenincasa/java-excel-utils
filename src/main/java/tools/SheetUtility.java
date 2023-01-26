@@ -29,17 +29,13 @@ public class SheetUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
     public static Integer length(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         Integer totalSheets = workbook.getNumberOfSheets();
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return totalSheets;
     }
@@ -53,12 +49,8 @@ public class SheetUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
     public static List<String> getNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         /* Iterate all the sheets */
         Iterator<Sheet> sheetIterator = workbook.iterator();
@@ -69,7 +61,7 @@ public class SheetUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return sheetNames;
     }
@@ -85,17 +77,13 @@ public class SheetUtility {
      * @throws SheetNotFoundException If the sheet to open is not found
      */
     public static Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         int sheetIndex = workbook.getSheetIndex(sheetName);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         if (sheetIndex < 0) {
             throw new SheetNotFoundException("No sheet was found");
@@ -114,12 +102,8 @@ public class SheetUtility {
      * @throws SheetNotFoundException If the sheet to open is not found
      */
     public static String getName(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         String sheetName;
         try {
@@ -129,7 +113,7 @@ public class SheetUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return sheetName;
     }
@@ -187,7 +171,7 @@ public class SheetUtility {
     }
 
     /**
-     * Opens the sheet of the Excel file<p>
+     * Gets the sheet of the Excel file<p>
      * If not specified, the first sheet will be opened
      * @param file Excel file
      * @return The sheet in the workbook
@@ -196,12 +180,12 @@ public class SheetUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        return open(file, 0);
+    public static Sheet get(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+        return get(file, 0);
     }
 
     /**
-     * Opens the sheet of the Excel file
+     * Gets the sheet of the Excel file
      * @param file Excel file
      * @param sheetName The sheet name in the workbook
      * @return The sheet in the workbook
@@ -210,13 +194,9 @@ public class SheetUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
+    public static Sheet get(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         /* Open sheet */
         Sheet sheet = workbook.getSheet(sheetName);
@@ -224,13 +204,13 @@ public class SheetUtility {
             throw new SheetNotFoundException();
 
         /* Close workbook */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return sheet;
     }
 
     /**
-     * Opens the sheet of the Excel file
+     * Gets the sheet of the Excel file
      * @param file Excel file
      * @param position The index in the workbook
      * @return The sheet in the workbook
@@ -239,13 +219,9 @@ public class SheetUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
+    public static Sheet get(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         /* Open sheet */
         Sheet sheet = workbook.getSheetAt(position);
@@ -253,30 +229,30 @@ public class SheetUtility {
             throw new SheetNotFoundException();
 
         /* Close workbook */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return sheet;
     }
 
     /**
-     * Opens the sheet in the workbook.<p>
+     * Gets the sheet in the workbook.<p>
      * If not specified, the first sheet will be opened
      * @param workbook The {@code Workbook} where there is the sheet
      * @return The sheet in the workbook in first position
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(Workbook workbook) throws SheetNotFoundException {
-        return open(workbook, 0);
+    public static Sheet get(Workbook workbook) throws SheetNotFoundException {
+        return get(workbook, 0);
     }
 
     /**
-     * Opens the sheet in the workbook.
+     * Gets the sheet in the workbook.
      * @param workbook The {@code Workbook} where there is the sheet
      * @param sheetName The sheet name in the workbook
      * @return The sheet in the workbook
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(Workbook workbook, String sheetName) throws SheetNotFoundException {
+    public static Sheet get(Workbook workbook, String sheetName) throws SheetNotFoundException {
         /* Open sheet */
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null)
@@ -285,13 +261,13 @@ public class SheetUtility {
     }
 
     /**
-     * Opens the sheet in the workbook.
+     * Gets the sheet in the workbook.
      * @param workbook The {@code Workbook} where there is the sheet
      * @param position The index in the workbook
      * @return The sheet in the workbook
      * @throws SheetNotFoundException If the sheet to open is not found
      */
-    public static Sheet open(Workbook workbook, Integer position) throws SheetNotFoundException {
+    public static Sheet get(Workbook workbook, Integer position) throws SheetNotFoundException {
         /* Open sheet */
         Sheet sheet = workbook.getSheetAt(position);
         if (sheet == null)
@@ -300,12 +276,12 @@ public class SheetUtility {
     }
 
     /**
-     * Opens the sheet in the workbook. If it doesn't find it, it creates it.
+     * Gets the sheet in the workbook. If it doesn't find it, it creates it.
      * @param workbook The {@code Workbook} where there is the sheet
      * @param sheetName The sheet name in the workbook
      * @return The sheet in the workbook or a new one
      */
-    public static Sheet openOrCreate(Workbook workbook, String sheetName) {
+    public static Sheet getOrCreate(Workbook workbook, String sheetName) {
         /* Open sheet */
         Sheet sheet = workbook.getSheet(sheetName);
         return sheet == null ? workbook.createSheet(sheetName) : sheet;

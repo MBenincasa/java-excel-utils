@@ -319,15 +319,11 @@ public class Converter {
      * @throws HeaderNotPresentException If the first row is empty and does not contain the header
      */
     public static List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException, HeaderNotPresentException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? SheetUtility.open(workbook)
-                : SheetUtility.open(workbook, sheetName);
+                ? SheetUtility.get(workbook)
+                : SheetUtility.get(workbook, sheetName);
 
         /* Retrieving header names */
         Field[] fields = clazz.getDeclaredFields();
@@ -346,7 +342,7 @@ public class Converter {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return resultList;
     }
@@ -413,15 +409,11 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      */
     public static File excelToCsv(File fileInput, String path, String filename, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, FileAlreadyExistsException {
-        /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(fileInput.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(fileInput);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(fileInput);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? SheetUtility.open(workbook)
-                : SheetUtility.open(workbook, sheetName);
+                ? SheetUtility.get(workbook)
+                : SheetUtility.get(workbook, sheetName);
 
         /* Create output file */
         String pathname = getPathname(path, filename, Extension.CSV.getExt());
@@ -445,7 +437,7 @@ public class Converter {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream, csvWriter);
+        WorkbookUtility.close(workbook, csvWriter);
 
         return csvFile;
     }

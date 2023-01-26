@@ -155,13 +155,11 @@ public class WorkbookUtility {
     /**
      * Close a workbook
      * @param workbook The {@code Workbook} to close
-     * @param fileInputStream The {@code FileInputStream} to close
      * @param writer The {@code CSVWriter} to close
      * @throws IOException If an I/O error has occurred
      */
-    public static void close(Workbook workbook, FileInputStream fileInputStream, CSVWriter writer) throws IOException {
+    public static void close(Workbook workbook, CSVWriter writer) throws IOException {
         workbook.close();
-        fileInputStream.close();
         writer.close();
     }
 

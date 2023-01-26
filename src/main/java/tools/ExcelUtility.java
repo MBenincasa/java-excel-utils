@@ -46,12 +46,8 @@ public class ExcelUtility {
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
     public static List<Integer> countAllRowsOfAllSheets(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
-        /* Check extension */
-        String extension = checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
 
         List<Integer> values = new LinkedList<>();
         for (Sheet sheet : workbook) {
@@ -64,7 +60,7 @@ public class ExcelUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return values;
     }
@@ -96,15 +92,11 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      */
     public static Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
-        /* Check extension */
-        String extension = checkExcelExtension(file.getName());
-
         /* Open file excel */
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        Workbook workbook = WorkbookUtility.open(file);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? SheetUtility.open(workbook)
-                : SheetUtility.open(workbook, sheetName);
+                ? SheetUtility.get(workbook)
+                : SheetUtility.get(workbook, sheetName);
 
         /* Count all rows */
         int numRows = alsoEmptyRows
@@ -112,7 +104,7 @@ public class ExcelUtility {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileInputStream);
+        WorkbookUtility.close(workbook);
 
         return numRows;
     }
@@ -165,7 +157,7 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      */
     public static Integer getIndexLastRow(File file, String sheetName) throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.open(file) : SheetUtility.open(file, sheetName);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
         return sheet.getLastRowNum() + 1;
     }
 
@@ -225,7 +217,7 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      */
     public static Integer getIndexLastColumn(File file, String sheetName, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.open(file) : SheetUtility.open(file, sheetName);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
         return (int) sheet.getRow(indexRow).getLastCellNum();
     }
 
