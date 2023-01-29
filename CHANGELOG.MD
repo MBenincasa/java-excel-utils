@@ -1,3 +1,14 @@
+# v0.2.0
+### Deprecations
+* All old tools are deprecated starting with this version. They have been replaced by new tools based on static methods.
+### Features
+* There are methods that allow you to convert a list of objects, or a CSV file, into an Excel file that already exists
+* There are new utility methods such as returning the index of the last row or the last column of a row.
+### Fixes
+* The FileInputStream was not closed when the Workbook was opened from a File
+### Cosmetics
+* Removed some checks and repetitive code
+
 # v0.1.1
 ### Features
 * A new method has been added which checks if an extension belongs to a Microsoft Excel file
