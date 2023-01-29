@@ -252,6 +252,42 @@ public class Converter {
 
         /* Create workbook and sheet */
         Workbook workbook = WorkbookUtility.create(extension);
+        objectsToExistingExcel(workbook, objects, clazz, writeHeader);
+
+        /* Write file */
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        workbook.write(fileOutputStream);
+
+        /* Close file */
+        WorkbookUtility.close(workbook, fileOutputStream);
+
+        return file;
+    }
+
+    /**
+     * This method allows you to convert objects into a Sheet of a Workbook that already exists.<p>
+     * Note: This method does not call the "write" method of the workbook.<p>
+     * By default, the header is added if not specified
+     * @param workbook The {@code Workbook} to update
+     * @param objects The list of objects that will be converted into an Excel file
+     * @param clazz The class of the list elements
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     */
+    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz) throws IllegalAccessException {
+        objectsToExistingExcel(workbook, objects, clazz, true);
+    }
+
+    /**
+     * This method allows you to convert objects into a Sheet of a Workbook that already exists.<p>
+     * Note: This method does not call the "write" method of the workbook.
+     * @param workbook The {@code Workbook} to update
+     * @param objects The list of objects that will be converted into an Excel file
+     * @param clazz The class of the list elements
+     * @param writeHeader If {@code true} it will write the header to the first line
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     */
+    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException {
+        /* Create sheet */
         Sheet sheet = SheetUtility.create(workbook, clazz.getSimpleName());
 
         Field[] fields = clazz.getDeclaredFields();
@@ -269,15 +305,6 @@ public class Converter {
             CellStyle bodyCellStyle = createBodyStyle(workbook, clazz);
             writeExcelBody(workbook, sheet, fields, object, cRow++, bodyCellStyle, clazz);
         }
-
-        /* Write file */
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        workbook.write(fileOutputStream);
-
-        /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream);
-
-        return file;
     }
 
     /**
@@ -518,6 +545,50 @@ public class Converter {
 
         /* Create workbook and sheet */
         Workbook workbook = WorkbookUtility.create(extension);
+        csvToExistingExcel(workbook, csvReader);
+
+        /* Write file */
+        FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+        workbook.write(fileOutputStream);
+
+        /* Close file */
+        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
+
+        return outputFile;
+    }
+
+    /**
+     * Convert the CSV file into a new sheet of an existing Workbook.<p>
+     * Note: This method does not call the "write" method of the workbook.
+     * @param workbook The {@code Workbook} to update
+     * @param fileInput The input CSV file that will be converted into an Excel file
+     * @throws IOException If an I/O error has occurred
+     * @throws CsvValidationException If the CSV file has invalid formatting
+     * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
+     */
+    public static void csvToExistingExcel(Workbook workbook, File fileInput) throws IOException, CsvValidationException, ExtensionNotValidException {
+        /* Check exension */
+        String csvExt = FilenameUtils.getExtension(fileInput.getName());
+        isValidCsvExtension(csvExt);
+
+        /* Open CSV file */
+        FileReader fileReader = new FileReader(fileInput);
+        CSVReader csvReader = new CSVReader(fileReader);
+        csvToExistingExcel(workbook, csvReader);
+
+        /* Close CSV reader */
+        csvReader.close();
+    }
+
+    /**
+     * Writes the data present in the CSVReader to a new sheet of an existing Workbook.<p>
+     * Note: This method does not call the "write" method of the workbook.
+     * @param workbook The {@code Workbook} to update
+     * @param csvReader The {@code CSVReader} of the CSV input file
+     * @throws CsvValidationException If the CSV file has invalid formatting
+     * @throws IOException If an I/O error has occurred
+     */
+    public static void csvToExistingExcel(Workbook workbook, CSVReader csvReader) throws CsvValidationException, IOException {
         Sheet sheet = SheetUtility.create(workbook);
 
         /* Read CSV file */
@@ -532,15 +603,6 @@ public class Converter {
             }
             cRow++;
         }
-
-        /* Write file */
-        FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-        workbook.write(fileOutputStream);
-
-        /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
-
-        return outputFile;
     }
 
     private static void isValidCsvExtension(String extension) throws ExtensionNotValidException {
