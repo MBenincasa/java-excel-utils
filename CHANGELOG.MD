@@ -1,3 +1,9 @@
+# v0.2.1
+### Features
+* New services for writing to an existing Excel file that take different input parameters
+### Fixes
+* Converting a value within a cell to an object returned null or failed. An error log is now written when an unsupported type is passed
+
 # v0.2.0
 ### Deprecations
 * All old tools are deprecated starting with this version. They have been replaced by new tools based on static methods.
@@ -6,7 +12,7 @@
 * There are new utility methods such as returning the index of the last row or the last column of a row.
 ### Fixes
 * The FileInputStream was not closed when the Workbook was opened from a File
-### Cosmetics
+### Enchantment
 * Removed some checks and repetitive code
 
 # v0.1.1

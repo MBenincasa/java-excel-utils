@@ -13,8 +13,8 @@ public class Main {
 
         try {
             System.out.println("Start the conversion...");
-            List<Car> employees = (List<Car>) Converter.excelToObjects(file, Car.class);
-            System.out.println("The list is ready. List: " + employees.toString());
+            List<Car> cars = (List<Car>) Converter.excelToObjects(file, Car.class);
+            System.out.println("The list is ready. List: " + cars);
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);
