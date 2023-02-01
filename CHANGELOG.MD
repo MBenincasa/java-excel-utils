@@ -12,7 +12,7 @@
 * There are new utility methods such as returning the index of the last row or the last column of a row.
 ### Fixes
 * The FileInputStream was not closed when the Workbook was opened from a File
-### Enchantment
+### Enchantments
 * Removed some checks and repetitive code
 
 # v0.1.1
