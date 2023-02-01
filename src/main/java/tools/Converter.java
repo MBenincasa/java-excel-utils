@@ -10,6 +10,8 @@ import enums.Extension;
 import exceptions.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
@@ -25,6 +27,8 @@ import java.util.*;
  * @since 0.2.0
  */
 public class Converter {
+
+    private static Logger logger = LogManager.getLogger(Converter.class);
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -262,6 +266,47 @@ public class Converter {
         WorkbookUtility.close(workbook, fileOutputStream);
 
         return file;
+    }
+
+    /**
+     * This method allows you to convert objects into a Sheet of a File that already exists.<p>
+     * By default, the header is added if not specified
+     * @param file The {@code File} to update
+     * @param objects The list of objects that will be converted into an Excel file
+     * @param clazz The class of the list elements
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws IOException If an I/O error has occurred
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @since 0.2.1
+     */
+    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
+        objectsToExistingExcel(file, objects, clazz, true);
+    }
+
+    /**
+     * This method allows you to convert objects into a Sheet of a File that already exists.
+     * @param file The {@code File} to update
+     * @param objects The list of objects that will be converted into an Excel file
+     * @param clazz The class of the list elements
+     * @param writeHeader If {@code true} it will write the header to the first line
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws IOException If an I/O error has occurred
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @since 0.2.1
+     */
+    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz, Boolean writeHeader) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
+        /* Open workbook */
+        Workbook workbook = WorkbookUtility.open(file);
+        objectsToExistingExcel(workbook, objects, clazz, writeHeader);
+
+        /* Write file */
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        workbook.write(fileOutputStream);
+
+        /* Close file */
+        WorkbookUtility.close(workbook, fileOutputStream);
     }
 
     /**
@@ -558,6 +603,52 @@ public class Converter {
     }
 
     /**
+     * Convert the CSV file into a new sheet of an existing File.
+     * @param fileOutput The {@code File} to update
+     * @param fileInput The input CSV file that will be converted into an Excel file
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
+     * @throws IOException If an I/O error has occurred
+     * @throws CsvValidationException If the CSV file has invalid formatting
+     * @since 0.2.1
+     */
+    public static void csvToExistingExcel(File fileOutput, File fileInput) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
+        /* Open workbook */
+        Workbook workbook = WorkbookUtility.open(fileOutput);
+        csvToExistingExcel(workbook, fileInput);
+
+        /* Write file */
+        FileOutputStream fileOutputStream = new FileOutputStream(fileOutput);
+        workbook.write(fileOutputStream);
+
+        /* Close file */
+        WorkbookUtility.close(workbook, fileOutputStream);
+    }
+
+    /**
+     * Writes the data present in the CSVReader to a new sheet of an existing File.
+     * @param fileOutput The {@code File} to update
+     * @param csvReader The {@code CSVReader} of the CSV input file
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
+     * @throws IOException If an I/O error has occurred
+     * @throws CsvValidationException If the CSV file has invalid formatting
+     * @since 0.2.1
+     */
+    public static void csvToExistingExcel(File fileOutput, CSVReader csvReader) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
+        /* Open workbook */
+        Workbook workbook = WorkbookUtility.open(fileOutput);
+        csvToExistingExcel(workbook, csvReader);
+
+        /* Write file */
+        FileOutputStream fileOutputStream = new FileOutputStream(fileOutput);
+        workbook.write(fileOutputStream);
+
+        /* Close file */
+        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
+    }
+
+    /**
      * Convert the CSV file into a new sheet of an existing Workbook.<p>
      * Note: This method does not call the "write" method of the workbook.
      * @param workbook The {@code Workbook} to update
@@ -661,11 +752,14 @@ public class Converter {
                         PropertyUtils.setSimpleProperty(obj, headerName, cell.getLocalDateTimeCellValue());
                     } else if (LocalDate.class.equals(field.getType())) {
                         PropertyUtils.setSimpleProperty(obj, headerName, cell.getLocalDateTimeCellValue().toLocalDate());
+                    } else {
+                        logger.error("{} type is not supported. It was not possible to write '{}'", field.getType(), headerName);
                     }
 
                 }
                 case BOOLEAN -> PropertyUtils.setSimpleProperty(obj, headerName, cell.getBooleanCellValue());
-                default -> PropertyUtils.setSimpleProperty(obj, headerName, cell.getStringCellValue());
+                case STRING -> PropertyUtils.setSimpleProperty(obj, headerName, cell.getStringCellValue());
+                default -> logger.error("Cell type not supported. It was not possible to write '{}'", headerName);
             }
         }
         return obj;

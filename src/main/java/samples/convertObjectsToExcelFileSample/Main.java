@@ -1,12 +1,9 @@
 package samples.convertObjectsToExcelFileSample;
 
 import enums.Extension;
-import org.apache.poi.ss.usermodel.Workbook;
 import tools.Converter;
-import tools.WorkbookUtility;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,12 +27,7 @@ public class Main {
             System.out.println("Start the conversion...");
             File report = Converter.objectsToExcel(employees, Employee.class, "./src/main/resources/", "employee", Extension.XLSX, true);
             System.out.println("First conversion completed...");
-
-            Workbook workbook = WorkbookUtility.open(report);
-            Converter.objectsToExistingExcel(workbook, offices, Office.class, true);
-            FileOutputStream fileOutputStream = new FileOutputStream(report);
-            workbook.write(fileOutputStream);
-            WorkbookUtility.close(workbook, fileOutputStream);
+            Converter.objectsToExistingExcel(report, offices, Office.class, true);
             System.out.println("The file is ready. Path: " + report.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
