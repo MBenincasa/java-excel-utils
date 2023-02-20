@@ -11,9 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-class ExcelUtilityTest {
+public class ExcelUtilityTest {
 
-    private final File excelFile = new File("./src/test/resources/employee.xlsx");
+    private final File excelFile = new File("./src/test/resources/employee_2.xlsx");
 
     @Test
     void countAllRowsOfAllSheets() throws OpenWorkbookException, ExtensionNotValidException, IOException {

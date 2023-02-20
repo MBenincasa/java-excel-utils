@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-class SheetUtilityTest {
+public class SheetUtilityTest {
 
     private final File excelFile = new File("./src/test/resources/employee.xlsx");
 

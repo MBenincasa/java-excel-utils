@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ConverterTest {
+public class ConverterTest {
 
     private static final List<Person> persons = new ArrayList<>();
     private static final List<Address> addresses = new ArrayList<>();
