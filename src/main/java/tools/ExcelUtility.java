@@ -4,6 +4,7 @@ import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import exceptions.SheetNotFoundException;
+import model.ExcelWorkbook;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -46,7 +47,8 @@ public class ExcelUtility {
      */
     public static List<Integer> countAllRowsOfAllSheets(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         List<Integer> values = new LinkedList<>();
         for (Sheet sheet : workbook) {
@@ -59,7 +61,7 @@ public class ExcelUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return values;
     }
@@ -92,7 +94,8 @@ public class ExcelUtility {
      */
     public static Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
                 ? SheetUtility.get(workbook)
                 : SheetUtility.get(workbook, sheetName);
@@ -103,7 +106,7 @@ public class ExcelUtility {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return numRows;
     }

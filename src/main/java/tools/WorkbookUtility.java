@@ -15,9 +15,12 @@ import java.io.IOException;
 
 /**
  * {@code WorkbookUtility} is the static class with implementations of some methods for working with Workbooks
+ * @deprecated since version 0.3.0. View here {@link model.ExcelWorkbook}
+ * @see model.ExcelWorkbook
  * @author Mirko Benincasa
  * @since 0.2.0
  */
+@Deprecated
 public class WorkbookUtility {
 
     /**

@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 import enums.Extension;
 import exceptions.*;
+import model.ExcelWorkbook;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ import java.util.*;
  */
 public class Converter {
 
-    private static Logger logger = LogManager.getLogger(Converter.class);
+    private final static Logger logger = LogManager.getLogger(Converter.class);
 
     /**
      * Convert a list of objects into an Excel file<p>
@@ -255,7 +256,8 @@ public class Converter {
         }
 
         /* Create workbook and sheet */
-        Workbook workbook = WorkbookUtility.create(extension);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(extension);
+        Workbook workbook = excelWorkbook.getWorkbook();
         objectsToExistingExcel(workbook, objects, clazz, writeHeader);
 
         /* Write file */
@@ -263,7 +265,7 @@ public class Converter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
 
         return file;
     }
@@ -298,7 +300,8 @@ public class Converter {
      */
     public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz, Boolean writeHeader) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
         /* Open workbook */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
         objectsToExistingExcel(workbook, objects, clazz, writeHeader);
 
         /* Write file */
@@ -306,7 +309,7 @@ public class Converter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
     }
 
     /**
@@ -392,7 +395,8 @@ public class Converter {
      */
     public static List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException, HeaderNotPresentException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
                 ? SheetUtility.get(workbook)
                 : SheetUtility.get(workbook, sheetName);
@@ -414,7 +418,7 @@ public class Converter {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return resultList;
     }
@@ -482,7 +486,8 @@ public class Converter {
      */
     public static File excelToCsv(File fileInput, String path, String filename, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, FileAlreadyExistsException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(fileInput);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInput);
+        Workbook workbook = excelWorkbook.getWorkbook();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
                 ? SheetUtility.get(workbook)
                 : SheetUtility.get(workbook, sheetName);
@@ -509,7 +514,7 @@ public class Converter {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook, csvWriter);
+        excelWorkbook.close(csvWriter);
 
         return csvFile;
     }
@@ -589,7 +594,8 @@ public class Converter {
         }
 
         /* Create workbook and sheet */
-        Workbook workbook = WorkbookUtility.create(extension);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(extension);
+        Workbook workbook = excelWorkbook.getWorkbook();
         csvToExistingExcel(workbook, csvReader);
 
         /* Write file */
@@ -597,7 +603,7 @@ public class Converter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
+        excelWorkbook.close(fileOutputStream, csvReader);
 
         return outputFile;
     }
@@ -614,7 +620,8 @@ public class Converter {
      */
     public static void csvToExistingExcel(File fileOutput, File fileInput) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
         /* Open workbook */
-        Workbook workbook = WorkbookUtility.open(fileOutput);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileOutput);
+        Workbook workbook = excelWorkbook.getWorkbook();
         csvToExistingExcel(workbook, fileInput);
 
         /* Write file */
@@ -622,7 +629,7 @@ public class Converter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
     }
 
     /**
@@ -637,7 +644,8 @@ public class Converter {
      */
     public static void csvToExistingExcel(File fileOutput, CSVReader csvReader) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
         /* Open workbook */
-        Workbook workbook = WorkbookUtility.open(fileOutput);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileOutput);
+        Workbook workbook = excelWorkbook.getWorkbook();
         csvToExistingExcel(workbook, csvReader);
 
         /* Write file */
@@ -645,7 +653,7 @@ public class Converter {
         workbook.write(fileOutputStream);
 
         /* Close file */
-        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
+        excelWorkbook.close(fileOutputStream, csvReader);
     }
 
     /**

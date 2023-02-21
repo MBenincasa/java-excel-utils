@@ -3,6 +3,7 @@ package tools;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import exceptions.SheetNotFoundException;
+import model.ExcelWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -30,12 +31,13 @@ public class SheetUtility {
      */
     public static Integer length(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         Integer totalSheets = workbook.getNumberOfSheets();
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return totalSheets;
     }
@@ -50,7 +52,8 @@ public class SheetUtility {
      */
     public static List<String> getNames(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         /* Iterate all the sheets */
         Iterator<Sheet> sheetIterator = workbook.iterator();
@@ -61,7 +64,7 @@ public class SheetUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return sheetNames;
     }
@@ -78,12 +81,13 @@ public class SheetUtility {
      */
     public static Integer getIndex(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         int sheetIndex = workbook.getSheetIndex(sheetName);
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         if (sheetIndex < 0) {
             throw new SheetNotFoundException("No sheet was found");
@@ -103,7 +107,8 @@ public class SheetUtility {
      */
     public static String getName(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         String sheetName;
         try {
@@ -113,7 +118,7 @@ public class SheetUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return sheetName;
     }
@@ -145,7 +150,8 @@ public class SheetUtility {
 
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookUtility.open(fileInputStream, extension);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInputStream, extension);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         /* Create sheet */
         return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
@@ -196,7 +202,8 @@ public class SheetUtility {
      */
     public static Sheet get(File file, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         /* Open sheet */
         Sheet sheet = workbook.getSheet(sheetName);
@@ -204,7 +211,7 @@ public class SheetUtility {
             throw new SheetNotFoundException();
 
         /* Close workbook */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return sheet;
     }
@@ -221,7 +228,8 @@ public class SheetUtility {
      */
     public static Sheet get(File file, Integer position) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         /* Open sheet */
         Sheet sheet = workbook.getSheetAt(position);
@@ -229,7 +237,7 @@ public class SheetUtility {
             throw new SheetNotFoundException();
 
         /* Close workbook */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return sheet;
     }
