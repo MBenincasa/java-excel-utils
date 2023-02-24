@@ -2,6 +2,7 @@ package tools;
 
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
+import exceptions.SheetAlreadyExistsException;
 import exceptions.SheetNotFoundException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -43,13 +44,13 @@ public class SheetUtilityTest {
     }
 
     @Test
-    void create() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+    void create() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         Sheet sheet = SheetUtility.create(excelFile);
         Assertions.assertNotNull(sheet);
     }
 
     @Test
-    void testCreate() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+    void testCreate() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         String sheetName = "Admin";
         Sheet sheet = SheetUtility.create(excelFile, sheetName);
         Assertions.assertNotNull(sheet);
@@ -57,7 +58,7 @@ public class SheetUtilityTest {
     }
 
     @Test
-    void testCreate1() throws ExtensionNotValidException {
+    void testCreate1() throws ExtensionNotValidException, SheetAlreadyExistsException {
         String extension = "xlsx";
         Workbook workbook = WorkbookUtility.create(extension);
         Sheet sheet = SheetUtility.create(workbook);
@@ -65,7 +66,7 @@ public class SheetUtilityTest {
     }
 
     @Test
-    void testCreate2() throws ExtensionNotValidException {
+    void testCreate2() throws ExtensionNotValidException, SheetAlreadyExistsException {
         String extension = "xlsx";
         String sheetName = "Admin";
         Workbook workbook = WorkbookUtility.create(extension);

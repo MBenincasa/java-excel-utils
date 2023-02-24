@@ -95,10 +95,9 @@ public class ExcelUtility {
     public static Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
-        Workbook workbook = excelWorkbook.getWorkbook();
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? SheetUtility.get(workbook)
-                : SheetUtility.get(workbook, sheetName);
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
 
         /* Count all rows */
         int numRows = alsoEmptyRows
@@ -159,7 +158,11 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      */
     public static Integer getIndexLastRow(File file, String sheetName) throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
+        /* Open file excel */
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
         return sheet.getLastRowNum() + 1;
     }
 
@@ -219,7 +222,11 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      */
     public static Integer getIndexLastColumn(File file, String sheetName, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
+        /* Open file excel */
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
         return (int) sheet.getRow(indexRow).getLastCellNum();
     }
 
