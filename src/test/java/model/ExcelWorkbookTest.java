@@ -128,6 +128,12 @@ public class ExcelWorkbookTest {
     }
 
     @Test
+    void testGetSheet1() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Assertions.assertEquals("Employee", excelWorkbook.getSheet().getName());
+    }
+
+    @Test
     void getSheetOrCreate() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         Assertions.assertEquals("Employee_2", excelWorkbook.getSheetOrCreate("Employee_2").getName());
@@ -156,5 +162,4 @@ public class ExcelWorkbookTest {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         Assertions.assertEquals(true, excelWorkbook.isSheetNull(3));
     }
-
 }

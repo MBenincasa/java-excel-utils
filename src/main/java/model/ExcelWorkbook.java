@@ -7,6 +7,7 @@ import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import exceptions.SheetNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class ExcelWorkbook {
 
     private Workbook workbook;
@@ -126,6 +128,10 @@ public class ExcelWorkbook {
             excelSheets.add(new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName()));
         }
         return excelSheets;
+    }
+
+    public ExcelSheet getSheet() throws SheetNotFoundException {
+        return this.getSheet(0);
     }
 
     public ExcelSheet getSheet(Integer index) throws SheetNotFoundException {

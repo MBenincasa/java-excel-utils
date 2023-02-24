@@ -31,10 +31,14 @@ public class ExcelSheetTest {
     }
 
     @Test
-    void getExcelWorkbook() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+    void getWorkbook() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         ExcelSheet excelSheet = excelWorkbook.getSheet(0);
-        ExcelWorkbook excelWorkbook1 = excelSheet.getExcelWorkbook();
+        ExcelWorkbook excelWorkbook1 = excelSheet.getWorkbook();
         Assertions.assertNotNull(excelWorkbook1.getWorkbook());
+    }
+
+    @Test
+    void getRows() {
     }
 }

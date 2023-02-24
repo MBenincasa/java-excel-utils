@@ -2,12 +2,18 @@ package model;
 
 import exceptions.SheetAlreadyExistsException;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class ExcelSheet {
 
     private Sheet sheet;
@@ -31,7 +37,16 @@ public class ExcelSheet {
         return new ExcelSheet(sheet, workbook.getSheetIndex(sheet), sheet.getSheetName());
     }
 
-    public ExcelWorkbook getExcelWorkbook() {
+    public ExcelWorkbook getWorkbook() {
         return new ExcelWorkbook(this.getSheet().getWorkbook());
+    }
+
+    public List<ExcelRow> getRows() {
+        List<ExcelRow> excelRows = new LinkedList<>();
+        for (Row row : this.sheet) {
+            excelRows.add(new ExcelRow(row, row.getRowNum()));
+        }
+        
+        return excelRows;
     }
 }
