@@ -35,4 +35,35 @@ public class ExcelRow {
         String sheetName = sheet.getSheetName();
         return new ExcelSheet(sheet, excelWorkbook.getSheet(sheetName).getIndex(), sheetName);
     }
+
+    public Integer getLastColumnIndex() {
+        return this.row.getLastCellNum() - 1;
+    }
+
+    public Integer countAllColumns(Boolean alsoEmpty) {
+        Integer count = this.getLastColumnIndex() + 1;
+        if (alsoEmpty)
+            return count;
+
+        for (int i = 0; i < this.row.getPhysicalNumberOfCells(); i++) {
+            Cell cell = this.row.getCell(i);
+            if (cell == null) {
+                count--;
+                continue;
+            }
+
+            Object val;
+            switch (cell.getCellType()) {
+                case NUMERIC -> val = cell.getNumericCellValue();
+                case BOOLEAN -> val = cell.getBooleanCellValue();
+                default -> val = cell.getStringCellValue();
+            }
+
+            if (val == null) {
+                count--;
+            }
+        }
+
+        return count;
+    }
 }

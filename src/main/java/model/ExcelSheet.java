@@ -4,6 +4,7 @@ import exceptions.SheetAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -48,5 +49,47 @@ public class ExcelSheet {
         }
         
         return excelRows;
+    }
+
+    public Integer getLastRowIndex() {
+        return this.sheet.getLastRowNum();
+    }
+
+    public Integer countAllRows(Boolean alsoEmpty) {
+        Integer count = this.getLastRowIndex() + 1;
+        if (alsoEmpty)
+            return count;
+
+        for (int i = 0; i < this.sheet.getPhysicalNumberOfRows(); i++) {
+            Row row = this.sheet.getRow(i);
+            boolean isEmptyRow = true;
+
+            if (row == null) {
+                count--;
+                continue;
+            }
+
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+                Cell cell = row.getCell(j);
+                if (cell != null) {
+                    Object val;
+                    switch (cell.getCellType()) {
+                        case NUMERIC -> val = cell.getNumericCellValue();
+                        case BOOLEAN -> val = cell.getBooleanCellValue();
+                        default -> val = cell.getStringCellValue();
+                    }
+                    if (val != null) {
+                        isEmptyRow = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isEmptyRow) {
+                count--;
+            }
+        }
+
+        return count;
     }
 }

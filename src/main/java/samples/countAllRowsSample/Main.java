@@ -1,8 +1,10 @@
 package samples.countAllRowsSample;
 
-import tools.ExcelUtility;
+import model.ExcelSheet;
+import model.ExcelWorkbook;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
@@ -12,14 +14,16 @@ public class Main {
         File file = new File("./src/main/resources/car.xlsx");
 
         try {
-            int totalRows = ExcelUtility.countAllRows(file, "car");
-            System.out.println("Total: " + totalRows);
-            int totalRowsWithoutEmpty = ExcelUtility.countAllRows(file, "car", false);
-            System.out.println("Total without empty rows: " + totalRowsWithoutEmpty);
-            List<Integer> totalRowsOfSheets = ExcelUtility.countAllRowsOfAllSheets(file);
-            System.out.println("Total of all sheets: " + totalRowsOfSheets);
-            List<Integer> totalRowsOfSheetsWithoutEmpty = ExcelUtility.countAllRowsOfAllSheets(file, false);
-            System.out.println("Total of all sheets without empty rows : " + totalRowsOfSheetsWithoutEmpty);
+            ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+            List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
+            int totalRows = excelWorkbook.getSheet("car").countAllRows(true);
+            System.out.println("Total rows: " + totalRows);
+            List<Integer> totalRowsWithoutEmptyOfSheets = new LinkedList<>();
+            for (ExcelSheet excelSheet : excelSheets) {
+                totalRowsWithoutEmptyOfSheets.add(excelSheet.countAllRows(false));
+            }
+
+            System.out.println("Total of all sheets without empty rows: " + totalRowsWithoutEmptyOfSheets);
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);

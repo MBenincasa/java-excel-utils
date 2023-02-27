@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class ExcelSheetTest {
 
@@ -39,6 +40,24 @@ public class ExcelSheetTest {
     }
 
     @Test
-    void getRows() {
+    void getRows() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        List<ExcelRow> excelRows = excelSheet.getRows();
+        Assertions.assertEquals(3, excelRows.size());
+    }
+
+    @Test
+    void getLastRowIndex() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        Assertions.assertEquals(2, excelSheet.getLastRowIndex());
+    }
+
+    @Test
+    void countAllRows() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        Assertions.assertEquals(4, excelSheet.countAllRows(false));
     }
 }

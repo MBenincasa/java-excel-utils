@@ -34,4 +34,22 @@ class ExcelRowTest {
         ExcelSheet excelSheet1 = excelRow.getSheet();
         Assertions.assertEquals(excelSheet, excelSheet1);
     }
+
+    @Test
+    void getLastColumnIndex() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        List<ExcelRow> excelRows = excelSheet.getRows();
+        Assertions.assertEquals(4, excelRows.get(0).getLastColumnIndex());
+        Assertions.assertEquals(2, excelRows.get(1).getLastColumnIndex());
+    }
+
+    @Test
+    void countAllColumns() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        List<ExcelRow> excelRows = excelSheet.getRows();
+        Assertions.assertEquals(4, excelRows.get(0).countAllColumns(false));
+        Assertions.assertEquals(3, excelRows.get(1).countAllColumns(true));
+    }
 }
