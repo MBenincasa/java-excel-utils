@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -130,6 +131,11 @@ public class ExcelWorkbook {
         return excelSheets;
     }
 
+    public ExcelSheet createSheet(String sheetName) {
+        Sheet sheet = this.workbook.createSheet(sheetName);
+        return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+    }
+
     public ExcelSheet getSheet() throws SheetNotFoundException {
         return this.getSheet(0);
     }
@@ -185,5 +191,9 @@ public class ExcelWorkbook {
         List<ExcelSheet> excelSheets = this.getSheets();
         Optional<ExcelSheet> excelSheet = excelSheets.stream().filter(s -> Objects.equals(s.getIndex(), index)).findAny();
         return excelSheet.isEmpty();
+    }
+
+    public FormulaEvaluator getFormulaEvaluator() {
+        return this.workbook.getCreationHelper().createFormulaEvaluator();
     }
 }

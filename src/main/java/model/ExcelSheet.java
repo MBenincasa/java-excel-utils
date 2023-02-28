@@ -51,6 +51,10 @@ public class ExcelSheet {
         return excelRows;
     }
 
+    public ExcelRow createRow(Integer index) {
+        return new ExcelRow(this.sheet.createRow(index), index);
+    }
+
     public Integer getLastRowIndex() {
         return this.sheet.getLastRowNum();
     }

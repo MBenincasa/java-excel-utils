@@ -36,6 +36,16 @@ class ExcelRowTest {
     }
 
     @Test
+    void createCell() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheetOrCreate("TestWrite");
+        ExcelRow excelRow = excelSheet.createRow(0);
+        ExcelCell excelCell = excelRow.createCell(0);
+        Assertions.assertNotNull(excelCell.getCell());
+        Assertions.assertEquals(0, excelCell.getIndex());
+    }
+
+    @Test
     void getLastColumnIndex() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         ExcelSheet excelSheet = excelWorkbook.getSheet(1);

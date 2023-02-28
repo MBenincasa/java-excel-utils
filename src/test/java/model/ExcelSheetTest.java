@@ -48,6 +48,15 @@ public class ExcelSheetTest {
     }
 
     @Test
+    void createRow() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheetOrCreate("TestWrite");
+        ExcelRow excelRow = excelSheet.createRow(0);
+        Assertions.assertNotNull(excelRow.getRow());
+        Assertions.assertEquals(0, excelRow.getIndex());
+    }
+
+    @Test
     void getLastRowIndex() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         ExcelSheet excelSheet = excelWorkbook.getSheet(0);

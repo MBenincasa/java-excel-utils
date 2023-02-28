@@ -108,6 +108,14 @@ public class ExcelWorkbookTest {
     }
 
     @Test
+    void createSheet() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.createSheet("Test");
+        Assertions.assertNotNull(excelSheet.getSheet());
+        Assertions.assertEquals("Test", excelSheet.getName());
+    }
+
+    @Test
     void getSheets() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
@@ -161,5 +169,11 @@ public class ExcelWorkbookTest {
     void testIsSheetNull() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         Assertions.assertEquals(true, excelWorkbook.isSheetNull(3));
+    }
+
+    @Test
+    void getFormulaEvaluator() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Assertions.assertNotNull(excelWorkbook.getFormulaEvaluator());
     }
 }

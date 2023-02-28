@@ -36,6 +36,10 @@ public class ExcelRow {
         return new ExcelSheet(sheet, excelWorkbook.getSheet(sheetName).getIndex(), sheetName);
     }
 
+    public ExcelCell createCell(Integer index) {
+        return new ExcelCell(this.row.createCell(index), index);
+    }
+
     public Integer getLastColumnIndex() {
         return this.row.getLastCellNum() - 1;
     }
