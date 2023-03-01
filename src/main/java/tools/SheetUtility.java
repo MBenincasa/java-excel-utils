@@ -35,7 +35,7 @@ public class SheetUtility {
     public static Integer length(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Open file excel */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
-        Integer totalSheets = excelWorkbook.length();
+        Integer totalSheets = excelWorkbook.countSheets();
 
         /* Close file */
         excelWorkbook.close();

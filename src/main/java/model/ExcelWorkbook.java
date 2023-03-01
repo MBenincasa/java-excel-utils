@@ -25,13 +25,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * {@code ExcelWorkbook} is the {@code Workbook} wrapper class of the Apache POI library
+ * @author Mirko Benincasa
+ * @since 0.3.0
+ */
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 public class ExcelWorkbook {
 
+    /**
+     * This object refers to the Apache POI Library {@code Workbook}
+     */
     private Workbook workbook;
 
+    /**
+     * This constructor creates a new workbook based on the extension
+     * @param extension The Excel extension which will determine with which Excel version the Workbook will be created
+     */
     public ExcelWorkbook(Extension extension) {
         switch (extension) {
             case XLS -> this.workbook = new HSSFWorkbook();
@@ -39,6 +51,11 @@ public class ExcelWorkbook {
         }
     }
 
+    /**
+     * This constructor opens a Workbook from the InputStream
+     * @param inputStream The InputStream of an existing Excel file
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     */
     public ExcelWorkbook(InputStream inputStream) throws OpenWorkbookException {
         try {
             this.workbook = new XSSFWorkbook(inputStream);
@@ -51,6 +68,14 @@ public class ExcelWorkbook {
         }
     }
 
+    /**
+     * Opens the workbook
+     * @param file An Excel file
+     * @return An ExcelWorkBook that is represented in the Excel file
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws IOException If an I/O error has occurred
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     */
     public static ExcelWorkbook open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
         String extension = ExcelUtility.checkExcelExtension(file.getName());
@@ -64,6 +89,15 @@ public class ExcelWorkbook {
         return excelWorkbook;
     }
 
+    /**
+     * Opens the workbook
+     * @param inputStream The {@code InputStream} of the Excel file
+     * @param extension The file's extension
+     * @return An ExcelWorkBook that is represented in the Excel file
+     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws IOException If an I/O error has occurred
+     * @throws OpenWorkbookException If an error occurred while opening the workbook
+     */
     public static ExcelWorkbook open(InputStream inputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check the extension */
         if (!ExcelUtility.isValidExcelExtension(extension)) {
@@ -73,10 +107,21 @@ public class ExcelWorkbook {
         return new ExcelWorkbook(inputStream);
     }
 
+    /**
+     * Create a new workbook<p>
+     * If not specified the XLSX extension will be used
+     * @return A ExcelWorkbook
+     */
     public static ExcelWorkbook create() {
         return create(Extension.XLSX);
     }
 
+    /**
+     * Create a new workbook
+     * @param extension The extension of the file. Provide the extension of an Excel file
+     * @return A ExcelWorkbook
+     * @throws ExtensionNotValidException If the extension does not belong to an Excel file
+     */
     public static ExcelWorkbook create(String extension) throws ExtensionNotValidException {
         if (!ExcelUtility.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
@@ -84,45 +129,87 @@ public class ExcelWorkbook {
         return create(Extension.getExcelExtension(extension));
     }
 
+    /**
+     * Create a new workbook
+     * @param extension The extension of the file. Select an extension with {@code type} EXCEL
+     * @return A ExcelWorkbook
+     */
     public static ExcelWorkbook create(Extension extension) {
         return new ExcelWorkbook(extension);
     }
 
+    /**
+     * Close a workbook
+     * @throws IOException If an I/O error has occurred
+     */
     public void close() throws IOException {
         this.workbook.close();
     }
 
+    /**
+     * Close a workbook
+     * @param inputStream The {@code InputStream} to close
+     * @throws IOException If an I/O error has occurred
+     */
     public void close(InputStream inputStream) throws IOException {
         this.workbook.close();
         inputStream.close();
     }
 
+    /**
+     * Close a workbook
+     * @param outputStream The {@code OutputStream} to close
+     * @throws IOException If an I/O error has occurred
+     */
     public void close(OutputStream outputStream) throws IOException {
         this.workbook.close();
         outputStream.close();
     }
 
+    /**
+     * Close a workbook
+     * @param outputStream The {@code OutputStream} to close
+     * @param inputStream The {@code InputStream} to close
+     * @throws IOException If an I/O error has occurred
+     */
     public void close(OutputStream outputStream, InputStream inputStream) throws IOException {
         this.workbook.close();
         inputStream.close();
         outputStream.close();
     }
 
+    /**
+     * Close a workbook
+     * @param writer The {@code CSVWriter} to close
+     * @throws IOException If an I/O error has occurred
+     */
     public void close(CSVWriter writer) throws IOException {
         this.workbook.close();
         writer.close();
     }
 
+    /**
+     * @param outputStream The {@code OutputStream} to close
+     * @param reader The {@code CSVReader} to close
+     * @throws IOException If an I/O error has occurred
+     */
     public void close(OutputStream outputStream, CSVReader reader) throws IOException {
         this.workbook.close();
         outputStream.close();
         reader.close();
     }
 
-    public Integer length() {
+    /**
+     * The amount of Sheets in the Workbook
+     * @return The number of Sheets present
+     */
+    public Integer countSheets() {
         return this.workbook.getNumberOfSheets();
     }
 
+    /** The list of Sheets related to the Workbook
+     * @return A list of Sheets
+     */
     public List<ExcelSheet> getSheets() {
         List<ExcelSheet> excelSheets = new LinkedList<>();
         for (Sheet sheet : this.workbook) {
@@ -131,15 +218,31 @@ public class ExcelWorkbook {
         return excelSheets;
     }
 
+    /**
+     * Create a new Sheet inside the Workbook
+     * @param sheetName The name of the sheet to create
+     * @return The newly created Sheet
+     */
     public ExcelSheet createSheet(String sheetName) {
         Sheet sheet = this.workbook.createSheet(sheetName);
         return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
     }
 
+    /**
+     * Retrieve the Sheet with index 0
+     * @return The Sheet requested
+     * @throws SheetNotFoundException If the sheet to open is not found
+     */
     public ExcelSheet getSheet() throws SheetNotFoundException {
         return this.getSheet(0);
     }
 
+    /**
+     * Retrieve the Sheet with the requested name
+     * @param index The index in the workbook
+     * @return The Sheet requested
+     * @throws SheetNotFoundException If the sheet to open is not found
+     */
     public ExcelSheet getSheet(Integer index) throws SheetNotFoundException {
         List<ExcelSheet> excelSheets = this.getSheets();
         for (ExcelSheet excelSheet : excelSheets) {
@@ -150,6 +253,12 @@ public class ExcelWorkbook {
         throw new SheetNotFoundException("No sheet was found in the index: " + index);
     }
 
+    /**
+     * Retrieve the Sheet with the requested index
+     * @param sheetName The name of the sheet
+     * @return The Sheet requested
+     * @throws SheetNotFoundException If the sheet to open is not found
+     */
     public ExcelSheet getSheet(String sheetName) throws SheetNotFoundException {
         List<ExcelSheet> excelSheets = this.getSheets();
         for (ExcelSheet excelSheet : excelSheets) {
@@ -160,6 +269,11 @@ public class ExcelWorkbook {
         throw new SheetNotFoundException("No sheet was found with the name: " + sheetName);
     }
 
+    /**
+     * Retrieve the Sheet with the required name otherwise create it
+     * @param sheetName The name of the sheet
+     * @return The Sheet requested
+     */
     @SneakyThrows
     public ExcelSheet getSheetOrCreate(String sheetName) {
         try {
@@ -169,30 +283,54 @@ public class ExcelWorkbook {
         }
     }
 
+    /**
+     * Check if the sheet is present
+     * @param sheetName The name of the sheet
+     * @return {@code true} if is present
+     */
     public Boolean isSheetPresent(String sheetName) {
         List<ExcelSheet> excelSheets = this.getSheets();
         Optional<ExcelSheet> excelSheet = excelSheets.stream().filter(s -> s.getName().equals(sheetName)).findAny();
         return excelSheet.isPresent();
     }
 
+    /**
+     * Check if the sheet is present
+     * @param index The index in the workbook
+     * @return {@code true} if is present
+     */
     public Boolean isSheetPresent(Integer index) {
         List<ExcelSheet> excelSheets = this.getSheets();
         Optional<ExcelSheet> excelSheet = excelSheets.stream().filter(s -> Objects.equals(s.getIndex(), index)).findAny();
         return excelSheet.isPresent();
     }
 
+    /**
+     * Check if the sheet is not present
+     * @param sheetName The name of the sheet
+     * @return {@code true} if is not present
+     */
     public Boolean isSheetNull(String sheetName) {
         List<ExcelSheet> excelSheets = this.getSheets();
         Optional<ExcelSheet> excelSheet = excelSheets.stream().filter(s -> s.getName().equals(sheetName)).findAny();
         return excelSheet.isEmpty();
     }
 
+    /**
+     * Check if the sheet is not present
+     * @param index The index in the workbook
+     * @return {@code true} if is not present
+     */
     public Boolean isSheetNull(Integer index) {
         List<ExcelSheet> excelSheets = this.getSheets();
         Optional<ExcelSheet> excelSheet = excelSheets.stream().filter(s -> Objects.equals(s.getIndex(), index)).findAny();
         return excelSheet.isEmpty();
     }
 
+    /**
+     * Create a new FormulaEvaluator
+     * @return A FormulaEvaluator
+     */
     public FormulaEvaluator getFormulaEvaluator() {
         return this.workbook.getCreationHelper().createFormulaEvaluator();
     }

@@ -13,19 +13,41 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * {@code ExcelCell} is the {@code Cell} wrapper class of the Apache POI library
+ * @author Mirko Benincasa
+ * @since 0.3.0
+ */
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 public class ExcelCell {
 
+    /**
+     * This object refers to the Apache POI Library {@code Cell}
+     */
     private Cell cell;
+
+    /**
+     * The index of the Cell in the Row
+     */
     private Integer index;
 
+    /**
+     * Returns the Row to which it belongs
+     * @return A ExcelRow
+     */
     public ExcelRow getRow() {
         Row row = this.cell.getRow();
         return new ExcelRow(row, row.getRowNum());
     }
 
+    /**
+     * Read the value written inside the Cell
+     * @param type The class type of the object written to the Cell
+     * @return The value written in the Cell
+     * @throws ReadValueException If an error occurs while reading
+     */
     public Object readValue(Class<?> type) throws ReadValueException {
         Object val;
         switch (this.cell.getCellType()) {
@@ -63,6 +85,10 @@ public class ExcelCell {
         return val;
     }
 
+    /**
+     * Writes inside the cell
+     * @param val The value to write in the Cell
+     */
     public void writeValue(Object val) {
         if (val instanceof Integer || val instanceof Long) {
             this.formatStyle((short) 1);
@@ -86,6 +112,10 @@ public class ExcelCell {
         }
     }
 
+    /**
+     * Format text according to the pattern provided
+     * @param dataFormat The Apache POI library CellStyle dataFormat
+     */
     public void formatStyle(short dataFormat) {
         ExcelWorkbook excelWorkbook = this.getRow().getSheet().getWorkbook();
         CellStyle newCellStyle = excelWorkbook.getWorkbook().createCellStyle();

@@ -13,7 +13,7 @@ public class Main {
 
         try {
             ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
-            int totalSheets = excelWorkbook.length();
+            int totalSheets = excelWorkbook.countSheets();
             System.out.println("Total: " + totalSheets);
             List<String> sheetnames = excelWorkbook.getSheets().stream().map(ExcelSheet::getName).toList();
             System.out.println("Sheet names: " + sheetnames);
