@@ -5,12 +5,8 @@ import com.opencsv.CSVWriter;
 import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
-import org.apache.poi.poifs.filesystem.NotOLE2FileException;
-import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
+import model.ExcelWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +15,12 @@ import java.io.IOException;
 
 /**
  * {@code WorkbookUtility} is the static class with implementations of some methods for working with Workbooks
+ * @deprecated since version 0.3.0. View here {@link model.ExcelWorkbook}
+ * @see model.ExcelWorkbook
  * @author Mirko Benincasa
  * @since 0.2.0
  */
+@Deprecated
 public class WorkbookUtility {
 
     /**
@@ -60,16 +59,8 @@ public class WorkbookUtility {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
         }
 
-        /* Open workbook */
-        try {
-            return new XSSFWorkbook(fileInputStream);
-        } catch (OfficeXmlFileException | OLE2NotOfficeXmlFileException e) {
-            try {
-                return new HSSFWorkbook(fileInputStream);
-            } catch (NotOLE2FileException ex) {
-                throw new OpenWorkbookException("The workbook could not be opened", ex);
-            }
-        }
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(fileInputStream);
+        return excelWorkbook.getWorkbook();
     }
 
     /**
@@ -100,12 +91,8 @@ public class WorkbookUtility {
      * @return A workbook
      */
     public static Workbook create(Extension extension) {
-        Workbook workbook = null;
-        switch (extension) {
-            case XLS -> workbook = new HSSFWorkbook();
-            case XLSX -> workbook = new XSSFWorkbook();
-        }
-        return workbook;
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(extension);
+        return excelWorkbook.getWorkbook();
     }
 
     /**
@@ -114,7 +101,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
     }
 
     /**
@@ -124,7 +112,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook, FileInputStream fileInputStream) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
         fileInputStream.close();
     }
 
@@ -135,7 +124,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook, FileOutputStream fileOutputStream) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
         fileOutputStream.close();
     }
 
@@ -147,7 +137,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook, FileOutputStream fileOutputStream, FileInputStream fileInputStream) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
         fileInputStream.close();
         fileOutputStream.close();
     }
@@ -159,7 +150,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook, CSVWriter writer) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
         writer.close();
     }
 
@@ -171,7 +163,8 @@ public class WorkbookUtility {
      * @throws IOException If an I/O error has occurred
      */
     public static void close(Workbook workbook, FileOutputStream fileOutputStream, CSVReader reader) throws IOException {
-        workbook.close();
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
+        excelWorkbook.close();
         fileOutputStream.close();
         reader.close();
     }

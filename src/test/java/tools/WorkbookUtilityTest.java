@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
-class WorkbookUtilityTest {
+public class WorkbookUtilityTest {
 
     private final File excelFile = new File("./src/test/resources/employee.xlsx");
     private final File csvFile = new File("./src/test/resources/employee.csv");
@@ -66,7 +66,7 @@ class WorkbookUtilityTest {
 
     @Test
     void testClose1() throws FileNotFoundException {
-        FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
         Workbook workbook = WorkbookUtility.create();
         Assertions.assertDoesNotThrow(() -> WorkbookUtility.close(workbook, fileOutputStream));
     }
@@ -74,7 +74,7 @@ class WorkbookUtilityTest {
     @Test
     void testClose2() throws FileNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
-        FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
         Workbook workbook = WorkbookUtility.create();
         Assertions.assertDoesNotThrow(() -> WorkbookUtility.close(workbook, fileOutputStream, fileInputStream));
     }
@@ -82,7 +82,7 @@ class WorkbookUtilityTest {
     @Test
     void testClose3() throws IOException {
         Workbook workbook = WorkbookUtility.create();
-        FileWriter fileWriter = new FileWriter(csvFile);
+        FileWriter fileWriter = new FileWriter(csvFile, true);
         CSVWriter csvWriter = new CSVWriter(fileWriter);
         Assertions.assertDoesNotThrow(() -> WorkbookUtility.close(workbook, csvWriter));
     }
@@ -92,7 +92,7 @@ class WorkbookUtilityTest {
         Workbook workbook = WorkbookUtility.create();
         FileReader fileReader = new FileReader(csvFile);
         CSVReader csvReader = new CSVReader(fileReader);
-        FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
         Assertions.assertDoesNotThrow(() -> WorkbookUtility.close(workbook, fileOutputStream, csvReader));
 
     }

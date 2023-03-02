@@ -1,3 +1,14 @@
+# v0.3.0
+### Deprecations
+* The WorkbookUtility and SheetUtility classes have been deprecated
+* Several ExcelUtility methods have been deprecated
+### Features
+* The ExcelWorkbook, ExcelSheet, ExcelRow and ExceCell classes have been added. These classes wrap the Apache POI classes
+### Fixes
+* Several bugs have been fixed
+### Removed
+* Classes that have been deprecated since v0.2.0 have been removed
+
 # v0.2.1
 ### Features
 * New services for writing to an existing Excel file that take different input parameters

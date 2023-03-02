@@ -4,6 +4,7 @@ import enums.Extension;
 import exceptions.ExtensionNotValidException;
 import exceptions.OpenWorkbookException;
 import exceptions.SheetNotFoundException;
+import model.ExcelWorkbook;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,18 +26,21 @@ public class ExcelUtility {
     /**
      * Counts all rows in all sheets<p>
      * If not specified, empty lines will also be included
+     * @deprecated since version 0.3.0
      * @param file an Excel file
      * @return A list with the number of rows present for each sheet
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
+    @Deprecated
     public static List<Integer> countAllRowsOfAllSheets(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         return countAllRowsOfAllSheets(file, true);
     }
 
     /**
      * * Counts all rows in all sheets
+     * @deprecated since version 0.3.0
      * @param file an Excel file
      * @param alsoEmptyRows if {@code true} then it will also count rows with all empty cells
      * @return A list with the number of rows present for each sheet
@@ -44,9 +48,11 @@ public class ExcelUtility {
      * @throws IOException If an I/O error occurs
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
+    @Deprecated
     public static List<Integer> countAllRowsOfAllSheets(File file, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Workbook workbook = excelWorkbook.getWorkbook();
 
         List<Integer> values = new LinkedList<>();
         for (Sheet sheet : workbook) {
@@ -59,7 +65,7 @@ public class ExcelUtility {
         }
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return values;
     }
@@ -67,6 +73,7 @@ public class ExcelUtility {
     /**
      * Counts all rows in a sheet<p>
      * If not specified, empty lines will also be included
+     * @deprecated since version 0.3.0
      * @param file An Excel file
      * @param sheetName The name of the sheet to open
      * @return A number that corresponds to all rows in the sheet
@@ -75,12 +82,14 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer countAllRows(File file, String sheetName) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return countAllRows(file, sheetName, true);
     }
 
     /**
      * Counts all rows in a sheet
+     * @deprecated since version 0.3.0
      * @param file An Excel file
      * @param sheetName The name of the sheet to open
      * @param alsoEmptyRows if {@code true} then it will also count rows with all empty cells
@@ -90,12 +99,13 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer countAllRows(File file, String sheetName, Boolean alsoEmptyRows) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
         /* Open file excel */
-        Workbook workbook = WorkbookUtility.open(file);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
         Sheet sheet = (sheetName == null || sheetName.isEmpty())
-                ? SheetUtility.get(workbook)
-                : SheetUtility.get(workbook, sheetName);
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
 
         /* Count all rows */
         int numRows = alsoEmptyRows
@@ -103,7 +113,7 @@ public class ExcelUtility {
                 : countOnlyRowsNotEmpty(sheet);
 
         /* Close file */
-        WorkbookUtility.close(workbook);
+        excelWorkbook.close();
 
         return numRows;
     }
@@ -134,6 +144,7 @@ public class ExcelUtility {
     /**
      * This method is used to recover the position of the last row of the Sheet. Note the count starts at 1<p>
      * By default, the first Sheet is chosen
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @return The position of the last row of the Sheet
      * @throws OpenWorkbookException If an error occurred while opening the workbook
@@ -141,12 +152,14 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastRow(File file) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return getIndexLastRow(file, null);
     }
 
     /**
      * This method is used to recover the position of the last row of the Sheet. Note the count starts at 1
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @param sheetName The name of the sheet to open
      * @return The position of the last row of the Sheet
@@ -155,14 +168,20 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastRow(File file, String sheetName) throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
+        /* Open file excel */
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
         return sheet.getLastRowNum() + 1;
     }
 
     /**
      * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
      * By default, the first sheet and the first row are chosen
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @return The position of the last column of the chosen row
      * @throws OpenWorkbookException If an error occurred while opening the workbook
@@ -170,6 +189,7 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastColumn(File file) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return getIndexLastColumn(file, null, 0);
     }
@@ -177,6 +197,7 @@ public class ExcelUtility {
     /**
      * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
      * By default, the first row is chosen
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @param sheetName The name of the sheet to open
      * @return The position of the last column of the chosen row
@@ -185,6 +206,7 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastColumn(File file, String sheetName) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return getIndexLastColumn(file, sheetName, 0);
     }
@@ -192,6 +214,7 @@ public class ExcelUtility {
     /**
      * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1<p>
      * By default, the first sheet is chosen
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @param indexRow the row index
      * @return The position of the last column of the chosen row
@@ -200,12 +223,14 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastColumn(File file, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return getIndexLastColumn(file, null, indexRow);
     }
 
     /**
      * This method is used to recover the position of the last column of the chosen row. Note that the count starts at 1
+     * @deprecated since version 0.3.0
      * @param file file An Excel file
      * @param sheetName The name of the sheet to open
      * @param indexRow the row index
@@ -215,8 +240,13 @@ public class ExcelUtility {
      * @throws ExtensionNotValidException If the filename extension does not belong to an Excel file
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     public static Integer getIndexLastColumn(File file, String sheetName, Integer indexRow) throws OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
-        Sheet sheet = (sheetName == null || sheetName.isEmpty()) ? SheetUtility.get(file) : SheetUtility.get(file, sheetName);
+        /* Open file excel */
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+        Sheet sheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.getSheet(0).getSheet()
+                : excelWorkbook.getSheet(sheetName).getSheet();
         return (int) sheet.getRow(indexRow).getLastCellNum();
     }
 
