@@ -1,13 +1,11 @@
 package model;
 
-import exceptions.SheetAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,36 +34,6 @@ public class ExcelSheet {
      * The name of the Sheet
      */
     private String name;
-
-    /**
-     * Create a new Sheet
-     * @param excelWorkbook The Workbook where to create the Sheet
-     * @return A ExcelSheet
-     * @throws SheetAlreadyExistsException If a Sheet with that name already exists
-     */
-    public static ExcelSheet create(ExcelWorkbook excelWorkbook) throws SheetAlreadyExistsException {
-        return create(excelWorkbook, null);
-    }
-
-    /**
-     * Create a new Sheet
-     * @param excelWorkbook The Workbook where to create the Sheet
-     * @param sheetName The name of the sheet
-     * @return A ExcelSheet
-     * @throws SheetAlreadyExistsException If a Sheet with that name already exists
-     */
-    public static ExcelSheet create(ExcelWorkbook excelWorkbook, String sheetName) throws SheetAlreadyExistsException {
-        Workbook workbook = excelWorkbook.getWorkbook();
-        Sheet sheet;
-        try {
-            sheet = (sheetName == null || sheetName.isEmpty())
-                    ? workbook.createSheet()
-                    : workbook.createSheet(sheetName);
-        } catch (IllegalArgumentException e) {
-            throw new SheetAlreadyExistsException(e.getMessage(), e.getCause());
-        }
-        return new ExcelSheet(sheet, workbook.getSheetIndex(sheet), sheet.getSheetName());
-    }
 
     /**
      * Returns the Workbook to which it belongs

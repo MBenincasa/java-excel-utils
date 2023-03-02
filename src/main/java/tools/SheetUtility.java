@@ -141,7 +141,9 @@ public class SheetUtility {
         /* Open file excel */
         FileInputStream fileInputStream = new FileInputStream(file);
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInputStream, extension);
-        ExcelSheet excelSheet = ExcelSheet.create(excelWorkbook, sheetName);
+        ExcelSheet excelSheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.createSheet()
+                : excelWorkbook.createSheet(sheetName);
 
         return excelSheet.getSheet();
     }
@@ -165,7 +167,9 @@ public class SheetUtility {
      */
     public static Sheet create(Workbook workbook, String sheetName) throws SheetAlreadyExistsException {
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
-        ExcelSheet excelSheet = ExcelSheet.create(excelWorkbook, sheetName);
+        ExcelSheet excelSheet = (sheetName == null || sheetName.isEmpty())
+                ? excelWorkbook.createSheet()
+                : excelWorkbook.createSheet(sheetName);
         return excelSheet.getSheet();
     }
 

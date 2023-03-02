@@ -220,6 +220,15 @@ public class ExcelWorkbook {
 
     /**
      * Create a new Sheet inside the Workbook
+     * @return The newly created Sheet
+     */
+    public ExcelSheet createSheet() {
+        Sheet sheet = this.workbook.createSheet();
+        return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+    }
+
+    /**
+     * Create a new Sheet inside the Workbook
      * @param sheetName The name of the sheet to create
      * @return The newly created Sheet
      */
@@ -279,7 +288,7 @@ public class ExcelWorkbook {
         try {
             return this.getSheet(sheetName);
         } catch (SheetNotFoundException e) {
-            return ExcelSheet.create(this, sheetName);
+            return this.createSheet(sheetName);
         }
     }
 

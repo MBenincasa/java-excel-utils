@@ -19,7 +19,7 @@ public class Main {
 
         try {
             ExcelWorkbook excelWorkbook = ExcelWorkbook.create(FilenameUtils.getExtension(testFile.getName()));
-            ExcelSheet excelSheet = ExcelSheet.create(excelWorkbook);
+            ExcelSheet excelSheet = excelWorkbook.createSheet("TEST");
             ExcelRow excelRow = excelSheet.createRow(0);
             ExcelCell excelCell = excelRow.createCell(0);
             excelCell.writeValue("Rossi");

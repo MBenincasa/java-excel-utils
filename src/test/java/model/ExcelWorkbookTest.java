@@ -116,6 +116,13 @@ public class ExcelWorkbookTest {
     }
 
     @Test
+    void testCreateSheet() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.createSheet();
+        Assertions.assertNotNull(excelSheet.getSheet());
+    }
+
+    @Test
     void getSheets() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
