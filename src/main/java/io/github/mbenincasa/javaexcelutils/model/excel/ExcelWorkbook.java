@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;

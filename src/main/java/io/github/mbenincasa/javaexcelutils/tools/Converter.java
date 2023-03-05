@@ -8,8 +8,11 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
-import io.github.mbenincasa.javaexcelutils.model.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * {@code Converter} is the static class with implementations of conversion methods
@@ -36,6 +40,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. The default filename is the class name. By default, the extension that is selected is XLSX while the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @return An Excel file with as many rows as there are elements in the list.
@@ -44,6 +49,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, true);
     }
@@ -52,6 +58,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. By default, the extension that is selected is XLSX while the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param filename The name of the output file without the extension
@@ -61,6 +68,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, true);
     }
@@ -69,6 +77,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * By default the extension that is selected is XLSX while the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param path The destination path of the output file
@@ -79,6 +88,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, true);
     }
@@ -87,6 +97,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * By default the extension that is selected is XLSX
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param path The destination path of the output file
@@ -98,6 +109,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, writeHeader);
     }
@@ -106,6 +118,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. The default filename is the class name. By default, the extension that is selected is XLSX
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param writeHeader If {@code true} it will write the header to the first line
@@ -115,6 +128,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, writeHeader);
     }
@@ -123,6 +137,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. By default, the extension that is selected is XLSX
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param filename The name of the output file without the extension
@@ -133,6 +148,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, writeHeader);
     }
@@ -141,6 +157,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * By default, the header is added
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param path The destination path of the output file
@@ -152,6 +169,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, path, filename, extension, true);
     }
@@ -160,6 +178,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. The default filename is the class name. By default, the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param extension The extension of the output file. Select an extension with {@code type} EXCEL
@@ -169,6 +188,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, true);
     }
@@ -177,6 +197,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. The default filename is the class name
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param extension The extension of the output file. Select an extension with {@code type} EXCEL
@@ -187,6 +208,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, writeHeader);
     }
@@ -195,6 +217,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder. By default, the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param filename The name of the output file without the extension
@@ -205,6 +228,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, true);
     }
@@ -213,6 +237,7 @@ public class Converter {
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}<p>
      * The default path is that of the temporary folder
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param filename The name of the output file without the extension
@@ -224,6 +249,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, writeHeader);
     }
@@ -231,6 +257,7 @@ public class Converter {
     /**
      * Convert a list of objects into an Excel file<p>
      * Note: The type of the elements of the {@code objects} list must coincide with the type of {@code clazz}
+     * @deprecated since version 0.4.0
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param path The destination path of the output file
@@ -243,6 +270,7 @@ public class Converter {
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      */
+    @Deprecated
     public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
         /* Check extension*/
         if(!extension.isExcelExtension())
@@ -269,6 +297,78 @@ public class Converter {
         excelWorkbook.close(fileOutputStream);
 
         return file;
+    }
+
+    public static File objectsToExcelFile(List<ObjectToExcel<?>> objectToExcels, Extension extension, String filename, Boolean writeHeader) throws ExtensionNotValidException, IOException, FileAlreadyExistsException {
+        File file = new File(filename + "." + extension.getExt());
+        if (file.exists())
+            throw new FileAlreadyExistsException("There is already a file with this pathname: " + file.getAbsolutePath());
+
+        byte[] byteResult = objectsToExcelByte(objectToExcels, extension, writeHeader);
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(byteResult);
+        fileOutputStream.close();
+
+        return file;
+    }
+
+    public static byte[] objectsToExcelByte(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException {
+        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) objectsToExcelStream(objectToExcels, extension, writeHeader);
+        return outputStream.toByteArray();
+    }
+
+    public static OutputStream objectsToExcelStream(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException {
+        /* Check extension*/
+        if(!extension.isExcelExtension())
+            throw new ExtensionNotValidException("Select an extension for an Excel file");
+
+        /* Create workbook */
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(extension);
+
+        /* Create a Sheet for each element */
+        for(ObjectToExcel<?> objectToExcel : objectToExcels) {
+            ExcelSheet excelSheet = excelWorkbook.createSheet(objectToExcel.getSheetName());
+            Class<?> clazz = objectToExcel.getClazz();
+            Field[] fields = clazz.getDeclaredFields();
+            setFieldsAccessible(fields);
+            AtomicInteger nRow = new AtomicInteger();
+
+            /* Write header */
+            if (writeHeader) {
+                CellStyle headerCellStyle = createHeaderCellStyle(excelWorkbook, clazz);
+                ExcelRow headerRow = excelSheet.createRow(nRow.getAndIncrement());
+                for (int i = 0; i < fields.length; i++) {
+                    ExcelCell excelCell = headerRow.createCell(i);
+                    excelCell.getCell().setCellStyle(headerCellStyle);
+                    ExcelField excelField = fields[i].getAnnotation(ExcelField.class);
+                    excelCell.writeValue(excelField != null ? excelField.name() : fields[i].getName());
+                }
+            }
+
+            /* Write body */
+            objectToExcel.getStream().forEach(object -> {
+                CellStyle bodyCellStyle = createBodyStyle(excelWorkbook, clazz);
+                ExcelRow excelRow = excelSheet.createRow(nRow.getAndIncrement());
+                for (int i = 0; i < fields.length; i++) {
+                    ExcelCell excelCell = excelRow.createCell(i);
+                    excelCell.getCell().setCellStyle(bodyCellStyle);
+                    try {
+                        excelCell.writeValue(fields[i].get(object));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            /* Set auto-size columns */
+            setAutoSizeColumn(excelSheet, fields, clazz);
+        }
+
+        OutputStream outputStream = new ByteArrayOutputStream();
+        excelWorkbook.getWorkbook().write(outputStream);
+
+        excelWorkbook.close();
+        return outputStream;
     }
 
     /**
@@ -800,6 +900,15 @@ public class Converter {
         return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
     }
 
+    private static CellStyle createHeaderCellStyle(ExcelWorkbook excelWorkbook, Class<?> clazz) {
+        CellStyle cellStyle = excelWorkbook.getWorkbook().createCellStyle();
+        ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
+        if (excelHeaderStyle == null) {
+            return cellStyle;
+        }
+        return createCellStyle(cellStyle, excelHeaderStyle.cellColor(), excelHeaderStyle.horizontal(), excelHeaderStyle.vertical());
+    }
+
     private static void writeExcelBody(Workbook workbook, Sheet sheet, Field[] fields, Object object, int cRow, CellStyle cellStyle, Class<?> clazz) throws IllegalAccessException {
         Row row = sheet.createRow(cRow);
         for (int i = 0; i < fields.length; i++) {
@@ -851,6 +960,15 @@ public class Converter {
         return createCellStyle(cellStyle, excelBodyStyle.cellColor(), excelBodyStyle.horizontal(), excelBodyStyle.vertical());
     }
 
+    private static CellStyle createBodyStyle(ExcelWorkbook excelWorkbook, Class<?> clazz) {
+        CellStyle cellStyle = excelWorkbook.getWorkbook().createCellStyle();
+        ExcelBodyStyle excelBodyStyle = clazz.getAnnotation(ExcelBodyStyle.class);
+        if (excelBodyStyle == null) {
+            return cellStyle;
+        }
+        return createCellStyle(cellStyle, excelBodyStyle.cellColor(), excelBodyStyle.horizontal(), excelBodyStyle.vertical());
+    }
+
     private static CellStyle createCellStyle(CellStyle cellStyle, IndexedColors indexedColors, HorizontalAlignment horizontal, VerticalAlignment vertical) {
         cellStyle.setFillForegroundColor(indexedColors.getIndex());
         cellStyle.setFillPattern(FillPatternType.BIG_SPOTS);
@@ -872,6 +990,15 @@ public class Converter {
         if (excelHeaderStyle != null && excelHeaderStyle.autoSize()) {
             for (int i = 0; i < fields.length; i++) {
                 sheet.autoSizeColumn(i);
+            }
+        }
+    }
+
+    private static void setAutoSizeColumn(ExcelSheet excelSheet, Field[] fields, Class<?> clazz) {
+        ExcelHeaderStyle excelHeaderStyle = clazz.getAnnotation(ExcelHeaderStyle.class);
+        if (excelHeaderStyle != null && excelHeaderStyle.autoSize()) {
+            for (int i = 0; i < fields.length; i++) {
+                excelSheet.getSheet().autoSizeColumn(i);
             }
         }
     }

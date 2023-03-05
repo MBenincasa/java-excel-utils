@@ -5,7 +5,7 @@ import com.opencsv.CSVWriter;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;

@@ -4,8 +4,8 @@ import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetAlreadyExistsException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
-import io.github.mbenincasa.javaexcelutils.model.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 

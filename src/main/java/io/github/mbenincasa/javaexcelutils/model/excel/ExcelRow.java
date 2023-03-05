@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

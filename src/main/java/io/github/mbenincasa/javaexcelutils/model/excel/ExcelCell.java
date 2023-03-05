@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import lombok.AllArgsConstructor;

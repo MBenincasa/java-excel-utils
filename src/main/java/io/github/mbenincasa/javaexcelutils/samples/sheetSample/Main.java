@@ -1,7 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.samples.sheetSample;
 
-import io.github.mbenincasa.javaexcelutils.model.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 
 import java.io.File;
 import java.util.List;

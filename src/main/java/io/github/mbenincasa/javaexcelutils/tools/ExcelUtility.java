@@ -4,7 +4,7 @@ import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
