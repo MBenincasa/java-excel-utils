@@ -364,10 +364,9 @@ public class Converter {
             setAutoSizeColumn(excelSheet, fields, clazz);
         }
 
+        /* Write and close */
         OutputStream outputStream = new ByteArrayOutputStream();
-        excelWorkbook.getWorkbook().write(outputStream);
-
-        excelWorkbook.close();
+        excelWorkbook.writeAndClose(outputStream);
         return outputStream;
     }
 

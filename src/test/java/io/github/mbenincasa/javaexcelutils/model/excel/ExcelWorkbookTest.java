@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -6,19 +6,33 @@ import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
+import io.github.mbenincasa.javaexcelutils.tools.Converter;
+import io.github.mbenincasa.javaexcelutils.tools.utils.Address;
+import io.github.mbenincasa.javaexcelutils.tools.utils.Person;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ExcelWorkbookTest {
 
     private final File excelFile = new File("./src/test/resources/employee.xlsx");
     private final File csvFile = new File("./src/test/resources/employee.csv");
+
+    private static final List<Person> persons = new ArrayList<>();
+    private static final List<Address> addresses = new ArrayList<>();
+
+    @BeforeAll
+    static void beforeAll() {
+        persons.add(new Person("Rossi", "Mario", 20));
+        addresses.add(new Address("Milano", "Corso Como, 4"));
+    }
 
     @Test
     void open() throws OpenWorkbookException, ExtensionNotValidException, IOException {
@@ -184,5 +198,17 @@ public class ExcelWorkbookTest {
     void getFormulaEvaluator() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         Assertions.assertNotNull(excelWorkbook.getFormulaEvaluator());
+    }
+
+    @Test
+    void writeAndClose() throws ExtensionNotValidException, IOException {
+        Stream<Person> personStream = persons.stream();
+        Stream<Address> addressStream = addresses.stream();
+        List<ObjectToExcel<?>> list = new ArrayList<>();
+        list.add(new ObjectToExcel<>("Person", Person.class, personStream));
+        list.add(new ObjectToExcel<>("Address", Address.class, addressStream));
+        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) Converter.objectsToExcelStream(list, Extension.XLSX, true);
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        Assertions.assertDoesNotThrow(() -> excelWorkbook.writeAndClose(outputStream));
     }
 }

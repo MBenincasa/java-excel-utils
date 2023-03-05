@@ -343,4 +343,9 @@ public class ExcelWorkbook {
     public FormulaEvaluator getFormulaEvaluator() {
         return this.workbook.getCreationHelper().createFormulaEvaluator();
     }
+
+    public void writeAndClose(OutputStream outputStream) throws IOException {
+        this.workbook.write(outputStream);
+        this.close(outputStream);
+    }
 }

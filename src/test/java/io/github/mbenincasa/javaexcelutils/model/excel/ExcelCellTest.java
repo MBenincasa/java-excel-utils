@@ -1,13 +1,9 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
