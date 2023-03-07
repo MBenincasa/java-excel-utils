@@ -605,4 +605,67 @@ public class ConverterTest {
         Assertions.assertEquals(20, people.get(0).getAge());
         fileInputStream.close();
     }
+
+    @Test
+    void excelToCsvByte() throws IOException, OpenWorkbookException, CsvValidationException {
+        byte[] bytes = Files.readAllBytes(excelFile.toPath());
+        Map<String, byte[]> byteMap = Converter.excelToCsvByte(bytes);
+        File csvFile = new File("person.csv");
+        FileOutputStream fileOutputStream = new FileOutputStream(csvFile);
+        fileOutputStream.write(byteMap.get("Person"));
+        FileReader fileReader = new FileReader(csvFile);
+        CSVReader csvReader = new CSVReader(fileReader);
+        String[] values = csvReader.readNext();
+        Assertions.assertEquals("LAST NAME", values[0]);
+        Assertions.assertEquals("NAME", values[1]);
+        Assertions.assertEquals("AGE", values[2]);
+        values = csvReader.readNext();
+        Assertions.assertEquals("Rossi", values[0]);
+        Assertions.assertEquals("Mario", values[1]);
+        Assertions.assertEquals(20, Integer.parseInt(values[2]));
+        fileOutputStream.close();
+        csvReader.close();
+        csvFile.delete();
+    }
+
+    @Test
+    void excelToCsvFile() throws OpenWorkbookException, IOException, CsvValidationException {
+        Map<String, File> fileMap = Converter.excelToCsvFile(excelFile, "./src/");
+        FileReader fileReader = new FileReader(fileMap.get("Person"));
+        CSVReader csvReader = new CSVReader(fileReader);
+        String[] values = csvReader.readNext();
+        Assertions.assertEquals("LAST NAME", values[0]);
+        Assertions.assertEquals("NAME", values[1]);
+        Assertions.assertEquals("AGE", values[2]);
+        values = csvReader.readNext();
+        Assertions.assertEquals("Rossi", values[0]);
+        Assertions.assertEquals("Mario", values[1]);
+        Assertions.assertEquals(20, Integer.parseInt(values[2]));
+        csvReader.close();
+        fileMap.get("Person").delete();
+    }
+
+    @Test
+    void excelToCsvStream() throws IOException, OpenWorkbookException, CsvValidationException {
+        FileInputStream fileInputStream = new FileInputStream(excelFile);
+        Map<String, OutputStream> outputStreamMap = Converter.excelToCsvStream(fileInputStream);
+        FileOutputStream fileOutputStream = new FileOutputStream("person.csv");
+        ByteArrayOutputStream baos = (ByteArrayOutputStream) outputStreamMap.get("Person");
+        fileOutputStream.write(baos.toByteArray());
+        File csvFile = new File("person.csv");
+        FileReader fileReader = new FileReader(csvFile);
+        CSVReader csvReader = new CSVReader(fileReader);
+        String[] values = csvReader.readNext();
+        Assertions.assertEquals("LAST NAME", values[0]);
+        Assertions.assertEquals("NAME", values[1]);
+        Assertions.assertEquals("AGE", values[2]);
+        values = csvReader.readNext();
+        Assertions.assertEquals("Rossi", values[0]);
+        Assertions.assertEquals("Mario", values[1]);
+        Assertions.assertEquals(20, Integer.parseInt(values[2]));
+        fileOutputStream.close();
+        csvReader.close();
+        csvFile.delete();
+        fileInputStream.close();
+    }
 }

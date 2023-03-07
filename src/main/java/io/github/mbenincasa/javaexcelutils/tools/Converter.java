@@ -605,6 +605,7 @@ public class Converter {
     /**
      * Convert an Excel file into a CSV file<p>
      * The default path is that of the temporary folder. By default, the first sheet is chosen and the filename will be the same as the input file if not specified
+     * @deprecated since version 0.4.0
      * @param fileInput The input Excel file that will be converted into a CSV file
      * @return A CSV file that contains the same lines as the Excel file
      * @throws FileAlreadyExistsException If the destination file already exists
@@ -613,6 +614,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File excelToCsv(File fileInput) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return excelToCsv(fileInput, System.getProperty("java.io.tmpdir"), fileInput.getName().split("\\.")[0].trim(), null);
     }
@@ -620,6 +622,7 @@ public class Converter {
     /**
      * Convert an Excel file into a CSV file<p>
      * The default path is that of the temporary folder. By default, the first sheet is chosen and the filename will be the same as the input file if not specified
+     * @deprecated since version 0.4.0
      * @param fileInput The input Excel file that will be converted into a CSV file
      * @param sheetName The name of the sheet to open
      * @return A CSV file that contains the same lines as the Excel file
@@ -629,6 +632,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File excelToCsv(File fileInput, String sheetName) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return excelToCsv(fileInput, System.getProperty("java.io.tmpdir"), fileInput.getName().split("\\.")[0].trim(), sheetName);
     }
@@ -636,6 +640,7 @@ public class Converter {
     /**
      * Convert an Excel file into a CSV file<p>
      * By default, the first sheet is chosen
+     * @deprecated since version 0.4.0
      * @param fileInput The input Excel file that will be converted into a CSV file
      * @param path The destination path of the output file
      * @param filename The name of the output file without the extension
@@ -646,12 +651,14 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File excelToCsv(File fileInput, String path, String filename) throws FileAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ExtensionNotValidException, IOException {
         return excelToCsv(fileInput, path, filename, null);
     }
 
     /**
      * Convert an Excel file into a CSV file
+     * @deprecated since version 0.4.0
      * @param fileInput The input Excel file that will be converted into a CSV file
      * @param path The destination path of the output file
      * @param filename The name of the output file without the extension
@@ -663,6 +670,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File excelToCsv(File fileInput, String path, String filename, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, FileAlreadyExistsException {
         /* Open file excel */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInput);
@@ -695,6 +703,74 @@ public class Converter {
         excelWorkbook.close(csvWriter);
 
         return csvFile;
+    }
+
+    public static Map<String, byte[]> excelToCsvByte(byte[] bytes) throws OpenWorkbookException, IOException {
+        /* Open InputStream */
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        Map<String, byte[]> byteArrayMap = new HashMap<>();
+
+        Map<String, OutputStream> outputStreamMap = excelToCsvStream(inputStream);
+
+        /* iterate all the outputStream */
+        for (Map.Entry<String, OutputStream> entry : outputStreamMap.entrySet()) {
+            ByteArrayOutputStream baos = (ByteArrayOutputStream) entry.getValue();
+            byteArrayMap.put(entry.getKey(), baos.toByteArray());
+        }
+
+        return byteArrayMap;
+    }
+
+    public static Map<String, File> excelToCsvFile(File excelFile, String path) throws IOException, OpenWorkbookException {
+        /* Open InputStream */
+        FileInputStream fileInputStream = new FileInputStream(excelFile);
+        Map<String, File> fileMap = new HashMap<>();
+
+        Map<String, OutputStream> outputStreamMap = excelToCsvStream(fileInputStream);
+
+        /* iterate all the outputStream */
+        for (Map.Entry<String, OutputStream> entry : outputStreamMap.entrySet()) {
+            String pathname = path + "/" + entry.getKey() + "." + Extension.CSV.getExt();
+            FileOutputStream fileOutputStream = new FileOutputStream(pathname);
+            ByteArrayOutputStream baos = (ByteArrayOutputStream) entry.getValue();
+            fileOutputStream.write(baos.toByteArray());
+            File file = new File(pathname);
+            fileMap.put(entry.getKey(), file);
+            fileOutputStream.close();
+        }
+
+        return fileMap;
+    }
+
+    public static Map<String, OutputStream> excelToCsvStream(InputStream excelStream) throws OpenWorkbookException, IOException {
+        /* Open file excel */
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(excelStream);
+        List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
+
+        Map<String, OutputStream> map = new HashMap<>();
+
+        /* Iterate all the Sheets */
+        for (ExcelSheet excelSheet : excelSheets) {
+            OutputStream outputStream = new ByteArrayOutputStream();
+            Writer writer = new OutputStreamWriter(outputStream);
+            CSVWriter csvWriter = new CSVWriter(writer);
+
+            DataFormatter formatter = new DataFormatter(true);
+            for (ExcelRow excelRow : excelSheet.getRows()) {
+                List<String> data = new LinkedList<>();
+                for (ExcelCell excelCell : excelRow.getCells()) {
+                    data.add(formatter.formatCellValue(excelCell.getCell()));
+                }
+                csvWriter.writeNext(data.toArray(data.toArray(new String[0])));
+            }
+            csvWriter.close();
+            map.put(excelSheet.getName(), outputStream);
+        }
+
+        /* Close workbook */
+        excelWorkbook.close();
+
+        return map;
     }
 
     /**
