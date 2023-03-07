@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import io.github.mbenincasa.javaexcelutils.model.converter.ExcelToObject;
 import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
@@ -18,8 +19,10 @@ import io.github.mbenincasa.javaexcelutils.tools.utils.Person;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class ConverterTest {
@@ -562,5 +565,44 @@ public class ConverterTest {
         Assertions.assertEquals("Milano", excelCells1.get(0).readValue(String.class));
         Assertions.assertEquals("Corso Como, 4", excelCells1.get(1).readValue(String.class));
         fileOutput.delete();
+    }
+
+    @Test
+    void excelByteToObjects() throws IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelToObject<Person> personExcelToObject = new ExcelToObject<>("Person", Person.class);
+        List<ExcelToObject<?>> excelToObjects = new ArrayList<>();
+        excelToObjects.add(personExcelToObject);
+        byte[] bytes = Files.readAllBytes(excelFile.toPath());
+        Map<String, Stream<?>> map = Converter.excelByteToObjects(bytes, excelToObjects);
+        List<Person> people = (List<Person>) map.get("Person").toList();
+        Assertions.assertEquals("Rossi", people.get(0).getLastName());
+        Assertions.assertEquals("Mario", people.get(0).getName());
+        Assertions.assertEquals(20, people.get(0).getAge());
+    }
+
+    @Test
+    void excelFileToObjects() throws OpenWorkbookException, SheetNotFoundException, ReadValueException, IOException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelToObject<Person> personExcelToObject = new ExcelToObject<>("Person", Person.class);
+        List<ExcelToObject<?>> excelToObjects = new ArrayList<>();
+        excelToObjects.add(personExcelToObject);
+        Map<String, Stream<?>> map = Converter.excelFileToObjects(excelFile, excelToObjects);
+        List<Person> people = (List<Person>) map.get("Person").toList();
+        Assertions.assertEquals("Rossi", people.get(0).getLastName());
+        Assertions.assertEquals("Mario", people.get(0).getName());
+        Assertions.assertEquals(20, people.get(0).getAge());
+    }
+
+    @Test
+    void excelStreamToObjects() throws IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelToObject<Person> personExcelToObject = new ExcelToObject<>("Person", Person.class);
+        List<ExcelToObject<?>> excelToObjects = new ArrayList<>();
+        excelToObjects.add(personExcelToObject);
+        FileInputStream fileInputStream = new FileInputStream(excelFile);
+        Map<String, Stream<?>> map = Converter.excelStreamToObjects(fileInputStream, excelToObjects);
+        List<Person> people = (List<Person>) map.get("Person").toList();
+        Assertions.assertEquals("Rossi", people.get(0).getLastName());
+        Assertions.assertEquals("Mario", people.get(0).getName());
+        Assertions.assertEquals(20, people.get(0).getAge());
+        fileInputStream.close();
     }
 }

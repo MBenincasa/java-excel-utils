@@ -51,8 +51,18 @@ public class ExcelCell {
     public Object readValue(Class<?> type) throws ReadValueException {
         Object val;
         switch (this.cell.getCellType()) {
-            case BOOLEAN -> val = this.cell.getBooleanCellValue();
-            case STRING -> val = this.cell.getStringCellValue();
+            case BOOLEAN -> {
+                if (!Boolean.class.equals(type)) {
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+                }
+                val = this.cell.getBooleanCellValue();
+            }
+            case STRING -> {
+                if (!String.class.equals(type)) {
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+                }
+                val = this.cell.getStringCellValue();
+            }
             case NUMERIC -> {
                 if (Integer.class.equals(type)) {
                     val = (int) this.cell.getNumericCellValue();
@@ -67,7 +77,7 @@ public class ExcelCell {
                 } else if (LocalDate.class.equals(type)) {
                     val = this.cell.getLocalDateTimeCellValue().toLocalDate();
                 } else {
-                    throw new ReadValueException("This numeric type is not supported: " + type);
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "' or not yet supported");
                 }
             }
             case FORMULA -> {

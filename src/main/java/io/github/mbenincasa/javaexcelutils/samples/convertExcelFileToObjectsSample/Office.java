@@ -1,14 +1,16 @@
-package io.github.mbenincasa.javaexcelutils.samples.convertObjectsToExcelFileSample;
+package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjectsSample;
 
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelBodyStyle;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelField;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelHeaderStyle;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @ToString
 @ExcelHeaderStyle(autoSize = true)
 @ExcelBodyStyle

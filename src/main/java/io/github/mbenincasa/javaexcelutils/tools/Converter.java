@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import io.github.mbenincasa.javaexcelutils.model.converter.ExcelToObject;
 import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * {@code Converter} is the static class with implementations of conversion methods
@@ -373,6 +375,7 @@ public class Converter {
     /**
      * This method allows you to convert objects into a Sheet of a File that already exists.<p>
      * By default, the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param file The {@code File} to update
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
@@ -382,12 +385,14 @@ public class Converter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @since 0.2.1
      */
+    @Deprecated
     public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
         objectsToExistingExcel(file, objects, clazz, true);
     }
 
     /**
      * This method allows you to convert objects into a Sheet of a File that already exists.
+     * @deprecated since version 0.4.0
      * @param file The {@code File} to update
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
@@ -398,6 +403,7 @@ public class Converter {
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @since 0.2.1
      */
+    @Deprecated
     public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz, Boolean writeHeader) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
         /* Open workbook */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
@@ -416,11 +422,13 @@ public class Converter {
      * This method allows you to convert objects into a Sheet of a Workbook that already exists.<p>
      * Note: This method does not call the "write" method of the workbook.<p>
      * By default, the header is added if not specified
+     * @deprecated since version 0.4.0
      * @param workbook The {@code Workbook} to update
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      */
+    @Deprecated
     public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz) throws IllegalAccessException {
         objectsToExistingExcel(workbook, objects, clazz, true);
     }
@@ -428,12 +436,14 @@ public class Converter {
     /**
      * This method allows you to convert objects into a Sheet of a Workbook that already exists.<p>
      * Note: This method does not call the "write" method of the workbook.
+     * @deprecated since version 0.4.0
      * @param workbook The {@code Workbook} to update
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @param writeHeader If {@code true} it will write the header to the first line
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      */
+    @Deprecated
     public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException {
         /* Create sheet */
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
@@ -460,6 +470,7 @@ public class Converter {
      * Convert an Excel file into a list of objects<p>
      * Note: The type of the elements of the return objects must coincide with the type of {@code clazz}<p>
      * By default, the first sheet is chosen
+     * @deprecated since version 0.4.0
      * @param file The input Excel file that will be converted into a list of objects
      * @param clazz The class of the list elements
      * @return A list of objects that contains as many objects as there are lines in the input file
@@ -473,6 +484,7 @@ public class Converter {
      * @throws SheetNotFoundException If the sheet to open is not found
      * @throws HeaderNotPresentException If the first row is empty and does not contain the header
      */
+    @Deprecated
     public static List<?> excelToObjects(File file, Class<?> clazz) throws ExtensionNotValidException, IOException, OpenWorkbookException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SheetNotFoundException, HeaderNotPresentException {
         return excelToObjects(file, clazz, null);
     }
@@ -480,6 +492,7 @@ public class Converter {
     /**
      * Convert an Excel file into a list of objects<p>
      * Note: The type of the elements of the return objects must coincide with the type of {@code clazz}
+     * @deprecated since version 0.4.0
      * @param file The input Excel file that will be converted into a list of objects
      * @param clazz The class of the list elements
      * @param sheetName The name of the sheet to open
@@ -494,6 +507,7 @@ public class Converter {
      * @throws SheetNotFoundException If the sheet to open is not found
      * @throws HeaderNotPresentException If the first row is empty and does not contain the header
      */
+    @Deprecated
     public static List<?> excelToObjects(File file, Class<?> clazz, String sheetName) throws ExtensionNotValidException, IOException, OpenWorkbookException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, SheetNotFoundException, HeaderNotPresentException {
         /* Open file excel */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
@@ -521,6 +535,71 @@ public class Converter {
         excelWorkbook.close();
 
         return resultList;
+    }
+
+    public static Map<String, Stream<?>> excelByteToObjects(byte[] bytes, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
+        return excelStreamToObjects(byteStream, excelToObjects);
+    }
+
+    public static Map<String, Stream<?>> excelFileToObjects(File file, List<ExcelToObject<?>> excelToObjects) throws IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Map<String, Stream<?>> map = excelStreamToObjects(fileInputStream, excelToObjects);
+        fileInputStream.close();
+        return map;
+    }
+
+    public static Map<String, Stream<?>> excelStreamToObjects(InputStream inputStream, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, HeaderNotPresentException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ReadValueException {
+        /* Open Workbook */
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(inputStream);
+        Map<String, Stream<?>> map = new HashMap<>();
+
+        /* Iterate all the sheets to convert */
+        for (ExcelToObject<?> excelToObject : excelToObjects) {
+            Class<?> clazz = excelToObject.getClazz();
+            ExcelSheet excelSheet = excelWorkbook.getSheet(excelToObject.getSheetName());
+
+            /* Retrieving header names */
+            Field[] fields = clazz.getDeclaredFields();
+            setFieldsAccessible(fields);
+            Map<Integer, String> headerMap = getHeaderNames(excelSheet, fields);
+
+            Stream.Builder<Object> streamBuilder = Stream.builder();
+
+            /* Iterate all rows */
+            for (ExcelRow excelRow : excelSheet.getRows()) {
+                if (excelRow.getRow() == null || excelRow.getIndex() == 0) {
+                    continue;
+                }
+
+                Object obj = clazz.getDeclaredConstructor().newInstance();
+                /* Iterate all cells */
+                for (ExcelCell excelCell : excelRow.getCells()) {
+                    if (excelCell.getCell() == null) {
+                        continue;
+                    }
+
+                    String headerName = headerMap.get(excelCell.getIndex());
+                    if (headerName == null || headerMap.isEmpty()) {
+                        continue;
+                    }
+
+                    /* Read the value in the cell */
+                    Optional<Field> fieldOptional = Arrays.stream(fields).filter(f -> f.getName().equalsIgnoreCase(headerName)).findFirst();
+                    if (fieldOptional.isEmpty()) {
+                        throw new RuntimeException();
+                    }
+                    Field field = fieldOptional.get();
+                    PropertyUtils.setSimpleProperty(obj, headerName, excelCell.readValue(field.getType()));
+                }
+                /* Adds the object to the Stream after it has finished cycling through all cells */
+                streamBuilder.add(obj);
+            }
+            /* inserts the Stream of all Sheet objects into the Map */
+            map.put(excelSheet.getName(), streamBuilder.build());
+        }
+
+        return map;
     }
 
     /**
@@ -818,6 +897,27 @@ public class Converter {
         }
 
         Row headerRow = sheet.getRow(0);
+        if (headerRow == null)
+            throw new HeaderNotPresentException("There is no header in the first row of the sheet.");
+
+        Map<Integer, String> headerMap = new TreeMap<>();
+        for (Cell cell : headerRow) {
+            if (fieldNames.containsKey(cell.getStringCellValue())) {
+                headerMap.put(cell.getColumnIndex(), fieldNames.get(cell.getStringCellValue()));
+            }
+        }
+
+        return headerMap;
+    }
+
+    private static Map<Integer, String> getHeaderNames(ExcelSheet excelSheet, Field[] fields) throws HeaderNotPresentException {
+        Map<String, String> fieldNames = new HashMap<>();
+        for (Field field : fields) {
+            ExcelField excelField = field.getAnnotation(ExcelField.class);
+            fieldNames.put(excelField == null ? field.getName() : excelField.name(), field.getName());
+        }
+
+        Row headerRow = excelSheet.getSheet().getRow(0);
         if (headerRow == null)
             throw new HeaderNotPresentException("There is no header in the first row of the sheet.");
 
