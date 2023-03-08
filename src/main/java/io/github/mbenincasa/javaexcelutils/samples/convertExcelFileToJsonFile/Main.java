@@ -1,9 +1,8 @@
-package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToCsvFile;
+package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToJsonFile;
 
 import io.github.mbenincasa.javaexcelutils.tools.Converter;
 
 import java.io.File;
-import java.util.Map;
 
 public class Main {
 
@@ -13,11 +12,9 @@ public class Main {
 
         try {
             System.out.println("Start the conversion...");
-            Map<String, File> fileMap = Converter.excelToCsvFile(excelFile, "./src/main/resources");
+            File jsonFile = Converter.excelToJsonFile(excelFile, "./src/main/resources/result");
             System.out.println("... completed");
-            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
-                System.out.println("The file is ready. Path: " + entry.getValue().getAbsolutePath());
-            }
+            System.out.println("The file is ready. Path: " + jsonFile.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);

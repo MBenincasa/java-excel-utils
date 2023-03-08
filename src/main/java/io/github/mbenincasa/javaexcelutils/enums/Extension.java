@@ -29,7 +29,12 @@ public enum Extension {
     /**
      * This extension is used for CSV (Comma-separated values) files
      */
-    CSV("csv", "CSV");
+    CSV("csv", "CSV"),
+
+    /**
+     * This extension is used for JSON (JavaScript Object Notation) files
+     */
+    JSON("json", "JSON");
 
     /**
      * The extension's name

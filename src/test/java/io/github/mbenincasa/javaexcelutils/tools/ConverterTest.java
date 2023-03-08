@@ -1,5 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.tools;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
@@ -40,7 +42,7 @@ public class ConverterTest {
     }
 
     @Test
-    void objectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void objectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -55,7 +57,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person");
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -70,7 +72,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person");
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -85,7 +87,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -96,7 +98,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel3() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel3() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -107,7 +109,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel4() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel4() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -118,7 +120,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel5() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel5() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", Extension.XLSX);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -133,7 +135,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel6() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel6() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, Extension.XLSX);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -148,7 +150,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel7() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel7() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, Extension.XLSX, false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -159,7 +161,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel8() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel8() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", Extension.XLSX);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -174,7 +176,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel9() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel9() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", Extension.XLSX, false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -185,7 +187,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExcel10() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExcel10() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", Extension.XLSX, false);
         Sheet sheet = SheetUtility.get(excelFile);
         Row row = sheet.getRow(0);
@@ -196,7 +198,7 @@ public class ConverterTest {
     }
 
     @Test
-    void objectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void objectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Converter.objectsToExistingExcel(excelFile, persons, Person.class);
         Sheet sheet = SheetUtility.get(excelFile, "Person");
@@ -212,7 +214,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Converter.objectsToExistingExcel(excelFile, persons, Person.class, false);
         Sheet sheet = SheetUtility.get(excelFile, "Person");
@@ -224,7 +226,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExistingExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExistingExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Workbook workbook = WorkbookUtility.open(excelFile);
         Converter.objectsToExistingExcel(workbook, persons, Person.class);
@@ -244,7 +246,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testObjectsToExistingExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException {
+    void testObjectsToExistingExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Workbook workbook = WorkbookUtility.open(excelFile);
         Converter.objectsToExistingExcel(workbook, persons, Person.class, false);
@@ -481,7 +483,7 @@ public class ConverterTest {
     }
 
     @Test
-    void objectsToExcelFile() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException {
+    void objectsToExcelFile() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException, SheetAlreadyExistsException {
         Stream<Person> personStream = persons.stream();
         Stream<Address> addressStream = addresses.stream();
         List<ObjectToExcel<?>> list = new ArrayList<>();
@@ -507,7 +509,7 @@ public class ConverterTest {
     }
 
     @Test
-    void objectsToExcelByte() throws ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, OpenWorkbookException {
+    void objectsToExcelByte() throws ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, OpenWorkbookException, SheetAlreadyExistsException {
         Stream<Person> personStream = persons.stream();
         Stream<Address> addressStream = addresses.stream();
         List<ObjectToExcel<?>> list = new ArrayList<>();
@@ -537,13 +539,13 @@ public class ConverterTest {
     }
 
     @Test
-    void objectsToExcelStream() throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException {
+    void objectsToExcelStream() throws ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, ReadValueException, SheetAlreadyExistsException {
         Stream<Person> personStream = persons.stream();
         Stream<Address> addressStream = addresses.stream();
         List<ObjectToExcel<?>> list = new ArrayList<>();
         list.add(new ObjectToExcel<>("Person", Person.class, personStream));
         list.add(new ObjectToExcel<>("Address", Address.class, addressStream));
-        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) Converter.objectsToExcelStream(list, Extension.XLSX, true);
+        ByteArrayOutputStream outputStream = Converter.objectsToExcelStream(list, Extension.XLSX, true);
         byte[] bytes = outputStream.toByteArray();
         File fileOutput = new File("./src/test/resources/result.xlsx");
         FileOutputStream fileOutputStream = new FileOutputStream(fileOutput);
@@ -648,9 +650,9 @@ public class ConverterTest {
     @Test
     void excelToCsvStream() throws IOException, OpenWorkbookException, CsvValidationException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
-        Map<String, OutputStream> outputStreamMap = Converter.excelToCsvStream(fileInputStream);
+        Map<String, ByteArrayOutputStream> outputStreamMap = Converter.excelToCsvStream(fileInputStream);
         FileOutputStream fileOutputStream = new FileOutputStream("person.csv");
-        ByteArrayOutputStream baos = (ByteArrayOutputStream) outputStreamMap.get("Person");
+        ByteArrayOutputStream baos = outputStreamMap.get("Person");
         fileOutputStream.write(baos.toByteArray());
         File csvFile = new File("person.csv");
         FileReader fileReader = new FileReader(csvFile);
@@ -670,7 +672,7 @@ public class ConverterTest {
     }
 
     @Test
-    void csvToExcelByte() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException {
+    void csvToExcelByte() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         byte[] bytes = Files.readAllBytes(csvFile.toPath());
         byte[] bytesResult = Converter.csvToExcelByte(bytes, "Test", Extension.XLSX);
         File excelFile = new File("./test.xlsx");
@@ -692,7 +694,7 @@ public class ConverterTest {
     }
 
     @Test
-    void csvToExcelFile() throws CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+    void csvToExcelFile() throws CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcelFile(csvFile, "Test", "./test", Extension.XLSX);
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         ExcelSheet excelSheet = excelWorkbook.getSheet("Test");
@@ -709,9 +711,9 @@ public class ConverterTest {
     }
 
     @Test
-    void csvToExcelStream() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException {
+    void csvToExcelStream() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         FileInputStream fileInputStream = new FileInputStream(csvFile);
-        ByteArrayOutputStream baos = (ByteArrayOutputStream) Converter.csvToExcelStream(fileInputStream, "Test", Extension.XLSX);
+        ByteArrayOutputStream baos = Converter.csvToExcelStream(fileInputStream, "Test", Extension.XLSX);
         FileOutputStream fileOutputStream = new FileOutputStream("./test.xlsx");
         fileOutputStream.write(baos.toByteArray());
         File excelFile = new File("./test.xlsx");
@@ -728,5 +730,61 @@ public class ConverterTest {
         Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
         fileOutputStream.close();
         excelFile.delete();
+    }
+
+    @Test
+    void excelToJsonByte() throws IOException, OpenWorkbookException {
+        byte[] bytes = Files.readAllBytes(excelFile.toPath());
+        byte[] byteJson = Converter.excelToJsonByte(bytes);
+        File jsonFile = new File("./test.json");
+        FileOutputStream fileOutputStream = new FileOutputStream(jsonFile);
+        fileOutputStream.write(byteJson);
+        FileInputStream fileInputStream = new FileInputStream(jsonFile);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(fileInputStream);
+        Assertions.assertEquals("LAST NAME", jsonNode.get("Person").get("row_1").get("col_1").asText());
+        Assertions.assertEquals("NAME", jsonNode.get("Person").get("row_1").get("col_2").asText());
+        Assertions.assertEquals("AGE", jsonNode.get("Person").get("row_1").get("col_3").asText());
+        Assertions.assertEquals("Rossi", jsonNode.get("Person").get("row_2").get("col_1").asText());
+        Assertions.assertEquals("Mario", jsonNode.get("Person").get("row_2").get("col_2").asText());
+        Assertions.assertEquals("20", jsonNode.get("Person").get("row_2").get("col_3").asText());
+        fileInputStream.close();
+        fileOutputStream.close();
+        jsonFile.delete();
+    }
+
+    @Test
+    void excelToJsonFile() throws OpenWorkbookException, IOException {
+        File jsonFile = Converter.excelToJsonFile(excelFile, "./result");
+        FileInputStream fileInputStream = new FileInputStream(jsonFile);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(fileInputStream);
+        Assertions.assertEquals("LAST NAME", jsonNode.get("Person").get("row_1").get("col_1").asText());
+        Assertions.assertEquals("NAME", jsonNode.get("Person").get("row_1").get("col_2").asText());
+        Assertions.assertEquals("AGE", jsonNode.get("Person").get("row_1").get("col_3").asText());
+        Assertions.assertEquals("Rossi", jsonNode.get("Person").get("row_2").get("col_1").asText());
+        Assertions.assertEquals("Mario", jsonNode.get("Person").get("row_2").get("col_2").asText());
+        Assertions.assertEquals("20", jsonNode.get("Person").get("row_2").get("col_3").asText());
+        fileInputStream.close();
+        jsonFile.delete();
+    }
+
+    @Test
+    void excelToJsonStream() throws IOException, OpenWorkbookException {
+        FileInputStream fileInputStream = new FileInputStream(excelFile);
+        ByteArrayOutputStream baos = Converter.excelToJsonStream(fileInputStream);
+        FileOutputStream fileOutputStream = new FileOutputStream("./test.json");
+        fileOutputStream.write(baos.toByteArray());
+        File jsonFile = new File("./test.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonFile);
+        Assertions.assertEquals("LAST NAME", jsonNode.get("Person").get("row_1").get("col_1").asText());
+        Assertions.assertEquals("NAME", jsonNode.get("Person").get("row_1").get("col_2").asText());
+        Assertions.assertEquals("AGE", jsonNode.get("Person").get("row_1").get("col_3").asText());
+        Assertions.assertEquals("Rossi", jsonNode.get("Person").get("row_2").get("col_1").asText());
+        Assertions.assertEquals("Mario", jsonNode.get("Person").get("row_2").get("col_2").asText());
+        Assertions.assertEquals("20", jsonNode.get("Person").get("row_2").get("col_3").asText());
+        fileInputStream.close();
+        jsonFile.delete();
     }
 }

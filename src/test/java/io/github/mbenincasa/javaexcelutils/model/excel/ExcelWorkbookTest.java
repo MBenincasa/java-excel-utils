@@ -5,6 +5,7 @@ import com.opencsv.CSVWriter;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
+import io.github.mbenincasa.javaexcelutils.exceptions.SheetAlreadyExistsException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
 import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.tools.Converter;
@@ -124,7 +125,7 @@ public class ExcelWorkbookTest {
     }
 
     @Test
-    void createSheet() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+    void createSheet() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         ExcelSheet excelSheet = excelWorkbook.createSheet("Test");
         Assertions.assertNotNull(excelSheet.getSheet());
@@ -201,7 +202,7 @@ public class ExcelWorkbookTest {
     }
 
     @Test
-    void writeAndClose() throws ExtensionNotValidException, IOException {
+    void writeAndClose() throws ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         Stream<Person> personStream = persons.stream();
         Stream<Address> addressStream = addresses.stream();
         List<ObjectToExcel<?>> list = new ArrayList<>();

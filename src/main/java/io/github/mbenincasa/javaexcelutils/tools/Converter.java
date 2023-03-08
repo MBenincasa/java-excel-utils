@@ -1,5 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.tools;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelBodyStyle;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelField;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelHeaderStyle;
@@ -50,9 +52,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, true);
     }
 
@@ -69,9 +72,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, true);
     }
 
@@ -89,9 +93,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, true);
     }
 
@@ -110,9 +115,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, path, filename, Extension.XLSX, writeHeader);
     }
 
@@ -129,9 +135,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), Extension.XLSX, writeHeader);
     }
 
@@ -149,9 +156,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX, writeHeader);
     }
 
@@ -170,9 +178,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, path, filename, extension, true);
     }
 
@@ -189,9 +198,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, true);
     }
 
@@ -209,9 +219,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), clazz.getSimpleName(), extension, writeHeader);
     }
 
@@ -229,9 +240,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, true);
     }
 
@@ -250,9 +262,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         return objectsToExcel(objects, clazz, System.getProperty("java.io.tmpdir"), filename, extension, writeHeader);
     }
 
@@ -271,9 +284,10 @@ public class Converter {
      * @throws IOException If an I/O error has occurred
      * @throws FileAlreadyExistsException If the destination file already exists
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException {
+    public static File objectsToExcel(List<?> objects, Class<?> clazz, String path, String filename, Extension extension, Boolean writeHeader) throws IllegalAccessException, IOException, FileAlreadyExistsException, ExtensionNotValidException, SheetAlreadyExistsException {
         /* Check extension*/
         if(!extension.isExcelExtension())
             throw new ExtensionNotValidException("Select an extension for an Excel file");
@@ -301,7 +315,7 @@ public class Converter {
         return file;
     }
 
-    public static File objectsToExcelFile(List<ObjectToExcel<?>> objectToExcels, Extension extension, String filename, Boolean writeHeader) throws ExtensionNotValidException, IOException, FileAlreadyExistsException {
+    public static File objectsToExcelFile(List<ObjectToExcel<?>> objectToExcels, Extension extension, String filename, Boolean writeHeader) throws ExtensionNotValidException, IOException, FileAlreadyExistsException, SheetAlreadyExistsException {
         File file = new File(filename + "." + extension.getExt());
         if (file.exists())
             throw new FileAlreadyExistsException("There is already a file with this pathname: " + file.getAbsolutePath());
@@ -314,12 +328,12 @@ public class Converter {
         return file;
     }
 
-    public static byte[] objectsToExcelByte(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException {
-        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) objectsToExcelStream(objectToExcels, extension, writeHeader);
+    public static byte[] objectsToExcelByte(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException, SheetAlreadyExistsException {
+        ByteArrayOutputStream outputStream = objectsToExcelStream(objectToExcels, extension, writeHeader);
         return outputStream.toByteArray();
     }
 
-    public static OutputStream objectsToExcelStream(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException {
+    public static ByteArrayOutputStream objectsToExcelStream(List<ObjectToExcel<?>> objectToExcels, Extension extension, Boolean writeHeader) throws ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         /* Check extension*/
         if(!extension.isExcelExtension())
             throw new ExtensionNotValidException("Select an extension for an Excel file");
@@ -367,7 +381,7 @@ public class Converter {
         }
 
         /* Write and close */
-        OutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         excelWorkbook.writeAndClose(outputStream);
         return outputStream;
     }
@@ -383,10 +397,11 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      * @since 0.2.1
      */
     @Deprecated
-    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
+    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException, SheetAlreadyExistsException {
         objectsToExistingExcel(file, objects, clazz, true);
     }
 
@@ -401,10 +416,11 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws IOException If an I/O error has occurred
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      * @since 0.2.1
      */
     @Deprecated
-    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz, Boolean writeHeader) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException {
+    public static void objectsToExistingExcel(File file, List<?> objects, Class<?> clazz, Boolean writeHeader) throws OpenWorkbookException, ExtensionNotValidException, IOException, IllegalAccessException, SheetAlreadyExistsException {
         /* Open workbook */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
         Workbook workbook = excelWorkbook.getWorkbook();
@@ -427,9 +443,10 @@ public class Converter {
      * @param objects The list of objects that will be converted into an Excel file
      * @param clazz The class of the list elements
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz) throws IllegalAccessException {
+    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz) throws IllegalAccessException, SheetAlreadyExistsException {
         objectsToExistingExcel(workbook, objects, clazz, true);
     }
 
@@ -442,9 +459,10 @@ public class Converter {
      * @param clazz The class of the list elements
      * @param writeHeader If {@code true} it will write the header to the first line
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
     @Deprecated
-    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException {
+    public static void objectsToExistingExcel(Workbook workbook, List<?> objects, Class<?> clazz, Boolean writeHeader) throws IllegalAccessException, SheetAlreadyExistsException {
         /* Create sheet */
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
         Sheet sheet = excelWorkbook.createSheet(clazz.getSimpleName()).getSheet();
@@ -537,7 +555,7 @@ public class Converter {
         return resultList;
     }
 
-    public static Map<String, Stream<?>> excelByteToObjects(byte[] bytes, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static Map<String, Stream<?>> excelByteToObjects(byte[] bytes, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, ReadValueException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
         ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
         return excelStreamToObjects(byteStream, excelToObjects);
     }
@@ -549,7 +567,7 @@ public class Converter {
         return map;
     }
 
-    public static Map<String, Stream<?>> excelStreamToObjects(InputStream inputStream, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, HeaderNotPresentException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ReadValueException {
+    public static Map<String, Stream<?>> excelStreamToObjects(InputStream inputStream, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, HeaderNotPresentException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ReadValueException, IOException {
         /* Open Workbook */
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(inputStream);
         Map<String, Stream<?>> map = new HashMap<>();
@@ -599,6 +617,7 @@ public class Converter {
             map.put(excelSheet.getName(), streamBuilder.build());
         }
 
+        excelWorkbook.close(inputStream);
         return map;
     }
 
@@ -710,11 +729,11 @@ public class Converter {
         InputStream inputStream = new ByteArrayInputStream(bytes);
         Map<String, byte[]> byteArrayMap = new HashMap<>();
 
-        Map<String, OutputStream> outputStreamMap = excelToCsvStream(inputStream);
+        Map<String, ByteArrayOutputStream> outputStreamMap = excelToCsvStream(inputStream);
 
         /* iterate all the outputStream */
-        for (Map.Entry<String, OutputStream> entry : outputStreamMap.entrySet()) {
-            ByteArrayOutputStream baos = (ByteArrayOutputStream) entry.getValue();
+        for (Map.Entry<String, ByteArrayOutputStream> entry : outputStreamMap.entrySet()) {
+            ByteArrayOutputStream baos = entry.getValue();
             byteArrayMap.put(entry.getKey(), baos.toByteArray());
         }
 
@@ -726,13 +745,13 @@ public class Converter {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
         Map<String, File> fileMap = new HashMap<>();
 
-        Map<String, OutputStream> outputStreamMap = excelToCsvStream(fileInputStream);
+        Map<String, ByteArrayOutputStream> outputStreamMap = excelToCsvStream(fileInputStream);
 
         /* iterate all the outputStream */
-        for (Map.Entry<String, OutputStream> entry : outputStreamMap.entrySet()) {
+        for (Map.Entry<String, ByteArrayOutputStream> entry : outputStreamMap.entrySet()) {
             String pathname = path + "/" + entry.getKey() + "." + Extension.CSV.getExt();
             FileOutputStream fileOutputStream = new FileOutputStream(pathname);
-            ByteArrayOutputStream baos = (ByteArrayOutputStream) entry.getValue();
+            ByteArrayOutputStream baos = entry.getValue();
             fileOutputStream.write(baos.toByteArray());
             File file = new File(pathname);
             fileMap.put(entry.getKey(), file);
@@ -742,26 +761,25 @@ public class Converter {
         return fileMap;
     }
 
-    public static Map<String, OutputStream> excelToCsvStream(InputStream excelStream) throws OpenWorkbookException, IOException {
+    public static Map<String, ByteArrayOutputStream> excelToCsvStream(InputStream excelStream) throws OpenWorkbookException, IOException {
         /* Open file excel */
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(excelStream);
         List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
 
-        Map<String, OutputStream> map = new HashMap<>();
+        Map<String, ByteArrayOutputStream> map = new HashMap<>();
 
         /* Iterate all the Sheets */
         for (ExcelSheet excelSheet : excelSheets) {
-            OutputStream outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             /* Open CSV Writer */
             Writer writer = new OutputStreamWriter(outputStream);
             CSVWriter csvWriter = new CSVWriter(writer);
 
-            DataFormatter formatter = new DataFormatter(true);
             for (ExcelRow excelRow : excelSheet.getRows()) {
                 List<String> data = new LinkedList<>();
                 for (ExcelCell excelCell : excelRow.getCells()) {
-                    data.add(formatter.formatCellValue(excelCell.getCell()));
+                    data.add(excelCell.readValueAsString());
                 }
                 csvWriter.writeNext(data.toArray(data.toArray(new String[0])));
             }
@@ -770,7 +788,7 @@ public class Converter {
         }
 
         /* Close workbook */
-        excelWorkbook.close();
+        excelWorkbook.close(excelStream);
 
         return map;
     }
@@ -872,15 +890,15 @@ public class Converter {
         return outputFile;
     }
 
-    public static byte[] csvToExcelByte(byte[] bytes, String sheetName, Extension extension) throws CsvValidationException, ExtensionNotValidException, IOException {
+    public static byte[] csvToExcelByte(byte[] bytes, String sheetName, Extension extension) throws CsvValidationException, ExtensionNotValidException, IOException, SheetAlreadyExistsException {
         InputStream inputStream = new ByteArrayInputStream(bytes);
-        ByteArrayOutputStream baos = (ByteArrayOutputStream) csvToExcelStream(inputStream, sheetName, extension);
+        ByteArrayOutputStream baos = csvToExcelStream(inputStream, sheetName, extension);
         return baos.toByteArray();
     }
 
-    public static File csvToExcelFile(File fileInput, String sheetName, String pathname, Extension extension) throws IOException, CsvValidationException, ExtensionNotValidException {
+    public static File csvToExcelFile(File fileInput, String sheetName, String pathname, Extension extension) throws IOException, CsvValidationException, ExtensionNotValidException, SheetAlreadyExistsException {
         InputStream inputStream = new FileInputStream(fileInput);
-        ByteArrayOutputStream baos = (ByteArrayOutputStream) csvToExcelStream(inputStream, sheetName, extension);
+        ByteArrayOutputStream baos = csvToExcelStream(inputStream, sheetName, extension);
         pathname = pathname + "." + extension.getExt();
         FileOutputStream fileOutputStream = new FileOutputStream(pathname);
         fileOutputStream.write(baos.toByteArray());
@@ -890,7 +908,7 @@ public class Converter {
         return file;
     }
 
-    public static OutputStream csvToExcelStream(InputStream inputStream, String sheetName, Extension extension) throws ExtensionNotValidException, CsvValidationException, IOException {
+    public static ByteArrayOutputStream csvToExcelStream(InputStream inputStream, String sheetName, Extension extension) throws ExtensionNotValidException, CsvValidationException, IOException, SheetAlreadyExistsException {
         /* Check the extension */
         if (!ExcelUtility.isValidExcelExtension(extension.getExt())) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
@@ -917,7 +935,8 @@ public class Converter {
         }
 
         /* Write and close the Workbook */
-        OutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        inputStream.close();
         excelWorkbook.writeAndClose(outputStream);
         csvReader.close();
 
@@ -1028,6 +1047,65 @@ public class Converter {
             }
             cRow++;
         }
+    }
+
+    public static byte[] excelToJsonByte(byte[] bytes) throws OpenWorkbookException, IOException {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        ByteArrayOutputStream baos = excelToJsonStream(inputStream);
+        return baos.toByteArray();
+    }
+
+    public static File excelToJsonFile(File excelFile, String pathname) throws IOException, OpenWorkbookException {
+        FileInputStream fileInputStream = new FileInputStream(excelFile);
+        ByteArrayOutputStream baos = excelToJsonStream(fileInputStream);
+        pathname = pathname + "." + Extension.JSON.getExt();
+        FileOutputStream fileOutputStream = new FileOutputStream(pathname);
+        fileOutputStream.write(baos.toByteArray());
+        File jsonFile = new File(pathname);
+        fileOutputStream.close();
+
+        return jsonFile;
+    }
+
+    public static ByteArrayOutputStream excelToJsonStream(InputStream excelStream) throws OpenWorkbookException, IOException {
+        /* Open Workbook */
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(excelStream);
+        List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
+
+        /* Create Json Object */
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode rootNode = objectMapper.createObjectNode();
+
+        /* Iterate all the Sheets */
+        for (ExcelSheet excelSheet : excelSheets) {
+            /* Create a node for each Sheet */
+            ObjectNode sheetNode = objectMapper.createObjectNode();
+            List<ExcelRow> excelRows = excelSheet.getRows();
+
+            /* Iterate all the Rows */
+            for (ExcelRow excelRow : excelRows) {
+                /* Create a node for each Row */
+                ObjectNode rowNode = objectMapper.createObjectNode();
+                List<ExcelCell> excelCells = excelRow.getCells();
+
+                /* Iterate all the Cells */
+                for (ExcelCell excelCell : excelCells) {
+                    rowNode.put("col_" + (excelCell.getIndex() + 1), excelCell.readValueAsString());
+                }
+                sheetNode.putPOJO("row_" + (excelRow.getIndex() + 1), rowNode);
+            }
+
+            rootNode.putPOJO(excelSheet.getName(), sheetNode);
+        }
+
+        /* Close Workbook */
+        excelWorkbook.close(excelStream);
+
+        /* Create OutputStream */
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        objectMapper.writeValue(byteArrayOutputStream, rootNode);
+
+        return byteArrayOutputStream;
     }
 
     private static void isValidCsvExtension(String extension) throws ExtensionNotValidException {

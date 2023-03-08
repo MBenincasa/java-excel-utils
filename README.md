@@ -55,6 +55,8 @@ Java 17 or above.
 - org.projectlombok:lombok:jar:1.18.24
 - commons-beanutils:commons-beanutils:jar:1.9.4
 - com.opencsv:opencsv:jar:5.7.1
+- com.fasterxml.jackson.core:jackson-databind:jar:2.14.2
+- org.apache.logging.log4j:log4j-core:jar:2.20.0
 - org.junit.jupiter:junit-jupiter:jar:5.9.2
 - org.junit.platform:junit-platform-suite-engine:jar:1.9.2
 
@@ -63,7 +65,7 @@ Java 17 or above.
 <dependency>
   <groupId>io.github.mbenincasa</groupId>
   <artifactId>java-excel-utils</artifactId>
-  <version>x.y.z</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 

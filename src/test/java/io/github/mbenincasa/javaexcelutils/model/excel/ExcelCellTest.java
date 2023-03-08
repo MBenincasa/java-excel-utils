@@ -73,4 +73,44 @@ class ExcelCellTest {
         excelCell.formatStyle((short) 1);
         Assertions.assertEquals((short) 1, excelCell.getCell().getCellStyle().getDataFormat());
     }
+
+    @Test
+    void testReadValue() throws OpenWorkbookException, ExtensionNotValidException, IOException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheetOrCreate("TestWrite");
+        ExcelRow excelRow = excelSheet.createRow(0);
+        ExcelCell excelCell = excelRow.createCell(0);
+        excelCell.writeValue("Text");
+        ExcelCell excelCell1 = excelRow.createCell(1);
+        excelCell1.writeValue(21);
+        ExcelCell excelCell2 = excelRow.createCell(2);
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 21, 21, 21, 0);
+        excelCell2.writeValue(localDateTime);
+        ExcelCell excelCell3 = excelRow.createCell(3);
+        excelCell3.writeValue(false);
+        Assertions.assertEquals("Text", excelCell.readValue());
+        Assertions.assertEquals(21.0, excelCell1.readValue());
+        Assertions.assertEquals(44197.88982638889, excelCell2.readValue());
+        Assertions.assertEquals(false, excelCell3.readValue());
+    }
+
+    @Test
+    void readValueAsString() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheetOrCreate("TestWrite");
+        ExcelRow excelRow = excelSheet.createRow(0);
+        ExcelCell excelCell = excelRow.createCell(0);
+        excelCell.writeValue("Text");
+        ExcelCell excelCell1 = excelRow.createCell(1);
+        excelCell1.writeValue(21);
+        ExcelCell excelCell2 = excelRow.createCell(2);
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 21, 21, 21, 0);
+        excelCell2.writeValue(localDateTime);
+        ExcelCell excelCell3 = excelRow.createCell(3);
+        excelCell3.writeValue(false);
+        Assertions.assertEquals("Text", excelCell.readValueAsString());
+        Assertions.assertEquals("21", excelCell1.readValueAsString());
+        Assertions.assertEquals("1/1/21 21:21", excelCell2.readValueAsString());
+        Assertions.assertEquals("FALSE", excelCell3.readValueAsString());
+    }
 }

@@ -4,10 +4,7 @@ import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +37,20 @@ public class ExcelCell {
     public ExcelRow getRow() {
         Row row = this.cell.getRow();
         return new ExcelRow(row, row.getRowNum());
+    }
+
+    public Object readValue() throws ReadValueException {
+        Object val;
+        switch (this.cell.getCellType()) {
+            case BOOLEAN -> val = this.cell.getBooleanCellValue();
+            case STRING -> val = this.cell.getStringCellValue();
+            case NUMERIC -> val = this.cell.getNumericCellValue();
+            case FORMULA -> val = this.cell.getCellFormula();
+            case BLANK -> val = "";
+            default -> throw new ReadValueException("An error occurred while reading. CellType '" + this.cell.getCellType() + "'");
+        }
+
+        return val;
     }
 
     /**
@@ -93,6 +104,11 @@ public class ExcelCell {
         }
 
         return val;
+    }
+
+    public String readValueAsString() {
+        DataFormatter formatter = new DataFormatter(true);
+        return formatter.formatCellValue(this.cell);
     }
 
     /**
