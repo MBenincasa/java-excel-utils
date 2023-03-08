@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -608,7 +609,11 @@ public class Converter {
                         throw new RuntimeException();
                     }
                     Field field = fieldOptional.get();
-                    PropertyUtils.setSimpleProperty(obj, headerName, excelCell.readValue(field.getType()));
+
+                    /* Set the value */
+                    String methodName = "set" + Character.toUpperCase(headerName.charAt(0)) + headerName.substring(1);
+                    Method setMethod = clazz.getMethod(methodName, field.getType());
+                    setMethod.invoke(obj, excelCell.readValue(field.getType()));
                 }
                 /* Adds the object to the Stream after it has finished cycling through all cells */
                 streamBuilder.add(obj);
