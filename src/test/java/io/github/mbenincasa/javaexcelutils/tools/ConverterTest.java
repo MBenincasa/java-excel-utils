@@ -668,4 +668,65 @@ public class ConverterTest {
         csvFile.delete();
         fileInputStream.close();
     }
+
+    @Test
+    void csvToExcelByte() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException {
+        byte[] bytes = Files.readAllBytes(csvFile.toPath());
+        byte[] bytesResult = Converter.csvToExcelByte(bytes, "Test", Extension.XLSX);
+        File excelFile = new File("./test.xlsx");
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
+        fileOutputStream.write(bytesResult);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test");
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Row row = excelRow.getRow();
+        Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("AGE", row.getCell(2).getStringCellValue());
+        row = excelSheet.getRows().get(1).getRow();
+        Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
+        fileOutputStream.close();
+        excelFile.delete();
+    }
+
+    @Test
+    void csvToExcelFile() throws CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException {
+        File excelFile = Converter.csvToExcelFile(csvFile, "Test", "./test", Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test");
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Row row = excelRow.getRow();
+        Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("AGE", row.getCell(2).getStringCellValue());
+        row = excelSheet.getRows().get(1).getRow();
+        Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
+        excelFile.delete();
+    }
+
+    @Test
+    void csvToExcelStream() throws IOException, CsvValidationException, ExtensionNotValidException, OpenWorkbookException, SheetNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(csvFile);
+        ByteArrayOutputStream baos = (ByteArrayOutputStream) Converter.csvToExcelStream(fileInputStream, "Test", Extension.XLSX);
+        FileOutputStream fileOutputStream = new FileOutputStream("./test.xlsx");
+        fileOutputStream.write(baos.toByteArray());
+        File excelFile = new File("./test.xlsx");
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test");
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Row row = excelRow.getRow();
+        Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("AGE", row.getCell(2).getStringCellValue());
+        row = excelSheet.getRows().get(1).getRow();
+        Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
+        Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
+        Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
+        fileOutputStream.close();
+        excelFile.delete();
+    }
 }

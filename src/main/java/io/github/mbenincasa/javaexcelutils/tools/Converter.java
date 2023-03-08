@@ -752,6 +752,8 @@ public class Converter {
         /* Iterate all the Sheets */
         for (ExcelSheet excelSheet : excelSheets) {
             OutputStream outputStream = new ByteArrayOutputStream();
+
+            /* Open CSV Writer */
             Writer writer = new OutputStreamWriter(outputStream);
             CSVWriter csvWriter = new CSVWriter(writer);
 
@@ -776,6 +778,7 @@ public class Converter {
     /**
      * Convert a CSV file into an Excel file<p>
      * The default path is that of the temporary folder. By default, the filename will be the same as the input file if not specified and the extension is XLSX
+     * @deprecated since version 0.4.0
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @return An Excel file that contains the same lines as the CSV file
      * @throws FileAlreadyExistsException If the destination file already exists
@@ -783,6 +786,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File csvToExcel(File fileInput) throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException {
         return csvToExcel(fileInput, System.getProperty("java.io.tmpdir"), fileInput.getName().split("\\.")[0].trim(), Extension.XLSX);
     }
@@ -790,6 +794,7 @@ public class Converter {
     /**
      * Convert a CSV file into an Excel file<p>
      * The default path is that of the temporary folder. By default, the extension is XLSX
+     * @deprecated since version 0.4.0
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @param filename The name of the output file without the extension
      * @return An Excel file that contains the same lines as the CSV file
@@ -798,6 +803,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File csvToExcel(File fileInput, String filename) throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException {
         return csvToExcel(fileInput, System.getProperty("java.io.tmpdir"), filename, Extension.XLSX);
     }
@@ -805,6 +811,7 @@ public class Converter {
     /**
      * Convert a CSV file into an Excel file<p>
      * By default, the extension is XLSX
+     * @deprecated since version 0.4.0
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @param path The destination path of the output file
      * @param filename The name of the output file without the extension
@@ -814,12 +821,14 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File csvToExcel(File fileInput, String path, String filename) throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException {
         return csvToExcel(fileInput, path, filename, Extension.XLSX);
     }
 
     /**
      * Convert a CSV file into an Excel file
+     * @deprecated since version 0.4.0
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @param path The destination path of the output file
      * @param filename The name of the output file without the extension
@@ -830,6 +839,7 @@ public class Converter {
      * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static File csvToExcel(File fileInput, String path, String filename, Extension extension) throws IOException, ExtensionNotValidException, CsvValidationException, FileAlreadyExistsException {
         /* Check exension */
         String csvExt = FilenameUtils.getExtension(fileInput.getName());
@@ -862,8 +872,61 @@ public class Converter {
         return outputFile;
     }
 
+    public static byte[] csvToExcelByte(byte[] bytes, String sheetName, Extension extension) throws CsvValidationException, ExtensionNotValidException, IOException {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        ByteArrayOutputStream baos = (ByteArrayOutputStream) csvToExcelStream(inputStream, sheetName, extension);
+        return baos.toByteArray();
+    }
+
+    public static File csvToExcelFile(File fileInput, String sheetName, String pathname, Extension extension) throws IOException, CsvValidationException, ExtensionNotValidException {
+        InputStream inputStream = new FileInputStream(fileInput);
+        ByteArrayOutputStream baos = (ByteArrayOutputStream) csvToExcelStream(inputStream, sheetName, extension);
+        pathname = pathname + "." + extension.getExt();
+        FileOutputStream fileOutputStream = new FileOutputStream(pathname);
+        fileOutputStream.write(baos.toByteArray());
+        File file = new File(pathname);
+        fileOutputStream.close();
+
+        return file;
+    }
+
+    public static OutputStream csvToExcelStream(InputStream inputStream, String sheetName, Extension extension) throws ExtensionNotValidException, CsvValidationException, IOException {
+        /* Check the extension */
+        if (!ExcelUtility.isValidExcelExtension(extension.getExt())) {
+            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
+        }
+
+        /* Open CSV Reader */
+        Reader reader = new InputStreamReader(inputStream);
+        CSVReader csvReader = new CSVReader(reader);
+
+        ExcelWorkbook excelWorkbook = new ExcelWorkbook(extension);
+        ExcelSheet excelSheet = excelWorkbook.createSheet(sheetName);
+
+        /* Read CSV file */
+        String[] values;
+        int cRow = 0;
+        while ((values = csvReader.readNext()) != null) {
+            ExcelRow excelRow = excelSheet.createRow(cRow);
+            for (int j = 0; j < values.length; j++) {
+                ExcelCell excelCell = excelRow.createCell(j);
+                excelCell.writeValue(values[j]);
+                excelSheet.getSheet().autoSizeColumn(j);
+            }
+            cRow++;
+        }
+
+        /* Write and close the Workbook */
+        OutputStream outputStream = new ByteArrayOutputStream();
+        excelWorkbook.writeAndClose(outputStream);
+        csvReader.close();
+
+        return outputStream;
+    }
+
     /**
      * Convert the CSV file into a new sheet of an existing File.
+     * @deprecated since version 0.4.0
      * @param fileOutput The {@code File} to update
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @throws OpenWorkbookException If an error occurred while opening the workbook
@@ -872,6 +935,7 @@ public class Converter {
      * @throws CsvValidationException If the CSV file has invalid formatting
      * @since 0.2.1
      */
+    @Deprecated
     public static void csvToExistingExcel(File fileOutput, File fileInput) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
         /* Open workbook */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileOutput);
@@ -888,6 +952,7 @@ public class Converter {
 
     /**
      * Writes the data present in the CSVReader to a new sheet of an existing File.
+     * @deprecated since version 0.4.0
      * @param fileOutput The {@code File} to update
      * @param csvReader The {@code CSVReader} of the CSV input file
      * @throws OpenWorkbookException If an error occurred while opening the workbook
@@ -896,6 +961,7 @@ public class Converter {
      * @throws CsvValidationException If the CSV file has invalid formatting
      * @since 0.2.1
      */
+    @Deprecated
     public static void csvToExistingExcel(File fileOutput, CSVReader csvReader) throws OpenWorkbookException, ExtensionNotValidException, IOException, CsvValidationException {
         /* Open workbook */
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileOutput);
@@ -913,12 +979,14 @@ public class Converter {
     /**
      * Convert the CSV file into a new sheet of an existing Workbook.<p>
      * Note: This method does not call the "write" method of the workbook.
+     * @deprecated since version 0.4.0
      * @param workbook The {@code Workbook} to update
      * @param fileInput The input CSV file that will be converted into an Excel file
      * @throws IOException If an I/O error has occurred
      * @throws CsvValidationException If the CSV file has invalid formatting
      * @throws ExtensionNotValidException If the input file extension does not belong to a CSV file
      */
+    @Deprecated
     public static void csvToExistingExcel(Workbook workbook, File fileInput) throws IOException, CsvValidationException, ExtensionNotValidException {
         /* Check exension */
         String csvExt = FilenameUtils.getExtension(fileInput.getName());
@@ -936,11 +1004,13 @@ public class Converter {
     /**
      * Writes the data present in the CSVReader to a new sheet of an existing Workbook.<p>
      * Note: This method does not call the "write" method of the workbook.
+     * @deprecated since version 0.4.0
      * @param workbook The {@code Workbook} to update
      * @param csvReader The {@code CSVReader} of the CSV input file
      * @throws CsvValidationException If the CSV file has invalid formatting
      * @throws IOException If an I/O error has occurred
      */
+    @Deprecated
     public static void csvToExistingExcel(Workbook workbook, CSVReader csvReader) throws CsvValidationException, IOException {
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(workbook);
         ExcelSheet excelSheet = excelWorkbook.createSheet();
