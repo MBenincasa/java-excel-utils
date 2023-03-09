@@ -6,7 +6,7 @@
 
     <groupId>io.github.mbenincasa</groupId>
     <artifactId>java-excel-utils</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <packaging>jar</packaging>
     <name>Java library with tools for Excel files</name>
     <description>Java library that collects tools and methods to speed up development with Excel sheets</description>

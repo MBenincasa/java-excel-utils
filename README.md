@@ -26,6 +26,7 @@ At any time you can retrieve the associated Apache POI components.
 
 ```
 public void toPOI() {
+    // Initialize the components
     Workbook workbook = excelWorkbook.getWorkbook();
     Sheet sheet = excelSheet.getSheet();
     Row row = excelRow.getRow();
@@ -36,9 +37,34 @@ public void toPOI() {
 One of the main features of the library is to be able to perform conversions. The **Converter** class has methods that convert **Excel <-> POJOs** and **Excel <-> CSV**.<br>
 This is an example of Excel to POJOs:
 ```
-public void ExcelToObjects() {
+public void excelToObjects() {
+    // Initialize List<ExcelToObject<?>> excelToObjects...
     File file = new File("./src/main/resources/car.xlsx");
-    List<Car> cars = (List<Car>) Converter.excelToObjects(file, Car.class);
+    Map<String, Stream<?>> map = Converter.excelFileToObjects(file, excelToObjects);
+    for (Map.Entry<String, Stream<?>> entry : map.entrySet()) {
+        System.out.println("Sheet: " + entry.getKey());
+        System.out.println("Data: " + entry.getValue().toList());
+    }
+}
+```
+
+This is an example of POJOs to Excel:
+```
+public void objectsToExcel() {
+    // Initialize List<ObjectToExcel<?>> list...
+    list.add(new ObjectToExcel<>("Employee", Employee.class, employeeStream));
+    list.add(new ObjectToExcel<>("Office", Office.class, officeStream));
+    File fileOutput = Converter.objectsToExcelFile(list, Extension.XLSX, "./src/main/resources/result", true);
+}
+```
+
+ExcelCell provides generic methods for reading a cell.
+```
+public void readValue() {
+    // Initialize ExcelCell excelCell...
+    Integer intVal = excelCell.readValue(Integer.class);
+    Double doubleVal = excelCell.readValue();
+    String stringVal = excelCell.readValueAsString();
 }
 ```
 
@@ -65,7 +91,7 @@ Java 17 or above.
 <dependency>
   <groupId>io.github.mbenincasa</groupId>
   <artifactId>java-excel-utils</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
