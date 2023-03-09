@@ -16,7 +16,6 @@ import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Office;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.*;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Address;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Person;
@@ -47,7 +46,8 @@ public class ConverterTest {
     @Test
     void objectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -62,7 +62,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person");
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -77,7 +78,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person");
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -92,7 +94,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -103,7 +106,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel3() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -114,7 +118,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel4() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -125,7 +130,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel5() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", Extension.XLSX);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -140,7 +146,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel6() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, Extension.XLSX);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -155,7 +162,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel7() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, Extension.XLSX, false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -166,7 +174,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel8() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", Extension.XLSX);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -181,7 +190,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel9() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "person", Extension.XLSX, false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -192,7 +202,8 @@ public class ConverterTest {
     @Test
     void testObjectsToExcel10() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(persons, Person.class, "./src/", "person", Extension.XLSX, false);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -204,7 +215,8 @@ public class ConverterTest {
     void objectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Converter.objectsToExistingExcel(excelFile, persons, Person.class);
-        Sheet sheet = SheetUtility.get(excelFile, "Person");
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet("Person").getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -220,7 +232,8 @@ public class ConverterTest {
     void testObjectsToExistingExcel() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
         Converter.objectsToExistingExcel(excelFile, persons, Person.class, false);
-        Sheet sheet = SheetUtility.get(excelFile, "Person");
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet("Person").getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
@@ -231,11 +244,11 @@ public class ConverterTest {
     @Test
     void testObjectsToExistingExcel1() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
-        Workbook workbook = WorkbookUtility.open(excelFile);
-        Converter.objectsToExistingExcel(workbook, persons, Person.class);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Converter.objectsToExistingExcel(excelWorkbook.getWorkbook(), persons, Person.class);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
-        workbook.write(fileOutputStream);
-        Sheet sheet = SheetUtility.get(excelFile, "Person");
+        excelWorkbook.getWorkbook().write(fileOutputStream);
+        Sheet sheet = excelWorkbook.getSheet("Person").getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -244,23 +257,23 @@ public class ConverterTest {
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
         Assertions.assertEquals(20, row.getCell(2).getNumericCellValue());
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
         excelFile.delete();
     }
 
     @Test
     void testObjectsToExistingExcel2() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, IllegalAccessException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.objectsToExcel(addresses, Address.class, false);
-        Workbook workbook = WorkbookUtility.open(excelFile);
-        Converter.objectsToExistingExcel(workbook, persons, Person.class, false);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Converter.objectsToExistingExcel(excelWorkbook.getWorkbook(), persons, Person.class, false);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
-        workbook.write(fileOutputStream);
-        Sheet sheet = SheetUtility.get(excelFile, "Person");
+        excelWorkbook.getWorkbook().write(fileOutputStream);
+        Sheet sheet = excelWorkbook.getSheet("Person").getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
         Assertions.assertEquals(20, row.getCell(2).getNumericCellValue());
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
         excelFile.delete();
     }
 
@@ -351,7 +364,8 @@ public class ConverterTest {
     @Test
     void csvToExcel() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -366,7 +380,8 @@ public class ConverterTest {
     @Test
     void testCsvToExcel() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile, "person");
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -381,7 +396,8 @@ public class ConverterTest {
     @Test
     void testCsvToExcel1() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile, "./src/", "person");
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -396,7 +412,8 @@ public class ConverterTest {
     @Test
     void testCsvToExcel2() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile, "./src/", "person", Extension.XLSX);
-        Sheet sheet = SheetUtility.get(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet().getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -412,7 +429,8 @@ public class ConverterTest {
     void csvToExistingExcel() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile);
         Converter.csvToExistingExcel(excelFile, csvFile2);
-        Sheet sheet = SheetUtility.get(excelFile, 1);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet(1).getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -430,7 +448,8 @@ public class ConverterTest {
         FileReader fileReader = new FileReader(csvFile2);
         CSVReader csvReader = new CSVReader(fileReader);
         Converter.csvToExistingExcel(excelFile, csvReader);
-        Sheet sheet = SheetUtility.get(excelFile, 1);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Sheet sheet = excelWorkbook.getSheet(1).getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -446,11 +465,11 @@ public class ConverterTest {
     @Test
     void testCsvToExistingExcel1() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile);
-        Workbook workbook = WorkbookUtility.open(excelFile);
-        Converter.csvToExistingExcel(workbook, csvFile2);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Converter.csvToExistingExcel(excelWorkbook.getWorkbook(), csvFile2);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
-        workbook.write(fileOutputStream);
-        Sheet sheet = SheetUtility.get(excelFile, 1);
+        excelWorkbook.getWorkbook().write(fileOutputStream);
+        Sheet sheet = excelWorkbook.getSheet(1).getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -459,20 +478,20 @@ public class ConverterTest {
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
         Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
-        WorkbookUtility.close(workbook, fileOutputStream);
+        excelWorkbook.close(fileOutputStream);
         excelFile.delete();
     }
 
     @Test
     void testCsvToExistingExcel2() throws FileAlreadyExistsException, CsvValidationException, ExtensionNotValidException, IOException, OpenWorkbookException, SheetNotFoundException, SheetAlreadyExistsException {
         File excelFile = Converter.csvToExcel(csvFile);
-        Workbook workbook = WorkbookUtility.open(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
         FileReader fileReader = new FileReader(csvFile2);
         CSVReader csvReader = new CSVReader(fileReader);
-        Converter.csvToExistingExcel(workbook, csvReader);
+        Converter.csvToExistingExcel(excelWorkbook.getWorkbook(), csvReader);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
-        workbook.write(fileOutputStream);
-        Sheet sheet = SheetUtility.get(excelFile, 1);
+        excelWorkbook.getWorkbook().write(fileOutputStream);
+        Sheet sheet = excelWorkbook.getSheet(1).getSheet();
         Row row = sheet.getRow(0);
         Assertions.assertEquals("LAST NAME", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("NAME", row.getCell(1).getStringCellValue());
@@ -481,7 +500,7 @@ public class ConverterTest {
         Assertions.assertEquals("Rossi", row.getCell(0).getStringCellValue());
         Assertions.assertEquals("Mario", row.getCell(1).getStringCellValue());
         Assertions.assertEquals("20", row.getCell(2).getStringCellValue());
-        WorkbookUtility.close(workbook, fileOutputStream, csvReader);
+        excelWorkbook.close(fileOutputStream, csvReader);
         excelFile.delete();
     }
 
