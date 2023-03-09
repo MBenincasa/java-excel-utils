@@ -32,6 +32,7 @@ public enum Extension {
     CSV("csv", "CSV"),
 
     /**
+     * @since 0.4.0
      * This extension is used for JSON (JavaScript Object Notation) files
      */
     JSON("json", "JSON");
@@ -65,6 +66,6 @@ public enum Extension {
      * @since 0.1.1
      */
     public Boolean isExcelExtension() {
-        return this.getType().equalsIgnoreCase("EXCEL");
+        return this.type.equalsIgnoreCase("EXCEL");
     }
 }

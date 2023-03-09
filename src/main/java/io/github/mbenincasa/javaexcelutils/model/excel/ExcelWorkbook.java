@@ -190,6 +190,7 @@ public class ExcelWorkbook {
     }
 
     /**
+     * Close a workbook
      * @param outputStream The {@code OutputStream} to close
      * @param reader The {@code CSVReader} to close
      * @throws IOException If an I/O error has occurred
@@ -351,6 +352,13 @@ public class ExcelWorkbook {
         return this.workbook.getCreationHelper().createFormulaEvaluator();
     }
 
+
+    /**
+     * Writes the OutputStream to the Workbook and then closes them
+     * @param outputStream The {@code OutputStream} to close
+     * @throws IOException If an I/O error has occurred
+     * @since 0.4.0
+     */
     public void writeAndClose(OutputStream outputStream) throws IOException {
         this.workbook.write(outputStream);
         this.close(outputStream);

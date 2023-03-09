@@ -39,6 +39,12 @@ public class ExcelCell {
         return new ExcelRow(row, row.getRowNum());
     }
 
+    /**
+     * Read the value written inside the Cell
+     * @return The value written in the Cell
+     * @throws ReadValueException If an error occurs while reading
+     * @since 0.4.0
+     */
     public Object readValue() throws ReadValueException {
         Object val;
         switch (this.cell.getCellType()) {
@@ -106,6 +112,11 @@ public class ExcelCell {
         return val;
     }
 
+    /**
+     * Read the value written inside the Cell as String
+     * @return The value written in the Cell
+     * @since 0.4.0
+     */
     public String readValueAsString() {
         DataFormatter formatter = new DataFormatter(true);
         return formatter.formatCellValue(this.cell);

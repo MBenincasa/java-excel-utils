@@ -4,18 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.stream.Stream;
-
 /**
- * This is a helper class used by {@code Converter} to convert objects in an Excel Sheet
+ * This is a support class that is used by the {@code Converter} to perform conversions from Json to Excel
  * @author Mirko Benincasa
  * @since 0.4.0
- * @param <T> The class parameter, for each sheet, which maps objects to a Sheet
+ * @param <T> The class parameter, for each Sheet, that maps a Json object into the parameter object
  */
 @AllArgsConstructor
 @Getter
 @Setter
-public class ObjectToExcel<T> {
+public class JsonToExcel<T> {
 
     /**
      * The name to assign to the Sheet
@@ -26,9 +24,4 @@ public class ObjectToExcel<T> {
      * The object class
      */
     private Class<T> clazz;
-
-    /**
-     * A Stream of objects
-     */
-    private Stream<T> stream;
 }

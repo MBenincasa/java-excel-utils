@@ -7,11 +7,13 @@ import com.opencsv.exceptions.CsvValidationException;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
 import io.github.mbenincasa.javaexcelutils.model.converter.ExcelToObject;
+import io.github.mbenincasa.javaexcelutils.model.converter.JsonToExcel;
 import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
 import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.tools.utils.Office;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,6 +33,7 @@ public class ConverterTest {
 
     private static final List<Person> persons = new ArrayList<>();
     private static final List<Address> addresses = new ArrayList<>();
+    private static final File jsonFile = new File("./src/test/resources/office.json");
     private static final File excelFile = new File("./src/test/resources/person.xlsx");
     private static final File csvFile = new File("./src/test/resources/person.csv");
     private static final File csvFile2 = new File("./src/test/resources/person_2.csv");
@@ -583,7 +586,7 @@ public class ConverterTest {
     }
 
     @Test
-    void excelFileToObjects() throws OpenWorkbookException, SheetNotFoundException, ReadValueException, IOException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    void excelFileToObjects() throws OpenWorkbookException, SheetNotFoundException, ReadValueException, IOException, HeaderNotPresentException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, ExtensionNotValidException {
         ExcelToObject<Person> personExcelToObject = new ExcelToObject<>("Person", Person.class);
         List<ExcelToObject<?>> excelToObjects = new ArrayList<>();
         excelToObjects.add(personExcelToObject);
@@ -631,7 +634,7 @@ public class ConverterTest {
     }
 
     @Test
-    void excelToCsvFile() throws OpenWorkbookException, IOException, CsvValidationException {
+    void excelToCsvFile() throws OpenWorkbookException, IOException, CsvValidationException, ExtensionNotValidException {
         Map<String, File> fileMap = Converter.excelToCsvFile(excelFile, "./src/");
         FileReader fileReader = new FileReader(fileMap.get("Person"));
         CSVReader csvReader = new CSVReader(fileReader);
@@ -736,7 +739,7 @@ public class ConverterTest {
     void excelToJsonByte() throws IOException, OpenWorkbookException {
         byte[] bytes = Files.readAllBytes(excelFile.toPath());
         byte[] byteJson = Converter.excelToJsonByte(bytes);
-        File jsonFile = new File("./test.json");
+        File jsonFile = new File("./src/test/resources/test.json");
         FileOutputStream fileOutputStream = new FileOutputStream(jsonFile);
         fileOutputStream.write(byteJson);
         FileInputStream fileInputStream = new FileInputStream(jsonFile);
@@ -754,7 +757,7 @@ public class ConverterTest {
     }
 
     @Test
-    void excelToJsonFile() throws OpenWorkbookException, IOException {
+    void excelToJsonFile() throws OpenWorkbookException, IOException, ExtensionNotValidException {
         File jsonFile = Converter.excelToJsonFile(excelFile, "./result");
         FileInputStream fileInputStream = new FileInputStream(jsonFile);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -773,9 +776,9 @@ public class ConverterTest {
     void excelToJsonStream() throws IOException, OpenWorkbookException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
         ByteArrayOutputStream baos = Converter.excelToJsonStream(fileInputStream);
-        FileOutputStream fileOutputStream = new FileOutputStream("./test.json");
+        FileOutputStream fileOutputStream = new FileOutputStream("./src/test/resources/test.json");
         fileOutputStream.write(baos.toByteArray());
-        File jsonFile = new File("./test.json");
+        File jsonFile = new File("./src/test/resources/test.json");
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonFile);
         Assertions.assertEquals("LAST NAME", jsonNode.get("Person").get("row_1").get("col_1").asText());
@@ -785,6 +788,70 @@ public class ConverterTest {
         Assertions.assertEquals("Mario", jsonNode.get("Person").get("row_2").get("col_2").asText());
         Assertions.assertEquals("20", jsonNode.get("Person").get("row_2").get("col_3").asText());
         fileInputStream.close();
+        fileOutputStream.close();
         jsonFile.delete();
+    }
+
+    @Test
+    void jsonToExcelByte() throws IOException, ExtensionNotValidException, SheetAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ReadValueException {
+        JsonToExcel<Office> officeJsonToExcel = new JsonToExcel<>("office", Office.class);
+        byte[] bytes = Files.readAllBytes(jsonFile.toPath());
+        byte[] byteResult = Converter.jsonToExcelByte(bytes, officeJsonToExcel, Extension.XLSX, true);
+        File excelFile = new File("./src/test/resourcestest.xlsx");
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFile);
+        fileOutputStream.write(byteResult);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Assertions.assertEquals("CITY", excelRow.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("PROVINCE", excelRow.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals("NUMBER OF STATIONS", excelRow.getCells().get(2).readValue(String.class));
+        ExcelRow excelRow1 = excelSheet.getRows().get(1);
+        Assertions.assertEquals("Nocera Inferiore", excelRow1.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("Salerno", excelRow1.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals(21, excelRow1.getCells().get(2).readValue(Integer.class));
+        fileOutputStream.close();
+        excelFile.delete();
+
+    }
+
+    @Test
+    void jsonToExcelFile() throws FileAlreadyExistsException, ExtensionNotValidException, IOException, SheetAlreadyExistsException, OpenWorkbookException, SheetNotFoundException, ReadValueException {
+        JsonToExcel<Office> officeJsonToExcel = new JsonToExcel<>("office", Office.class);
+        File excelFile = Converter.jsonToExcelFile(jsonFile, officeJsonToExcel, Extension.XLSX, "./excel", true);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Assertions.assertEquals("CITY", excelRow.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("PROVINCE", excelRow.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals("NUMBER OF STATIONS", excelRow.getCells().get(2).readValue(String.class));
+        ExcelRow excelRow1 = excelSheet.getRows().get(1);
+        Assertions.assertEquals("Nocera Inferiore", excelRow1.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("Salerno", excelRow1.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals(21, excelRow1.getCells().get(2).readValue(Integer.class));
+        excelFile.delete();
+    }
+
+    @Test
+    void jsonToExcelStream() throws IOException, ExtensionNotValidException, SheetAlreadyExistsException, OpenWorkbookException, ReadValueException, SheetNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(jsonFile);
+        JsonToExcel<Office> officeJsonToExcel = new JsonToExcel<>("office", Office.class);
+        ByteArrayOutputStream baos = Converter.jsonToExcelStream(fileInputStream, officeJsonToExcel, Extension.XLSX, true);
+        FileOutputStream fileOutputStream = new FileOutputStream("./src/test/resources/test.xlsx");
+        fileOutputStream.write(baos.toByteArray());
+        File excelFile = new File("./src/test/resources/test.xlsx");
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRows().get(0);
+        Assertions.assertEquals("CITY", excelRow.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("PROVINCE", excelRow.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals("NUMBER OF STATIONS", excelRow.getCells().get(2).readValue(String.class));
+        ExcelRow excelRow1 = excelSheet.getRows().get(1);
+        Assertions.assertEquals("Nocera Inferiore", excelRow1.getCells().get(0).readValue(String.class));
+        Assertions.assertEquals("Salerno", excelRow1.getCells().get(1).readValue(String.class));
+        Assertions.assertEquals(21, excelRow1.getCells().get(2).readValue(Integer.class));
+        fileInputStream.close();
+        fileOutputStream.close();
+        excelFile.delete();
     }
 }
