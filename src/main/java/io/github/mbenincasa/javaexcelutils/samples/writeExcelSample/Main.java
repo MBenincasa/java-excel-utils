@@ -1,9 +1,9 @@
 package io.github.mbenincasa.javaexcelutils.samples.writeExcelSample;
 
-import io.github.mbenincasa.javaexcelutils.model.ExcelCell;
-import io.github.mbenincasa.javaexcelutils.model.ExcelRow;
-import io.github.mbenincasa.javaexcelutils.model.ExcelSheet;
-import io.github.mbenincasa.javaexcelutils.model.ExcelWorkbook;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelCell;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelRow;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelSheet;
+import io.github.mbenincasa.javaexcelutils.model.excel.ExcelWorkbook;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;

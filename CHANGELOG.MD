@@ -1,3 +1,18 @@
+# v0.4.0
+### Deprecations
+* All methods of the Converter class up to version 0.2.1 have been deprecated
+### Features
+* There are new methods that convert Excel <-> POJOs and Excel <-> CSV. Besides conversion between files, conversions between streams and byte arrays are now available. Data is no longer returned in a List but in a Stream
+* Excel <-> Json conversion is now available
+* The writeAndClose method is available in ExcelWorkbook
+* ExcelCell provides new ways to read a cell.
+### Fixes
+* The error is handled better when trying to create a Sheet already present in the Workbook
+* The readCell(Class<?> type) method did not always return the requested type
+### Removed
+* The WorkbookUtility and SheetUtility classes have been removed
+* Several ExcelUtility methods have been removed
+
 # v0.3.0
 ### Deprecations
 * The WorkbookUtility and SheetUtility classes have been deprecated

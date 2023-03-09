@@ -1,10 +1,11 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
+import io.github.mbenincasa.javaexcelutils.exceptions.SheetAlreadyExistsException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -189,6 +190,7 @@ public class ExcelWorkbook {
     }
 
     /**
+     * Close a workbook
      * @param outputStream The {@code OutputStream} to close
      * @param reader The {@code CSVReader} to close
      * @throws IOException If an I/O error has occurred
@@ -207,7 +209,8 @@ public class ExcelWorkbook {
         return this.workbook.getNumberOfSheets();
     }
 
-    /** The list of Sheets related to the Workbook
+    /**
+     * The list of Sheets related to the Workbook
      * @return A list of Sheets
      */
     public List<ExcelSheet> getSheets() {
@@ -231,10 +234,15 @@ public class ExcelWorkbook {
      * Create a new Sheet inside the Workbook
      * @param sheetName The name of the sheet to create
      * @return The newly created Sheet
+     * @throws SheetAlreadyExistsException If you try to insert a Sheet that already exists
      */
-    public ExcelSheet createSheet(String sheetName) {
-        Sheet sheet = this.workbook.createSheet(sheetName);
-        return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+    public ExcelSheet createSheet(String sheetName) throws SheetAlreadyExistsException {
+        try {
+            Sheet sheet = this.workbook.createSheet(sheetName);
+            return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+        } catch (IllegalArgumentException ex) {
+            throw new SheetAlreadyExistsException(ex.getMessage());
+        }
     }
 
     /**
@@ -342,5 +350,17 @@ public class ExcelWorkbook {
      */
     public FormulaEvaluator getFormulaEvaluator() {
         return this.workbook.getCreationHelper().createFormulaEvaluator();
+    }
+
+
+    /**
+     * Writes the OutputStream to the Workbook and then closes them
+     * @param outputStream The {@code OutputStream} to close
+     * @throws IOException If an I/O error has occurred
+     * @since 0.4.0
+     */
+    public void writeAndClose(OutputStream outputStream) throws IOException {
+        this.workbook.write(outputStream);
+        this.close(outputStream);
     }
 }

@@ -1,15 +1,14 @@
 package io.github.mbenincasa.javaexcelutils.samples.convertObjectsToExcelFileSample;
 
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
+import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.tools.Converter;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -24,11 +23,15 @@ public class Main {
         offices.add(new Office("Pero", "Milano", 73));
 
         try {
-            System.out.println("Start the conversion...");
-            File report = Converter.objectsToExcel(employees, Employee.class, "./src/main/resources/", "employee", Extension.XLSX, true);
-            System.out.println("First conversion completed...");
-            Converter.objectsToExistingExcel(report, offices, Office.class, true);
-            System.out.println("The file is ready. Path: " + report.getAbsolutePath());
+            Stream<Employee> employeeStream = employees.stream();
+            Stream<Office> officeStream = offices.stream();
+            List<ObjectToExcel<?>> list = new ArrayList<>();
+            list.add(new ObjectToExcel<>("Employee", Employee.class, employeeStream));
+            list.add(new ObjectToExcel<>("Office", Office.class, officeStream));
+            System.out.println("Converting...");
+            File fileOutput = Converter.objectsToExcelFile(list, Extension.XLSX, "./src/main/resources/result", true);
+            System.out.println("...completed");
+            System.out.println("File output: " + fileOutput.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("There was an error. Check the console");
             throw new RuntimeException(e);

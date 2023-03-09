@@ -1,13 +1,10 @@
-package io.github.mbenincasa.javaexcelutils.model;
+package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,6 +41,26 @@ public class ExcelCell {
 
     /**
      * Read the value written inside the Cell
+     * @return The value written in the Cell
+     * @throws ReadValueException If an error occurs while reading
+     * @since 0.4.0
+     */
+    public Object readValue() throws ReadValueException {
+        Object val;
+        switch (this.cell.getCellType()) {
+            case BOOLEAN -> val = this.cell.getBooleanCellValue();
+            case STRING -> val = this.cell.getStringCellValue();
+            case NUMERIC -> val = this.cell.getNumericCellValue();
+            case FORMULA -> val = this.cell.getCellFormula();
+            case BLANK -> val = "";
+            default -> throw new ReadValueException("An error occurred while reading. CellType '" + this.cell.getCellType() + "'");
+        }
+
+        return val;
+    }
+
+    /**
+     * Read the value written inside the Cell
      * @param type The class type of the object written to the Cell
      * @return The value written in the Cell
      * @throws ReadValueException If an error occurs while reading
@@ -51,8 +68,18 @@ public class ExcelCell {
     public Object readValue(Class<?> type) throws ReadValueException {
         Object val;
         switch (this.cell.getCellType()) {
-            case BOOLEAN -> val = this.cell.getBooleanCellValue();
-            case STRING -> val = this.cell.getStringCellValue();
+            case BOOLEAN -> {
+                if (!Boolean.class.equals(type)) {
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+                }
+                val = this.cell.getBooleanCellValue();
+            }
+            case STRING -> {
+                if (!String.class.equals(type)) {
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+                }
+                val = this.cell.getStringCellValue();
+            }
             case NUMERIC -> {
                 if (Integer.class.equals(type)) {
                     val = (int) this.cell.getNumericCellValue();
@@ -67,7 +94,7 @@ public class ExcelCell {
                 } else if (LocalDate.class.equals(type)) {
                     val = this.cell.getLocalDateTimeCellValue().toLocalDate();
                 } else {
-                    throw new ReadValueException("This numeric type is not supported: " + type);
+                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "' or not yet supported");
                 }
             }
             case FORMULA -> {
@@ -83,6 +110,16 @@ public class ExcelCell {
         }
 
         return val;
+    }
+
+    /**
+     * Read the value written inside the Cell as String
+     * @return The value written in the Cell
+     * @since 0.4.0
+     */
+    public String readValueAsString() {
+        DataFormatter formatter = new DataFormatter(true);
+        return formatter.formatCellValue(this.cell);
     }
 
     /**

@@ -3,7 +3,10 @@ package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjectsSam
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelBodyStyle;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelField;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelHeaderStyle;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -18,18 +21,22 @@ import java.util.Date;
 @ToString
 @ExcelHeaderStyle(cellColor = IndexedColors.ORANGE, horizontal = HorizontalAlignment.RIGHT, vertical = VerticalAlignment.BOTTOM, autoSize = true)
 @ExcelBodyStyle(cellColor = IndexedColors.LIGHT_ORANGE, horizontal = HorizontalAlignment.RIGHT, vertical = VerticalAlignment.BOTTOM)
-public class Car {
+public class Employee {
 
-    @ExcelField(name = "BRAND")
-    private String brand;
-    @ExcelField(name = "MODEL")
-    private String model;
-    @ExcelField(name = "YEAR")
-    private Integer year;
-    @ExcelField(name = "RELEASE DATE")
-    private LocalDate releaseDate;
-    @ExcelField(name = "FIRST SALE")
-    private Date firstSale;
-    @ExcelField(name = "LAST SALE")
-    private LocalDateTime lastSale;
+    @ExcelField(name = "LAST NAME")
+    private String lastName;
+    @ExcelField(name = "NAME")
+    private String name;
+    @ExcelField(name = "AGE")
+    private Integer age;
+    @ExcelField(name = "BIRTHDAY")
+    private LocalDate birthday;
+    @ExcelField(name = "HIRE DATE")
+    private Date hireDate;
+    @ExcelField(name = "SALARY (€)")
+    private Double salary;
+    @ExcelField(name = "LAST SIGN IN")
+    private LocalDateTime lastSignIn;
+    @ExcelField(name = "IS IN OFFICE")
+    private Boolean isInOffice;
 }
