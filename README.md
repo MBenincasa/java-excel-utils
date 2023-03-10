@@ -34,7 +34,7 @@ public void toPOI() {
 }
 ```
 
-One of the main features of the library is to be able to perform conversions. The **Converter** class has methods that convert **Excel <-> POJOs** and **Excel <-> CSV**.<br>
+One of the main features of the library is to be able to perform conversions. The **Converter** class has methods that convert **EXCEL <-> POJOs**, **EXCEL <-> CSV** and **EXCEL <-> JSON**<br>
 This is an example of Excel to POJOs:
 ```
 public void excelToObjects() {
@@ -96,7 +96,7 @@ Java 17 or above.
 ```
 
 ## Roadmap
-**Version 0.4.0** will bring new features to the Converter class. Current conversions will be reviewed. Conversions will be available that will also work with Stream I/O and byte[] in addition to the already present File.<p>
+In the next updates there will be improvements on the wrapper classes that make up the Excel sheet.<p>
 In the future, new features will come that have not yet been well defined.
 
 ## Contributing
