@@ -1,8 +1,10 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
+import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,6 +21,17 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode
 public class ExcelSheet {
+
+    /**
+     * The Sheet index in the Workbook
+     * @return The Sheet index
+     */
+    @SneakyThrows
+    public Integer getIndex() {
+        if (this.sheet == null)
+            return null;
+        return getWorkbook().getWorkbook().getSheetIndex(this.name);
+    }
 
     /**
      * This object refers to the Apache POI Library {@code Sheet}
@@ -44,6 +57,17 @@ public class ExcelSheet {
     }
 
     /**
+     * Remove the selected Sheet
+     * @since 0.4.1
+     */
+    public void remove() {
+        getWorkbook().removeSheet(getIndex());
+        this.sheet = null;
+        this.name = null;
+        this.index = null;
+    }
+
+    /**
      * The list of Rows related to the Sheet
      * @return A list of Rows
      */
@@ -52,8 +76,34 @@ public class ExcelSheet {
         for (Row row : this.sheet) {
             excelRows.add(new ExcelRow(row, row.getRowNum()));
         }
-        
+
         return excelRows;
+    }
+
+    /**
+     * Retrieve a row by index
+     * @param index The index of the row requested
+     * @return A ExcelRow
+     * @throws RowNotFoundException If the row is not present or has not been created
+     * @since 0.4.1
+     */
+    public ExcelRow getRow(Integer index) throws RowNotFoundException {
+        Row row = this.sheet.getRow(index);
+        if (row == null) {
+            throw new RowNotFoundException("There is not a row in the index: " + index);
+        }
+        return new ExcelRow(row, index);
+    }
+
+    /**
+     * Removes a row by index
+     * @param index The index of the row to remove
+     * @throws RowNotFoundException If the row is not present or has not been created
+     * @since 0.4.1
+     */
+    public void removeRow(Integer index) throws RowNotFoundException {
+        ExcelRow excelRow = getRow(index);
+        this.sheet.removeRow(excelRow.getRow());
     }
 
     /**

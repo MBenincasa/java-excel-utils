@@ -1,5 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
+import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,6 +34,17 @@ public class ExcelRow {
     private Integer index;
 
     /**
+     * Remove the selected Row
+     * @throws RowNotFoundException If the row is not present or has not been created
+     * @since 0.4.1
+     */
+    public void remove() throws RowNotFoundException {
+        getSheet().removeRow(this.index);
+        this.row = null;
+        this.index = null;
+    }
+
+    /**
      * The list of Cells related to the Row
      * @return A list of Cells
      */
@@ -40,8 +53,33 @@ public class ExcelRow {
         for (Cell cell : this.row) {
             excelCells.add(new ExcelCell(cell, cell.getColumnIndex()));
         }
-
         return excelCells;
+    }
+
+    /**
+     * Retrieve a cell by index
+     * @param index The index of the cell requested
+     * @return A ExcelCell
+     * @throws CellNotFoundException If the cell is not present or has not been created
+     * @since 0.4.1
+     */
+    public ExcelCell getCell(Integer index) throws CellNotFoundException {
+        Cell cell = this.row.getCell(index);
+        if (cell == null) {
+            throw new CellNotFoundException("There is not a cell in the index: " + index);
+        }
+        return new ExcelCell(cell, cell.getColumnIndex());
+    }
+
+    /**
+     * Removes a cell by index
+     * @param index The index of the row to remove
+     * @throws CellNotFoundException If the cell is not present or has not been created
+     * @since 0.4.1
+     */
+    public void removeCell(Integer index) throws CellNotFoundException {
+        ExcelCell excelCell = getCell(index);
+        this.row.removeCell(excelCell.getCell());
     }
 
     /**

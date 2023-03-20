@@ -212,4 +212,13 @@ public class ExcelWorkbookTest {
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.writeAndClose(outputStream));
     }
+
+    @Test
+    void removeSheet() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelSheet excelSheet1 = excelWorkbook.getSheet(1);
+        Assertions.assertDoesNotThrow(() -> excelWorkbook.removeSheet(excelSheet.getIndex()));
+        Assertions.assertEquals(0, excelSheet1.getIndex());
+    }
 }

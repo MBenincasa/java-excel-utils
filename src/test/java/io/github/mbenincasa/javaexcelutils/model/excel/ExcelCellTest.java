@@ -1,9 +1,6 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
-import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
-import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
-import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
-import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -112,5 +109,16 @@ class ExcelCellTest {
         Assertions.assertEquals("21", excelCell1.readValueAsString());
         Assertions.assertEquals("1/1/21 21:21", excelCell2.readValueAsString());
         Assertions.assertEquals("FALSE", excelCell3.readValueAsString());
+    }
+
+    @Test
+    void remove() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet();
+        ExcelRow excelRow = excelSheet.getRow(0);
+        ExcelCell excelCell = excelRow.getCell(0);
+        Assertions.assertDoesNotThrow(excelCell::remove);
+        Assertions.assertNull(excelCell.getCell());
+        Assertions.assertNull(excelCell.getIndex());
     }
 }

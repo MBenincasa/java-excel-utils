@@ -1,5 +1,6 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
+import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,17 @@ public class ExcelCell {
      * The index of the Cell in the Row
      */
     private Integer index;
+
+    /**
+     * Remove the selected Cell
+     * @throws CellNotFoundException If the cell is not present or has not been created
+     * @since 0.4.1
+     */
+    public void remove() throws CellNotFoundException {
+        getRow().removeCell(this.index);
+        this.cell = null;
+        this.index = null;
+    }
 
     /**
      * Returns the Row to which it belongs

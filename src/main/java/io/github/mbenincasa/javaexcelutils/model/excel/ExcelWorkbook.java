@@ -96,10 +96,9 @@ public class ExcelWorkbook {
      * @param extension The file's extension
      * @return An ExcelWorkBook that is represented in the Excel file
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
-     * @throws IOException If an I/O error has occurred
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
-    public static ExcelWorkbook open(InputStream inputStream, String extension) throws ExtensionNotValidException, IOException, OpenWorkbookException {
+    public static ExcelWorkbook open(InputStream inputStream, String extension) throws ExtensionNotValidException, OpenWorkbookException {
         /* Check the extension */
         if (!ExcelUtility.isValidExcelExtension(extension)) {
             throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
@@ -298,6 +297,15 @@ public class ExcelWorkbook {
         } catch (SheetNotFoundException e) {
             return this.createSheet(sheetName);
         }
+    }
+
+    /**
+     * Remove the Sheet
+     * @param index The index of the Sheet in the workbook that will be removed
+     * @since 0.4.1
+     */
+    public void removeSheet(Integer index) {
+        this.workbook.removeSheetAt(index);
     }
 
     /**

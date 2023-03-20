@@ -1,8 +1,6 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
-import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
-import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
-import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -61,5 +59,34 @@ class ExcelRowTest {
         List<ExcelRow> excelRows = excelSheet.getRows();
         Assertions.assertEquals(4, excelRows.get(0).countAllColumns(false));
         Assertions.assertEquals(3, excelRows.get(1).countAllColumns(true));
+    }
+
+    @Test
+    void remove() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRow(0);
+        Assertions.assertDoesNotThrow(excelRow::remove);
+        Assertions.assertNull(excelRow.getRow());
+        Assertions.assertNull(excelRow.getIndex());
+    }
+
+    @Test
+    void getCell() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRow(0);
+        ExcelCell excelCell = excelRow.getCell(0);
+        Assertions.assertEquals(0, excelCell.getIndex());
+        Assertions.assertNotNull(excelCell.getCell());
+    }
+
+    @Test
+    void removeCell() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRow(0);
+        Assertions.assertDoesNotThrow(() -> excelRow.removeCell(0));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRow.getCell(0));
     }
 }
