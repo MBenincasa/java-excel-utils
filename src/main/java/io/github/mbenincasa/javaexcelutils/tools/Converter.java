@@ -842,7 +842,7 @@ public class Converter {
     }
 
     /**
-     * @param excelFile The excel file
+     * @param excelFile The Excel file
      * @param path The path, without file name, where the files will be saved
      * @return A map where the key represents the Sheet name and the value is a CSV file for each Sheet
      * @throws IOException If an I/O error has occurred

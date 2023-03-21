@@ -11,7 +11,6 @@ import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.tools.Converter;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Address;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Person;
-import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -43,10 +42,9 @@ public class ExcelWorkbookTest {
     }
 
     @Test
-    void testOpen() throws IOException, OpenWorkbookException, ExtensionNotValidException {
-        String extension = FilenameUtils.getExtension(excelFile.getName());
+    void testOpen() throws IOException, OpenWorkbookException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
-        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInputStream, extension);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(fileInputStream);
         Assertions.assertNotNull(excelWorkbook);
         Assertions.assertNotNull(excelWorkbook.getWorkbook());
     }
@@ -208,7 +206,7 @@ public class ExcelWorkbookTest {
         List<ObjectToExcel<?>> list = new ArrayList<>();
         list.add(new ObjectToExcel<>("Person", Person.class, personStream));
         list.add(new ObjectToExcel<>("Address", Address.class, addressStream));
-        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) Converter.objectsToExcelStream(list, Extension.XLSX, true);
+        ByteArrayOutputStream outputStream = Converter.objectsToExcelStream(list, Extension.XLSX, true);
         ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.writeAndClose(outputStream));
     }

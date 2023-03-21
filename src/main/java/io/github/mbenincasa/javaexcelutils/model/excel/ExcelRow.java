@@ -1,6 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -72,6 +73,20 @@ public class ExcelRow {
     }
 
     /**
+     * Retrieve or create a cell by index
+     * @param index The index of the cell requested
+     * @return A ExcelCell
+     * @since 0.4.1
+     */
+    public ExcelCell getOrCreateCell(Integer index) {
+        Cell cell = this.row.getCell(index);
+        if (cell == null) {
+            return  createCell(index);
+        }
+        return new ExcelCell(cell, cell.getColumnIndex());
+    }
+
+    /**
      * Removes a cell by index
      * @param index The index of the row to remove
      * @throws CellNotFoundException If the cell is not present or has not been created
@@ -80,6 +95,66 @@ public class ExcelRow {
     public void removeCell(Integer index) throws CellNotFoundException {
         ExcelCell excelCell = getCell(index);
         this.row.removeCell(excelCell.getCell());
+    }
+
+    /**
+     * Write the values in the cells of the row
+     * @param values The values to write in the cells of the row
+     * @since 0.4.1
+     */
+    public void writeValues(List<?> values) {
+        for (int i = 0; i < values.size(); i++) {
+            ExcelCell excelCell = getOrCreateCell(i);
+            excelCell.writeValue(values.get(i));
+        }
+    }
+
+    /**
+     * Reads the values of all cells in the row
+     * @return The list of values written in the cells
+     * @throws ReadValueException If an error occurs while reading
+     * @since 0.4.1
+     */
+    public List<?> readValues() throws ReadValueException {
+        List<Object> values = new LinkedList<>();
+        for (ExcelCell excelCell : getCells()) {
+            values.add(excelCell.readValue());
+        }
+        return values;
+    }
+
+    /**
+     * Reads the values of all cells in the row
+     * @param classes A list of Classes that is used to cast the results read
+     * @return The list of values written in the cells
+     * @throws ReadValueException If an error occurs while reading
+     * @since 0.4.1
+     */
+    public List<?> readValues(List<Class<?>> classes) throws ReadValueException {
+        List<ExcelCell> excelCells = getCells();
+        if(excelCells.size() != classes.size()) {
+            throw new IllegalArgumentException("There are " + excelCells.size() + " items in the row and classlist has " + classes.size() + " values.");
+        }
+
+        List<Object> values = new LinkedList<>();
+        for (int i = 0; i < excelCells.size(); i++) {
+            values.add(excelCells.get(i).readValue(classes.get(i)));
+        }
+
+        return values;
+    }
+
+    /**
+     * Reads the values of all cells in the row as a String
+     * @return The list of values, such as String, written in the cells
+     * @since 0.4.1
+     */
+    public List<String> readValuesAsString() {
+        List<String> values = new LinkedList<>();
+        for (ExcelCell excelCell : getCells()) {
+            values.add(excelCell.readValueAsString());
+        }
+        return values;
     }
 
     /**

@@ -79,11 +79,11 @@ public class ExcelWorkbook {
      */
     public static ExcelWorkbook open(File file) throws ExtensionNotValidException, IOException, OpenWorkbookException {
         /* Check extension */
-        String extension = ExcelUtility.checkExcelExtension(file.getName());
+        ExcelUtility.checkExcelExtension(file.getName());
 
         /* Open file input stream */
         FileInputStream fileInputStream = new FileInputStream(file);
-        ExcelWorkbook excelWorkbook = open(fileInputStream, extension);
+        ExcelWorkbook excelWorkbook = open(fileInputStream);
 
         /* Close the stream before return */
         fileInputStream.close();
@@ -93,17 +93,10 @@ public class ExcelWorkbook {
     /**
      * Opens the workbook
      * @param inputStream The {@code InputStream} of the Excel file
-     * @param extension The file's extension
      * @return An ExcelWorkBook that is represented in the Excel file
-     * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
-    public static ExcelWorkbook open(InputStream inputStream, String extension) throws ExtensionNotValidException, OpenWorkbookException {
-        /* Check the extension */
-        if (!ExcelUtility.isValidExcelExtension(extension)) {
-            throw new ExtensionNotValidException("Pass a file with the XLS or XLSX extension");
-        }
-
+    public static ExcelWorkbook open(InputStream inputStream) throws OpenWorkbookException {
         return new ExcelWorkbook(inputStream);
     }
 

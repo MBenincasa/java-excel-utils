@@ -91,4 +91,13 @@ public class ExcelSheetTest {
         Assertions.assertDoesNotThrow(() -> excelSheet.removeRow(0));
         Assertions.assertThrows(RowNotFoundException.class, () -> excelSheet.getRow(0));
     }
+
+    @Test
+    void getOrCreateRow() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getOrCreateRow(20);
+        Assertions.assertEquals(20, excelRow.getIndex());
+        Assertions.assertNotNull(excelRow.getRow());
+    }
 }

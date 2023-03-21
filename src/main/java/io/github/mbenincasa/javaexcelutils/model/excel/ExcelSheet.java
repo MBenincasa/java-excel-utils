@@ -96,6 +96,20 @@ public class ExcelSheet {
     }
 
     /**
+     * Retrieve or create a row by index
+     * @param index The index of the row requested
+     * @return A ExcelRow
+     * @since 0.4.1
+     */
+    public ExcelRow getOrCreateRow(Integer index) {
+        Row row = this.sheet.getRow(index);
+        if (row == null) {
+            return createRow(index);
+        }
+        return new ExcelRow(row, index);
+    }
+
+    /**
      * Removes a row by index
      * @param index The index of the row to remove
      * @throws RowNotFoundException If the row is not present or has not been created

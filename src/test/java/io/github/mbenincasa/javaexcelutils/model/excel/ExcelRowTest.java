@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 class ExcelRowTest {
@@ -88,5 +90,66 @@ class ExcelRowTest {
         ExcelRow excelRow = excelSheet.getRow(0);
         Assertions.assertDoesNotThrow(() -> excelRow.removeCell(0));
         Assertions.assertThrows(CellNotFoundException.class, () -> excelRow.getCell(0));
+    }
+
+    @Test
+    void getOrCreateCell() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRow(0);
+        ExcelCell excelCell = excelRow.getOrCreateCell(20);
+        Assertions.assertEquals(20, excelCell.getIndex());
+        Assertions.assertNotNull(excelCell.getCell());
+    }
+
+    @Test
+    void writeValues() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, ReadValueException {
+        List<Object> values = new ArrayList<>();
+        values.add("Rossi");
+        values.add(3);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(0);
+        ExcelRow excelRow = excelSheet.getRow(0);
+        excelRow.writeValues(values);
+        List<ExcelCell> excelCells = excelRow.getCells();
+        Assertions.assertEquals("Rossi", excelCells.get(0).readValue(String.class));
+        Assertions.assertEquals(3, excelCells.get(1).readValue(Integer.class));
+    }
+
+    @Test
+    void readValues() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        ExcelRow excelRow = excelSheet.getRow(1);
+        List<?> values = excelRow.readValues();
+        Assertions.assertEquals("Nocera Inferiore", values.get(0));
+        Assertions.assertEquals("Salerno", values.get(1));
+        Assertions.assertEquals(40.0, values.get(2));
+    }
+
+    @Test
+    void testReadValues() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, ReadValueException {
+        List<Class<?>> classes = new LinkedList<>();
+        classes.add(String.class);
+        classes.add(String.class);
+        classes.add(Integer.class);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        ExcelRow excelRow = excelSheet.getRow(1);
+        List<?> values = excelRow.readValues(classes);
+        Assertions.assertEquals("Nocera Inferiore", values.get(0));
+        Assertions.assertEquals("Salerno", values.get(1));
+        Assertions.assertEquals(40, values.get(2));
+    }
+
+    @Test
+    void readValuesAsString() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet(1);
+        ExcelRow excelRow = excelSheet.getRow(1);
+        List<?> values = excelRow.readValuesAsString();
+        Assertions.assertEquals("Nocera Inferiore", values.get(0));
+        Assertions.assertEquals("Salerno", values.get(1));
+        Assertions.assertEquals("40", values.get(2));
     }
 }
