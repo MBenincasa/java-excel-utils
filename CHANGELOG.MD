@@ -1,3 +1,14 @@
+# v0.4.1
+### Features
+* There are getOrCreate methods for a Row or a Cell
+* There are methods to remove a Sheet, a Row or a Cell
+* There are methods to retrieve a Row or a Cell based on an index
+* There are methods for writing and reading a list of values from a Row
+### Fixes
+* ExcelSheet's getIndex() method did not return the correct index after deleting a Sheet
+### Changes
+* The static method that opens an ExcelWorkbook via InputStream no longer takes the extension as input and is no longer checked if it is correct
+
 # v0.4.0
 ### Deprecations
 * All methods of the Converter class up to version 0.2.1 have been deprecated

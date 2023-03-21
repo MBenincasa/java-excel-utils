@@ -78,7 +78,7 @@ Java 17 or above.
 ## Dependencies
 - org.apache.poi:poi:jar:5.2.3
 - org.apache.poi:poi-ooxml:jar:5.2.3
-- org.projectlombok:lombok:jar:1.18.24
+- org.projectlombok:lombok:jar:1.18.26
 - commons-beanutils:commons-beanutils:jar:1.9.4
 - com.opencsv:opencsv:jar:5.7.1
 - com.fasterxml.jackson.core:jackson-databind:jar:2.14.2
@@ -91,7 +91,7 @@ Java 17 or above.
 <dependency>
   <groupId>io.github.mbenincasa</groupId>
   <artifactId>java-excel-utils</artifactId>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
 </dependency>
 ```
 
