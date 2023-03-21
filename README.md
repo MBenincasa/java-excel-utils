@@ -70,7 +70,7 @@ public void readValue() {
 
 ## Documentation
 At the moment a real documentation is not yet available, but the javadocs and some examples are available in the `samples` package.<br>
-Click [here](https://repo1.maven.org/maven2/io/github/mbenincasa/java-excel-utils/0.3.0/java-excel-utils-0.3.0-javadoc.jar) to download the javadocs.
+Click [here](https://mbenincasa.github.io/java-excel-utils/) to view the java docs.
 
 ## Minimum Requirements
 Java 17 or above.
