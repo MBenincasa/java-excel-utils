@@ -45,6 +45,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 17
+        distribution: openjdk
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
