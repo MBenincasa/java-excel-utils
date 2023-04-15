@@ -78,50 +78,55 @@ public class ExcelCell {
      * @throws ReadValueException If an error occurs while reading
      */
     public Object readValue(Class<?> type) throws ReadValueException {
-        Object val;
-        switch (this.cell.getCellType()) {
-            case BOOLEAN -> {
-                if (!Boolean.class.equals(type)) {
-                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
-                }
-                val = this.cell.getBooleanCellValue();
-            }
-            case STRING -> {
-                if (!String.class.equals(type)) {
-                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
-                }
-                val = this.cell.getStringCellValue();
-            }
-            case NUMERIC -> {
-                if (Integer.class.equals(type)) {
-                    val = (int) this.cell.getNumericCellValue();
-                } else if (Double.class.equals(type)) {
-                    val = this.cell.getNumericCellValue();
-                } else if (Long.class.equals(type)) {
-                    val = (long) this.cell.getNumericCellValue();
-                } else if (Date.class.equals(type)) {
-                    val = this.cell.getDateCellValue();
-                } else if (LocalDateTime.class.equals(type)) {
-                    val = this.cell.getLocalDateTimeCellValue();
-                } else if (LocalDate.class.equals(type)) {
-                    val = this.cell.getLocalDateTimeCellValue().toLocalDate();
-                } else {
-                    throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "' or not yet supported");
-                }
-            }
-            case FORMULA -> {
-                ExcelWorkbook excelWorkbook = this.getRow().getSheet().getWorkbook();
-                FormulaEvaluator formulaEvaluator = excelWorkbook.getFormulaEvaluator();
-                if (Boolean.class.equals(type)) {
-                    val = formulaEvaluator.evaluate(this.cell).getBooleanValue();
-                } else {
-                    val = this.cell.getCellFormula();
-                }
-            }
-            default -> throw new ReadValueException("Cell type not supported");
-        }
+        DataFormatter formatter = new DataFormatter(true);
 
-        return val;
+        if(String.class.equals(type)) {
+            return formatter.formatCellValue(this.cell);
+        } else if (Boolean.class.equals(type)) {
+            switch (this.cell.getCellType()) {
+                case BOOLEAN -> {
+                    return this.cell.getBooleanCellValue();
+                }
+                case FORMULA -> {
+                    ExcelWorkbook excelWorkbook = this.getRow().getSheet().getWorkbook();
+                    FormulaEvaluator formulaEvaluator = excelWorkbook.getFormulaEvaluator();
+                    return formulaEvaluator.evaluate(this.cell).getBooleanValue();
+                }
+                default -> throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+            }
+        } else if (Integer.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return (int) this.cell.getNumericCellValue();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else if (Double.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return this.cell.getNumericCellValue();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else if (Long.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return (long) this.cell.getNumericCellValue();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else if (Date.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return this.cell.getDateCellValue();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else if (LocalDateTime.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return this.cell.getLocalDateTimeCellValue();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else if (LocalDate.class.equals(type)) {
+            if (this.cell.getCellType() == CellType.NUMERIC) {
+                return this.cell.getLocalDateTimeCellValue().toLocalDate();
+            }
+            throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
+        } else {
+            throw new ReadValueException("Cell type not supported");
+        }
     }
 
     /**
