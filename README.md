@@ -35,6 +35,7 @@ public void toPOI() {
 ```
 
 One of the main features of the library is to be able to perform conversions. The **Converter** class has methods that convert **EXCEL <-> POJOs**, **EXCEL <-> CSV** and **EXCEL <-> JSON**<br>
+It is also possible to zip a list of files.<br>
 This is an example of Excel to POJOs:
 ```
 public void excelToObjects() {
@@ -91,7 +92,7 @@ Java 17 or above.
 <dependency>
   <groupId>io.github.mbenincasa</groupId>
   <artifactId>java-excel-utils</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
 </dependency>
 ```
 
