@@ -32,4 +32,12 @@ public class ExcelUtilityTest {
         String cellName = ExcelUtility.getCellName(row, col);
         Assertions.assertEquals("A1", cellName);
     }
+
+    @Test
+    void getCellIndexes() {
+        int[] indexes = ExcelUtility.getCellIndexes("A2");
+        Assertions.assertEquals(2, indexes.length);
+        Assertions.assertEquals(1, indexes[0]);
+        Assertions.assertEquals(0, indexes[1]);
+    }
 }

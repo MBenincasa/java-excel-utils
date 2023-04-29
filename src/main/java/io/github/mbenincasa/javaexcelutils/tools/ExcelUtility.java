@@ -46,4 +46,17 @@ public class ExcelUtility {
         String colName = CellReference.convertNumToColString(col);
         return colName + (row + 1);
     }
+
+    /**
+     * Return an array containing column and row indexes
+     * @param cellName cell name
+     * @return an array containing column and row indexes
+     * @since 0.4.2
+     */
+    public static int[] getCellIndexes(String cellName) {
+        CellReference cellRef = new CellReference(cellName);
+        int row = cellRef.getRow();
+        int col = cellRef.getCol();
+        return new int[]{row, col};
+    }
 }
