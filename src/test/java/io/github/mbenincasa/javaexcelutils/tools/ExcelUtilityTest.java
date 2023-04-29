@@ -24,4 +24,20 @@ public class ExcelUtilityTest {
         String extension = FilenameUtils.getExtension(filename);
         Assertions.assertEquals(true, ExcelUtility.isValidExcelExtension(extension));
     }
+
+    @Test
+    void getCellName() {
+        int row = 0;
+        int col = 0;
+        String cellName = ExcelUtility.getCellName(row, col);
+        Assertions.assertEquals("A1", cellName);
+    }
+
+    @Test
+    void getCellIndexes() {
+        int[] indexes = ExcelUtility.getCellIndexes("A2");
+        Assertions.assertEquals(2, indexes.length);
+        Assertions.assertEquals(1, indexes[0]);
+        Assertions.assertEquals(0, indexes[1]);
+    }
 }

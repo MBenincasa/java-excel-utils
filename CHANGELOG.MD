@@ -1,3 +1,11 @@
+# v0.4.2
+### Features
+* Now there is a method to zip a list of files
+* There is a method to read a cell name
+* There is a method that returns the indexes of a cell starting from the cell name
+### Fixes
+* The readValue() method, in ExcelCell, did not always return the correct type
+
 # v0.4.1
 ### Features
 * There are getOrCreate methods for a Row or a Cell

@@ -3,6 +3,7 @@ io.github.mbenincasa.javaexcelutils.enums
 io.github.mbenincasa.javaexcelutils.exceptions
 io.github.mbenincasa.javaexcelutils.model.converter
 io.github.mbenincasa.javaexcelutils.model.excel
+io.github.mbenincasa.javaexcelutils.model.zip
 io.github.mbenincasa.javaexcelutils.samples.convertCsvFileToExcelFile
 io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToCsvFile
 io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToJsonFile

@@ -121,4 +121,14 @@ class ExcelCellTest {
         Assertions.assertNull(excelCell.getCell());
         Assertions.assertNull(excelCell.getIndex());
     }
+
+    @Test
+    void getCellName() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet();
+        ExcelRow excelRow = excelSheet.getRow(0);
+        ExcelCell excelCell = excelRow.getCell(0);
+        String cellName = excelCell.getCellName();
+        Assertions.assertEquals("A1", cellName);
+    }
 }
