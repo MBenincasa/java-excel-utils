@@ -3,6 +3,7 @@ package io.github.mbenincasa.javaexcelutils.tools;
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.util.CellReference;
 
 /**
  * {@code ExcelUtility} is the static class with the implementations of some utilities on Excel files
@@ -32,5 +33,17 @@ public class ExcelUtility {
      */
     public static Boolean isValidExcelExtension(String extension) {
         return extension.equalsIgnoreCase(Extension.XLS.getExt()) || extension.equalsIgnoreCase(Extension.XLSX.getExt());
+    }
+
+    /**
+     * Returns the cell name
+     * @param row row index
+     * @param col column index
+     * @return cell name
+     * @since 0.4.2
+     */
+    public static String getCellName(int row, int col) {
+        String colName = CellReference.convertNumToColString(col);
+        return colName + (row + 1);
     }
 }

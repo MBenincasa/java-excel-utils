@@ -2,6 +2,7 @@ package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
+import io.github.mbenincasa.javaexcelutils.tools.ExcelUtility;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -164,6 +165,17 @@ public class ExcelCell {
         } else {
             cell.setCellValue(String.valueOf(val));
         }
+    }
+
+    /**
+     * Returns the cell name
+     * @return cell name
+     * @since 0.4.2
+     */
+    public String getCellName() {
+        int row = this.cell.getRowIndex();
+        int col = this.cell.getColumnIndex();
+        return ExcelUtility.getCellName(row, col);
     }
 
     /**
