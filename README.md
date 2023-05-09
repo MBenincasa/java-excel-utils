@@ -80,12 +80,11 @@ Java 17 or above.
 - org.apache.poi:poi:jar:5.2.3
 - org.apache.poi:poi-ooxml:jar:5.2.3
 - org.projectlombok:lombok:jar:1.18.26
-- commons-beanutils:commons-beanutils:jar:1.9.4
 - com.opencsv:opencsv:jar:5.7.1
-- com.fasterxml.jackson.core:jackson-databind:jar:2.14.2
+- com.fasterxml.jackson.core:jackson-databind:jar:2.15.0
 - org.apache.logging.log4j:log4j-core:jar:2.20.0
 - org.junit.jupiter:junit-jupiter:jar:5.9.2
-- org.junit.platform:junit-platform-suite-engine:jar:1.9.2
+- org.junit.platform:junit-platform-suite-engine:jar:1.9.3
 
 ## Maven
 ```xml
