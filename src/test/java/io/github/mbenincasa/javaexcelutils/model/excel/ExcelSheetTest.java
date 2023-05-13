@@ -129,4 +129,23 @@ public class ExcelSheetTest {
         Assertions.assertEquals("Rossi", excelRow6.getCell(3).readValue(String.class));
         Assertions.assertEquals(30, excelRow6.getCell(4).readValue(Integer.class));
     }
+
+    @Test
+    void appendCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+
+        Object[] row1 = {"Nome", "Cognome", "Età"};
+        Object[] row2 = {"Mario", "Rossi", 30};
+        Stream<Object[]> rows = Stream.of(row1, row2);
+        excelSheet.appendCells("B1", rows);
+        ExcelRow excelRow5 = excelSheet.getRow(4);
+        Assertions.assertEquals("Nome", excelRow5.getCell(1).readValue(String.class));
+        Assertions.assertEquals("Cognome", excelRow5.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Età", excelRow5.getCell(3).readValue(String.class));
+        ExcelRow excelRow6 = excelSheet.getRow(5);
+        Assertions.assertEquals("Mario", excelRow6.getCell(1).readValue(String.class));
+        Assertions.assertEquals("Rossi", excelRow6.getCell(2).readValue(String.class));
+        Assertions.assertEquals(30, excelRow6.getCell(3).readValue(Integer.class));
+    }
 }

@@ -137,7 +137,23 @@ public class ExcelSheet {
         int[] cellIndexes = ExcelUtility.getCellIndexes(startingCell);
         AtomicInteger rowIndex = new AtomicInteger(cellIndexes[0]);
         int colIndex = cellIndexes[1];
+        writeOrAppendCells(data, rowIndex, colIndex);
+    }
 
+    /**
+     * Method that allows you to append a data matrix starting from a source cell
+     * @param startingCell Source cell
+     * @param data A matrix data
+     * @since 0.5.0
+     */
+    public void appendCells(String startingCell, Stream<Object[]> data) {
+        int[] cellIndexes = ExcelUtility.getCellIndexes(startingCell);
+        AtomicInteger rowIndex = new AtomicInteger(getLastRowIndex() + 1);
+        int colIndex = cellIndexes[1];
+        writeOrAppendCells(data, rowIndex, colIndex);
+    }
+
+    private void writeOrAppendCells(Stream<Object[]> data, AtomicInteger rowIndex, int colIndex) {
         data.forEach(rowData -> {
             ExcelRow excelRow = getOrCreateRow(rowIndex.get());
             for (int i = 0; i < rowData.length; i++) {
