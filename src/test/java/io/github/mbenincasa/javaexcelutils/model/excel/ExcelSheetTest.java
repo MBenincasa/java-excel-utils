@@ -1,15 +1,13 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
-import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
-import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
-import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
-import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ExcelSheetTest {
 
@@ -99,5 +97,36 @@ public class ExcelSheetTest {
         ExcelRow excelRow = excelSheet.getOrCreateRow(20);
         Assertions.assertEquals(20, excelRow.getIndex());
         Assertions.assertNotNull(excelRow.getRow());
+    }
+
+    @Test
+    void removeCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+        excelSheet.removeCells("B2:C3");
+        List<ExcelRow> excelRows = excelSheet.getRows();
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(1).getCell(1));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(1).getCell(2));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(2).getCell(1));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(2).getCell(2));
+    }
+
+    @Test
+    void writeCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+
+        Object[] row1 = {"Nome", "Cognome", "Età"};
+        Object[] row2 = {"Mario", "Rossi", 30};
+        Stream<Object[]> rows = Stream.of(row1, row2);
+        excelSheet.writeCells("C5", rows);
+        ExcelRow excelRow5 = excelSheet.getRow(4);
+        Assertions.assertEquals("Nome", excelRow5.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Cognome", excelRow5.getCell(3).readValue(String.class));
+        Assertions.assertEquals("Età", excelRow5.getCell(4).readValue(String.class));
+        ExcelRow excelRow6 = excelSheet.getRow(5);
+        Assertions.assertEquals("Mario", excelRow6.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Rossi", excelRow6.getCell(3).readValue(String.class));
+        Assertions.assertEquals(30, excelRow6.getCell(4).readValue(Integer.class));
     }
 }

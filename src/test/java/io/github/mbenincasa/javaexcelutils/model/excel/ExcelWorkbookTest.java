@@ -119,7 +119,7 @@ public class ExcelWorkbookTest {
     @Test
     void countSheets() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
-        Assertions.assertEquals(2, excelWorkbook.countSheets());
+        Assertions.assertEquals(3, excelWorkbook.countSheets());
     }
 
     @Test

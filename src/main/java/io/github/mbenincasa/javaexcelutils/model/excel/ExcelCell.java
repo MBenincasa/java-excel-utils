@@ -145,7 +145,9 @@ public class ExcelCell {
      * @param val The value to write in the Cell
      */
     public void writeValue(Object val) {
-        if (val instanceof Integer || val instanceof Long) {
+        if (val == null) {
+            this.cell.setCellValue("");
+        } else if (val instanceof Integer || val instanceof Long) {
             this.formatStyle((short) 1);
             this.cell.setCellValue(Integer.parseInt(String.valueOf(val)));
         } else if (val instanceof Double) {

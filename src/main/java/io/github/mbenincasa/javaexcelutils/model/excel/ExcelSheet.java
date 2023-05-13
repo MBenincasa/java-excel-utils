@@ -1,6 +1,8 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
+import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
+import io.github.mbenincasa.javaexcelutils.tools.ExcelUtility;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,9 +10,14 @@ import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * {@code ExcelSheet} is the {@code Sheet} wrapper class of the Apache POI library
@@ -118,6 +125,52 @@ public class ExcelSheet {
     public void removeRow(Integer index) throws RowNotFoundException {
         ExcelRow excelRow = getRow(index);
         this.sheet.removeRow(excelRow.getRow());
+    }
+
+    /**
+     * Method that allows you to write a data matrix starting from a source cell
+     * @param startingCell Source cell
+     * @param data A matrix data
+     * @since 0.5.0
+     */
+    public void writeCells(String startingCell, Stream<Object[]> data) {
+        int[] cellIndexes = ExcelUtility.getCellIndexes(startingCell);
+        AtomicInteger rowIndex = new AtomicInteger(cellIndexes[0]);
+        int colIndex = cellIndexes[1];
+
+        data.forEach(rowData -> {
+            ExcelRow excelRow = getOrCreateRow(rowIndex.get());
+            for (int i = 0; i < rowData.length; i++) {
+                Object value = rowData[i];
+                ExcelCell excelCell = excelRow.getOrCreateCell(colIndex + i);
+                excelCell.writeValue(value);
+            }
+            rowIndex.getAndIncrement();
+        });
+    }
+
+    /**
+     * Method used to delete cells based on the selected range, for example: 'A1:B2'
+     * @param cellRange The range of cells to be deleted
+     * @since 0.5.0
+     */
+    public void removeCells(String cellRange) {
+        Pattern pattern = Pattern.compile("(\\w+):(\\w+)");
+        Matcher matcher = pattern.matcher(cellRange);
+        if (!matcher.matches())
+            throw new IllegalArgumentException("Invalid input format: " + cellRange + ". Provide input for example: 'A1:B2'");
+        CellRangeAddress range = CellRangeAddress.valueOf(cellRange);
+        for (int rowIndex = range.getFirstRow(); rowIndex <= range.getLastRow(); rowIndex++) {
+            try {
+                ExcelRow excelRow = getRow(rowIndex);
+                for (int colIndex = range.getFirstColumn(); colIndex <= range.getLastColumn(); colIndex++) {
+                    ExcelCell excelCell = excelRow.getCell(colIndex);
+                    excelCell.remove();
+                }
+            } catch (RowNotFoundException | CellNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
