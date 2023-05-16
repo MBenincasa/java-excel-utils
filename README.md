@@ -83,7 +83,7 @@ Java 17 or above.
 - com.opencsv:opencsv:jar:5.7.1
 - com.fasterxml.jackson.core:jackson-databind:jar:2.15.0
 - org.apache.logging.log4j:log4j-core:jar:2.20.0
-- org.junit.jupiter:junit-jupiter:jar:5.9.2
+- org.junit.jupiter:junit-jupiter:jar:5.9.3
 - org.junit.platform:junit-platform-suite-engine:jar:1.9.3
 
 ## Maven
