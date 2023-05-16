@@ -203,7 +203,7 @@ public class Converter {
      */
     public static Map<String, Stream<?>> excelStreamToObjects(InputStream inputStream, List<ExcelToObject<?>> excelToObjects) throws OpenWorkbookException, SheetNotFoundException, HeaderNotPresentException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ReadValueException, IOException {
         /* Open Workbook */
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(inputStream);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(inputStream);
         Map<String, Stream<?>> map = new HashMap<>();
 
         /* Iterate all the sheets to convert */
@@ -316,15 +316,15 @@ public class Converter {
     }
 
     /**
-     * @param excelStream The Excel file in the form of an InputStream
+     * @param excelInputStream The Excel file in the form of an InputStream
      * @return A map where the key represents the Sheet name and the value is a CSV file for each Sheet
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      * @throws IOException If an I/O error has occurred
      * @since 0.4.0
      */
-    public static Map<String, ByteArrayOutputStream> excelToCsvStream(InputStream excelStream) throws OpenWorkbookException, IOException {
+    public static Map<String, ByteArrayOutputStream> excelToCsvStream(InputStream excelInputStream) throws OpenWorkbookException, IOException {
         /* Open file excel */
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(excelStream);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelInputStream);
         List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
 
         Map<String, ByteArrayOutputStream> map = new HashMap<>();
@@ -349,7 +349,7 @@ public class Converter {
         }
 
         /* Close workbook */
-        excelWorkbook.close(excelStream);
+        excelWorkbook.close(excelInputStream);
 
         return map;
     }
@@ -417,7 +417,7 @@ public class Converter {
         Reader reader = new InputStreamReader(inputStream);
         CSVReader csvReader = new CSVReader(reader);
 
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(extension);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(extension);
         ExcelSheet excelSheet = excelWorkbook.createSheet(sheetName);
 
         /* Read CSV file */
@@ -480,15 +480,15 @@ public class Converter {
     }
 
     /**
-     * @param excelStream The Excel file in the form of an InputStream
+     * @param excelInputStream The Excel file in the form of an InputStream
      * @return The Json file in the form of a ByteArrayOutputStream
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      * @throws IOException If an I/O error has occurred
      * @since 0.4.0
      */
-    public static ByteArrayOutputStream excelToJsonStream(InputStream excelStream) throws OpenWorkbookException, IOException {
+    public static ByteArrayOutputStream excelToJsonStream(InputStream excelInputStream) throws OpenWorkbookException, IOException {
         /* Open Workbook */
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(excelStream);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelInputStream);
         List<ExcelSheet> excelSheets = excelWorkbook.getSheets();
 
         /* Create Json Object */
@@ -518,7 +518,7 @@ public class Converter {
         }
 
         /* Close Workbook */
-        excelWorkbook.close(excelStream);
+        excelWorkbook.close(excelInputStream);
 
         /* Create OutputStream */
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

@@ -1,6 +1,8 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -147,5 +149,16 @@ public class ExcelSheetTest {
         Assertions.assertEquals("Mario", excelRow6.getCell(1).readValue(String.class));
         Assertions.assertEquals("Rossi", excelRow6.getCell(2).readValue(String.class));
         Assertions.assertEquals(30, excelRow6.getCell(3).readValue(Integer.class));
+    }
+
+    @Test
+    void of() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Workbook workbook = excelWorkbook.getWorkbook();
+        Sheet sheet = workbook.getSheet("Test_2");
+        ExcelSheet excelSheet = ExcelSheet.of(sheet);
+        Assertions.assertEquals(sheet, excelSheet.getSheet());
+        Assertions.assertEquals(sheet.getSheetName(), excelSheet.getName());
+        Assertions.assertEquals(sheet.getWorkbook().getSheetIndex(sheet), excelSheet.getIndex());
     }
 }

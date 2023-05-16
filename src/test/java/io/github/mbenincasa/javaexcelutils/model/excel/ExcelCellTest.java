@@ -1,6 +1,8 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -80,15 +82,15 @@ class ExcelCellTest {
         excelCell.writeValue("Text");
         ExcelCell excelCell1 = excelRow.createCell(1);
         excelCell1.writeValue(21);
-        ExcelCell excelCell2 = excelRow.createCell(2);
-        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 21, 21, 21, 0);
-        excelCell2.writeValue(localDateTime);
         ExcelCell excelCell3 = excelRow.createCell(3);
         excelCell3.writeValue(false);
+        ExcelCell excelCell4 = excelRow.createCell(4);
+        Date date = new Date();
+        excelCell4.writeValue(date);
         Assertions.assertEquals("Text", excelCell.readValue());
         Assertions.assertEquals(21.0, excelCell1.readValue());
-        Assertions.assertEquals(44197.88982638889, excelCell2.readValue());
         Assertions.assertEquals(false, excelCell3.readValue());
+        Assertions.assertEquals(date, excelCell4.readValue());
     }
 
     @Test
@@ -130,5 +132,17 @@ class ExcelCellTest {
         ExcelCell excelCell = excelRow.getCell(0);
         String cellName = excelCell.getCellName();
         Assertions.assertEquals("A1", cellName);
+    }
+
+    @Test
+    void of() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet();
+        ExcelRow excelRow = excelSheet.getRow(0);
+        Row row = excelRow.getRow();
+        Cell cell = row.getCell(0);
+        ExcelCell excelCell = ExcelCell.of(cell);
+        Assertions.assertEquals(cell, excelCell.getCell());
+        Assertions.assertEquals(cell.getColumnIndex(), excelCell.getIndex());
     }
 }

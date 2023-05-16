@@ -3,9 +3,7 @@ package io.github.mbenincasa.javaexcelutils.model.excel;
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.tools.ExcelUtility;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 import org.apache.poi.ss.usermodel.*;
 
 import java.time.LocalDate;
@@ -17,9 +15,10 @@ import java.util.Date;
  * @author Mirko Benincasa
  * @since 0.3.0
  */
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
+@Builder(access = AccessLevel.PRIVATE)
 public class ExcelCell {
 
     /**
@@ -31,6 +30,19 @@ public class ExcelCell {
      * The index of the Cell in the Row
      */
     private Integer index;
+
+    /**
+     * Get to an ExcelCell instance from Apache POI Cell
+     * @param cell The Cell instance to wrap
+     * @return The ExcelCell instance
+     * @since 0.5.0
+     */
+    public static ExcelCell of(Cell cell) {
+        return ExcelCell.builder()
+                .cell(cell)
+                .index(cell.getColumnIndex())
+                .build();
+    }
 
     /**
      * Remove the selected Cell
@@ -49,7 +61,7 @@ public class ExcelCell {
      */
     public ExcelRow getRow() {
         Row row = this.cell.getRow();
-        return new ExcelRow(row, row.getRowNum());
+        return ExcelRow.of(row);
     }
 
     /**
@@ -63,7 +75,9 @@ public class ExcelCell {
         switch (this.cell.getCellType()) {
             case BOOLEAN -> val = this.cell.getBooleanCellValue();
             case STRING -> val = this.cell.getStringCellValue();
-            case NUMERIC -> val = this.cell.getNumericCellValue();
+            case NUMERIC -> val = DateUtil.isCellDateFormatted(this.cell)
+                    ? this.cell.getDateCellValue()
+                    : this.cell.getNumericCellValue();
             case FORMULA -> val = this.cell.getCellFormula();
             case BLANK -> val = "";
             default -> throw new ReadValueException("An error occurred while reading. CellType '" + this.cell.getCellType() + "'");

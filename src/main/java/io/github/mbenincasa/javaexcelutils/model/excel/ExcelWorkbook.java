@@ -7,10 +7,7 @@ import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException
 import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetAlreadyExistsException;
 import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.SneakyThrows;
+import lombok.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
@@ -31,9 +28,10 @@ import java.util.Optional;
  * @author Mirko Benincasa
  * @since 0.3.0
  */
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
+@Builder(access = AccessLevel.PRIVATE)
 public class ExcelWorkbook {
 
     /**
@@ -45,7 +43,7 @@ public class ExcelWorkbook {
      * This constructor creates a new workbook based on the extension
      * @param extension The Excel extension which will determine with which Excel version the Workbook will be created
      */
-    public ExcelWorkbook(Extension extension) {
+    private ExcelWorkbook(Extension extension) {
         switch (extension) {
             case XLS -> this.workbook = new HSSFWorkbook();
             case XLSX -> this.workbook = new XSSFWorkbook();
@@ -57,7 +55,7 @@ public class ExcelWorkbook {
      * @param inputStream The InputStream of an existing Excel file
      * @throws OpenWorkbookException If an error occurred while opening the workbook
      */
-    public ExcelWorkbook(InputStream inputStream) throws OpenWorkbookException {
+    private ExcelWorkbook(InputStream inputStream) throws OpenWorkbookException {
         try {
             this.workbook = new XSSFWorkbook(inputStream);
         } catch (OfficeXmlFileException | OLE2NotOfficeXmlFileException | IOException e) {
@@ -67,6 +65,18 @@ public class ExcelWorkbook {
                 throw new OpenWorkbookException("The workbook could not be opened", ex);
             }
         }
+    }
+
+    /**
+     * Get to an ExcelWorkbook instance from Apache POI Workbook
+     * @param workbook The Workbook instance to wrap
+     * @return The ExcelWorkbook instance
+     * @since 0.5.0
+     */
+    public static ExcelWorkbook of(Workbook workbook) {
+        return ExcelWorkbook.builder()
+                .workbook(workbook)
+                .build();
     }
 
     /**
@@ -208,7 +218,7 @@ public class ExcelWorkbook {
     public List<ExcelSheet> getSheets() {
         List<ExcelSheet> excelSheets = new LinkedList<>();
         for (Sheet sheet : this.workbook) {
-            excelSheets.add(new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName()));
+            excelSheets.add(ExcelSheet.of(sheet));
         }
         return excelSheets;
     }
@@ -219,7 +229,7 @@ public class ExcelWorkbook {
      */
     public ExcelSheet createSheet() {
         Sheet sheet = this.workbook.createSheet();
-        return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+        return ExcelSheet.of(sheet);
     }
 
     /**
@@ -231,7 +241,7 @@ public class ExcelWorkbook {
     public ExcelSheet createSheet(String sheetName) throws SheetAlreadyExistsException {
         try {
             Sheet sheet = this.workbook.createSheet(sheetName);
-            return new ExcelSheet(sheet, this.workbook.getSheetIndex(sheet), sheet.getSheetName());
+            return ExcelSheet.of(sheet);
         } catch (IllegalArgumentException ex) {
             throw new SheetAlreadyExistsException(ex.getMessage());
         }
