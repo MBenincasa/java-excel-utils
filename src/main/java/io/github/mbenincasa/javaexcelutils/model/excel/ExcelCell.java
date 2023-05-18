@@ -110,32 +110,32 @@ public class ExcelCell {
                 default -> throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
             }
         } else if (Integer.class.equals(type)) {
-            if (this.cell.getCellType() == CellType.NUMERIC) {
+            if (this.cell.getCellType() == CellType.NUMERIC && !DateUtil.isCellDateFormatted(this.cell)) {
                 return (int) this.cell.getNumericCellValue();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
-        } else if (Double.class.equals(type)) {
+        } else if (Double.class.equals(type) && !DateUtil.isCellDateFormatted(this.cell)) {
             if (this.cell.getCellType() == CellType.NUMERIC) {
                 return this.cell.getNumericCellValue();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
         } else if (Long.class.equals(type)) {
-            if (this.cell.getCellType() == CellType.NUMERIC) {
+            if (this.cell.getCellType() == CellType.NUMERIC && !DateUtil.isCellDateFormatted(this.cell)) {
                 return (long) this.cell.getNumericCellValue();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
         } else if (Date.class.equals(type)) {
-            if (this.cell.getCellType() == CellType.NUMERIC) {
+            if (this.cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(this.cell)) {
                 return this.cell.getDateCellValue();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
         } else if (LocalDateTime.class.equals(type)) {
-            if (this.cell.getCellType() == CellType.NUMERIC) {
+            if (this.cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(this.cell)) {
                 return this.cell.getLocalDateTimeCellValue();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
         } else if (LocalDate.class.equals(type)) {
-            if (this.cell.getCellType() == CellType.NUMERIC) {
+            if (this.cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(this.cell)) {
                 return this.cell.getLocalDateTimeCellValue().toLocalDate();
             }
             throw new ReadValueException("This type '" + type + "' is either incompatible with the CellType '" + this.cell.getCellType() + "'");
