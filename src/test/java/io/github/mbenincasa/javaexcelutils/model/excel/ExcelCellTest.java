@@ -109,7 +109,7 @@ class ExcelCellTest {
         excelCell3.writeValue(false);
         Assertions.assertEquals("Text", excelCell.readValueAsString());
         Assertions.assertEquals("21", excelCell1.readValueAsString());
-        Assertions.assertEquals("1/1/21 21:21", excelCell2.readValueAsString());
+        Assertions.assertEquals("2021-01-01 21:21", excelCell2.readValueAsString());
         Assertions.assertEquals("FALSE", excelCell3.readValueAsString());
     }
 

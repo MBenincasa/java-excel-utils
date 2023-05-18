@@ -162,19 +162,19 @@ public class ExcelCell {
         if (val == null) {
             this.cell.setCellValue("");
         } else if (val instanceof Integer || val instanceof Long) {
-            this.formatStyle((short) 1);
+            this.formatStyle("0");
             this.cell.setCellValue(Integer.parseInt(String.valueOf(val)));
         } else if (val instanceof Double) {
-            this.formatStyle((short) 4);
+            this.formatStyle("#0.00");
             this.cell.setCellValue(Double.parseDouble(String.valueOf(val)));
         } else if (val instanceof Date) {
-            this.formatStyle((short) 22);
+            this.formatStyle("yyyy-MM-dd HH:mm");
             this.cell.setCellValue((Date) val);
         } else if (val instanceof LocalDate) {
-            this.formatStyle((short) 14);
+            this.formatStyle("yyyy-MM-dd");
             this.cell.setCellValue((LocalDate) val);
         } else if (val instanceof LocalDateTime) {
-            this.formatStyle((short) 22);
+            this.formatStyle("yyyy-MM-dd HH:mm");
             this.cell.setCellValue((LocalDateTime) val);
         } else if (val instanceof Boolean) {
             cell.setCellValue((Boolean) val);
@@ -203,6 +203,20 @@ public class ExcelCell {
         CellStyle newCellStyle = excelWorkbook.getWorkbook().createCellStyle();
         newCellStyle.cloneStyleFrom(this.cell.getCellStyle());
         newCellStyle.setDataFormat(dataFormat);
+        this.cell.setCellStyle(newCellStyle);
+    }
+
+    /**
+     * Format the cell according to the chosen format
+     * @param dataFormat The string that defines the data format
+     * @since 0.5.0
+     */
+    public void formatStyle(String dataFormat) {
+        ExcelWorkbook excelWorkbook = this.getRow().getSheet().getWorkbook();
+        CreationHelper creationHelper = excelWorkbook.getWorkbook().getCreationHelper();
+        CellStyle newCellStyle = excelWorkbook.getWorkbook().createCellStyle();
+        newCellStyle.cloneStyleFrom(this.cell.getCellStyle());
+        newCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(dataFormat));
         this.cell.setCellStyle(newCellStyle);
     }
 }
