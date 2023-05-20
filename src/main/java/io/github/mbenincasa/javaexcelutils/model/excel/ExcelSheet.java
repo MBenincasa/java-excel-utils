@@ -4,7 +4,9 @@ import io.github.mbenincasa.javaexcelutils.annotations.ExcelCellMapping;
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
+import io.github.mbenincasa.javaexcelutils.model.parser.Direction;
 import io.github.mbenincasa.javaexcelutils.model.parser.ExcelCellParser;
+import io.github.mbenincasa.javaexcelutils.model.parser.ExcelListParserMapping;
 import io.github.mbenincasa.javaexcelutils.tools.ExcelUtility;
 import lombok.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -292,6 +294,44 @@ public class ExcelSheet {
         }
 
         return obj;
+    }
+
+    /**
+     * @param clazz The class of the object to return
+     * @param mapping The rules to retrieve the list of objects
+     * @param <T> The class parameter of the object
+     * @return The object list parsed
+     * @throws ReadValueException If an error occurs while reading a cell
+     * @throws InvocationTargetException If an error occurs while instantiating a new object or setting a field
+     * @throws NoSuchMethodException If the setting method or empty constructor of the object is not found
+     * @throws InstantiationException If an error occurs while instantiating a new object
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     */
+    public <T> List<T> parseToList(Class<T> clazz, ExcelListParserMapping mapping) throws ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        List<T> objectList = new LinkedList<>();
+        int[] cellIndexes = ExcelUtility.getCellIndexes(mapping.getStartingCell());
+        int startingRow = cellIndexes[0];
+        int startingCol = cellIndexes[1];
+
+        if (mapping.getDirection() == Direction.HORIZONTAL) {
+            int maxCol = getOrCreateRow(startingRow).getLastColumnIndex();
+            while (startingCol <= maxCol) {
+                String currentCell = ExcelUtility.getCellName(startingRow, startingCol);
+                T obj = parseToObject(clazz, currentCell);
+                objectList.add(obj);
+                startingCol += mapping.getJumpCells();
+            }
+        } else if (mapping.getDirection() == Direction.VERTICAL) {
+            int maxRow = getLastRowIndex();
+            while (startingRow <= maxRow) {
+                String currentCell = ExcelUtility.getCellName(startingRow, startingCol);
+                T obj = parseToObject(clazz, currentCell);
+                objectList.add(obj);
+                startingRow += mapping.getJumpCells();
+            }
+        }
+
+        return objectList;
     }
 
     private void writeOrAppendCells(Stream<Object[]> data, AtomicInteger rowIndex, int colIndex) {

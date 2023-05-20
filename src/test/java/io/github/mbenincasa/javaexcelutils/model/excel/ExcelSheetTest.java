@@ -1,6 +1,8 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import io.github.mbenincasa.javaexcelutils.model.parser.Direction;
+import io.github.mbenincasa.javaexcelutils.model.parser.ExcelListParserMapping;
 import io.github.mbenincasa.javaexcelutils.tools.utils.ParsableEmployee;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -178,5 +180,29 @@ public class ExcelSheetTest {
         Assertions.assertEquals(LocalDate.of(2022, 2 , 12), employee.getTerminationDate());
         Assertions.assertEquals("Nocera Inferiore", employee.getAddress().getCity());
         Assertions.assertEquals("84014", employee.getAddress().getCap());
+    }
+
+    @Test
+    void parseToList() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFileToParse);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("DATA_2");
+        ExcelListParserMapping mapping = new ExcelListParserMapping("A1", Direction.VERTICAL, 8);
+        List<ParsableEmployee> employees = excelSheet.parseToList(ParsableEmployee.class, mapping);
+        ParsableEmployee parsableEmployee = employees.get(0);
+        Assertions.assertEquals("Mario", parsableEmployee.getName());
+        Assertions.assertEquals("Rossi", parsableEmployee.getLastName());
+        Assertions.assertEquals(25, parsableEmployee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), parsableEmployee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2022, 2 , 12), parsableEmployee.getTerminationDate());
+        Assertions.assertEquals("Nocera Inferiore", parsableEmployee.getAddress().getCity());
+        Assertions.assertEquals("84014", parsableEmployee.getAddress().getCap());
+        parsableEmployee = employees.get(1);
+        Assertions.assertEquals("Antonio", parsableEmployee.getName());
+        Assertions.assertEquals("Bianchi", parsableEmployee.getLastName());
+        Assertions.assertEquals(30, parsableEmployee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), parsableEmployee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2023, 1 , 12), parsableEmployee.getTerminationDate());
+        Assertions.assertEquals("Pero", parsableEmployee.getAddress().getCity());
+        Assertions.assertEquals("20016", parsableEmployee.getAddress().getCap());
     }
 }
