@@ -11,6 +11,9 @@ import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;
 import io.github.mbenincasa.javaexcelutils.tools.Converter;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Address;
 import io.github.mbenincasa.javaexcelutils.tools.utils.Person;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,21 +76,21 @@ public class ExcelWorkbookTest {
 
     @Test
     void close() {
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close());
     }
 
     @Test
     void testClose() throws FileNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close(fileInputStream));
     }
 
     @Test
     void testClose1() throws FileNotFoundException {
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close(fileOutputStream));
     }
 
@@ -95,7 +98,7 @@ public class ExcelWorkbookTest {
     void testClose2() throws FileNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(excelFile);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close(fileOutputStream, fileInputStream));
     }
 
@@ -103,7 +106,7 @@ public class ExcelWorkbookTest {
     void testClose3() throws IOException {
         FileWriter fileWriter = new FileWriter(csvFile, true);
         CSVWriter csvWriter = new CSVWriter(fileWriter);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close(csvWriter));
     }
 
@@ -112,14 +115,14 @@ public class ExcelWorkbookTest {
         FileReader fileReader = new FileReader(csvFile);
         CSVReader csvReader = new CSVReader(fileReader);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFile, true);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.close(fileOutputStream, csvReader));
     }
 
     @Test
     void countSheets() throws OpenWorkbookException, ExtensionNotValidException, IOException {
         ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
-        Assertions.assertEquals(2, excelWorkbook.countSheets());
+        Assertions.assertEquals(3, excelWorkbook.countSheets());
     }
 
     @Test
@@ -207,7 +210,7 @@ public class ExcelWorkbookTest {
         list.add(new ObjectToExcel<>("Person", Person.class, personStream));
         list.add(new ObjectToExcel<>("Address", Address.class, addressStream));
         ByteArrayOutputStream outputStream = Converter.objectsToExcelStream(list, Extension.XLSX, true);
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(Extension.XLSX);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.create(Extension.XLSX);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.writeAndClose(outputStream));
     }
 
@@ -218,5 +221,12 @@ public class ExcelWorkbookTest {
         ExcelSheet excelSheet1 = excelWorkbook.getSheet(1);
         Assertions.assertDoesNotThrow(() -> excelWorkbook.removeSheet(excelSheet.getIndex()));
         Assertions.assertEquals(0, excelSheet1.getIndex());
+    }
+
+    @Test
+    void of() throws IOException, InvalidFormatException {
+        Workbook workbook = new XSSFWorkbook(excelFile);
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.of(workbook);
+        Assertions.assertEquals(workbook, excelWorkbook.getWorkbook());
     }
 }

@@ -1,6 +1,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mbenincasa/java-excel-utils.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.mbenincasa%22%20AND%20a:%22java-excel-utils%22)
 [![GitHub release](https://img.shields.io/github/release/MBenincasa/java-excel-utils)](https://github.com/MBenincasa/java-excel-utils/releases/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)<br>
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=WXYAJVFZD82BJ)
 
 # Java Excel Utils
 
@@ -32,6 +33,14 @@ public void toPOI() {
     Row row = excelRow.getRow();
     Cell cell = excelCell.getCell();
 }
+
+public void fromPOI() {
+    // Initialize the components
+    ExcelWorkbook excelWorkbook = ExcelWorkbook.of(workbook);
+    ExcelSheet excelSheet = ExcelSheet.of(sheet);
+    ExcelRow excelRow = ExcelRow.of(row);
+    ExcelCell excelCell = ExcelCell.of(cell);
+}
 ```
 
 One of the main features of the library is to be able to perform conversions. The **Converter** class has methods that convert **EXCEL <-> POJOs**, **EXCEL <-> CSV** and **EXCEL <-> JSON**<br>
@@ -59,6 +68,18 @@ public void objectsToExcel() {
 }
 ```
 
+ExcelSheet provides two methods for parsing the Sheet into an object or a list of objects.<br>
+The advantage of these methods comes from the annotations and the mapping class that allow you to define the positions of the values of each field and the rules on how the various objects are positioned
+```
+public void parseSheet() {
+   ExcelWorkbook excelWorkbook = ExcelWorkbook.open(file);
+   ExcelSheet excelSheet = excelWorkbook.getSheet("DATA");
+   Employee employee = excelSheet.parseToObject(Employee.class, "A1");
+   ExcelListParserMapping mapping = new ExcelListParserMapping("A1", Direction.VERTICAL, 8);
+   List<Employee> employees = excelSheet.parseToList(Employee.class, mapping);
+}
+```
+
 ExcelCell provides generic methods for reading a cell.
 ```
 public void readValue() {
@@ -80,19 +101,18 @@ Java 17 or above.
 - org.apache.poi:poi:jar:5.2.3
 - org.apache.poi:poi-ooxml:jar:5.2.3
 - org.projectlombok:lombok:jar:1.18.26
-- commons-beanutils:commons-beanutils:jar:1.9.4
 - com.opencsv:opencsv:jar:5.7.1
-- com.fasterxml.jackson.core:jackson-databind:jar:2.14.2
+- com.fasterxml.jackson.core:jackson-databind:jar:2.15.0
 - org.apache.logging.log4j:log4j-core:jar:2.20.0
-- org.junit.jupiter:junit-jupiter:jar:5.9.2
-- org.junit.platform:junit-platform-suite-engine:jar:1.9.2
+- org.junit.jupiter:junit-jupiter:jar:5.9.3
+- org.junit.platform:junit-platform-suite-engine:jar:1.9.3
 
 ## Maven
 ```xml
 <dependency>
   <groupId>io.github.mbenincasa</groupId>
   <artifactId>java-excel-utils</artifactId>
-  <version>0.4.2</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 
@@ -116,3 +136,7 @@ Distributed under the GNU General Public License v3.0. See `LICENSE.md` for more
 
 ## Contact
 Mirko Benincasa - mirkobenincasa44@gmail.com
+
+## Donations
+Another way to support and contribute to the project is by sending a donation. The project will always be free and open source.<br>
+Click [here](https://www.paypal.com/donate/?hosted_button_id=WXYAJVFZD82BJ) to make a donation on PayPal

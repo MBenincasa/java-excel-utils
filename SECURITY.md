@@ -4,8 +4,8 @@
 The following versions of this project are currently being supported with security updates:
 | Version     | Supported            |
 |:-----------:|:--------------------:|
-| v0.4.x      | :white_check_mark:   |
-| < v0.3.y    | :x:                  |
+| v0.5.x      | :white_check_mark:   |
+| < v0.4.y    | :x:                  |
 
 ### Reporting a Vulnerability
 

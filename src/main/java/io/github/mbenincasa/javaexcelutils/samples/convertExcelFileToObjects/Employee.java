@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjectsSample;
+package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjects;
 
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelBodyStyle;
 import io.github.mbenincasa.javaexcelutils.annotations.ExcelField;

@@ -1,19 +1,25 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
-import io.github.mbenincasa.javaexcelutils.exceptions.ExtensionNotValidException;
-import io.github.mbenincasa.javaexcelutils.exceptions.OpenWorkbookException;
-import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
-import io.github.mbenincasa.javaexcelutils.exceptions.SheetNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import io.github.mbenincasa.javaexcelutils.model.parser.Direction;
+import io.github.mbenincasa.javaexcelutils.model.parser.ExcelListParserMapping;
+import io.github.mbenincasa.javaexcelutils.tools.utils.ParsableEmployee;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ExcelSheetTest {
 
     private final File excelFile = new File("./src/test/resources/employee.xlsx");
+    private final File excelFileToParse = new File("./src/test/resources/parse_to_object.xlsx");
 
     @Test
     void getWorkbook() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
@@ -99,5 +105,104 @@ public class ExcelSheetTest {
         ExcelRow excelRow = excelSheet.getOrCreateRow(20);
         Assertions.assertEquals(20, excelRow.getIndex());
         Assertions.assertNotNull(excelRow.getRow());
+    }
+
+    @Test
+    void removeCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+        excelSheet.removeCells("B2:C3");
+        List<ExcelRow> excelRows = excelSheet.getRows();
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(1).getCell(1));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(1).getCell(2));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(2).getCell(1));
+        Assertions.assertThrows(CellNotFoundException.class, () -> excelRows.get(2).getCell(2));
+    }
+
+    @Test
+    void writeCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+
+        Object[] row1 = {"Nome", "Cognome", "Età"};
+        Object[] row2 = {"Mario", "Rossi", 30};
+        Stream<Object[]> rows = Stream.of(row1, row2);
+        excelSheet.writeCells("C5", rows);
+        ExcelRow excelRow5 = excelSheet.getRow(4);
+        Assertions.assertEquals("Nome", excelRow5.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Cognome", excelRow5.getCell(3).readValue(String.class));
+        Assertions.assertEquals("Età", excelRow5.getCell(4).readValue(String.class));
+        ExcelRow excelRow6 = excelSheet.getRow(5);
+        Assertions.assertEquals("Mario", excelRow6.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Rossi", excelRow6.getCell(3).readValue(String.class));
+        Assertions.assertEquals(30, excelRow6.getCell(4).readValue(Integer.class));
+    }
+
+    @Test
+    void appendCells() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, RowNotFoundException, CellNotFoundException, ReadValueException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("Test_2");
+
+        Object[] row1 = {"Nome", "Cognome", "Età"};
+        Object[] row2 = {"Mario", "Rossi", 30};
+        Stream<Object[]> rows = Stream.of(row1, row2);
+        excelSheet.appendCells("B1", rows);
+        ExcelRow excelRow5 = excelSheet.getRow(4);
+        Assertions.assertEquals("Nome", excelRow5.getCell(1).readValue(String.class));
+        Assertions.assertEquals("Cognome", excelRow5.getCell(2).readValue(String.class));
+        Assertions.assertEquals("Età", excelRow5.getCell(3).readValue(String.class));
+        ExcelRow excelRow6 = excelSheet.getRow(5);
+        Assertions.assertEquals("Mario", excelRow6.getCell(1).readValue(String.class));
+        Assertions.assertEquals("Rossi", excelRow6.getCell(2).readValue(String.class));
+        Assertions.assertEquals(30, excelRow6.getCell(3).readValue(Integer.class));
+    }
+
+    @Test
+    void of() throws OpenWorkbookException, ExtensionNotValidException, IOException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFile);
+        Workbook workbook = excelWorkbook.getWorkbook();
+        Sheet sheet = workbook.getSheet("Test_2");
+        ExcelSheet excelSheet = ExcelSheet.of(sheet);
+        Assertions.assertEquals(sheet, excelSheet.getSheet());
+        Assertions.assertEquals(sheet.getSheetName(), excelSheet.getName());
+        Assertions.assertEquals(sheet.getWorkbook().getSheetIndex(sheet), excelSheet.getIndex());
+    }
+
+    @Test
+    void parseToObject() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFileToParse);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("DATA");
+        ParsableEmployee employee = excelSheet.parseToObject(ParsableEmployee.class, "A1");
+        Assertions.assertEquals("Mario", employee.getName());
+        Assertions.assertEquals("Rossi", employee.getLastName());
+        Assertions.assertEquals(25, employee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), employee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2022, 2 , 12), employee.getTerminationDate());
+        Assertions.assertEquals("Nocera Inferiore", employee.getAddress().getCity());
+        Assertions.assertEquals("84014", employee.getAddress().getCap());
+    }
+
+    @Test
+    void parseToList() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFileToParse);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("DATA_2");
+        ExcelListParserMapping mapping = new ExcelListParserMapping("A1", Direction.VERTICAL, 8);
+        List<ParsableEmployee> employees = excelSheet.parseToList(ParsableEmployee.class, mapping);
+        ParsableEmployee parsableEmployee = employees.get(0);
+        Assertions.assertEquals("Mario", parsableEmployee.getName());
+        Assertions.assertEquals("Rossi", parsableEmployee.getLastName());
+        Assertions.assertEquals(25, parsableEmployee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), parsableEmployee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2022, 2 , 12), parsableEmployee.getTerminationDate());
+        Assertions.assertEquals("Nocera Inferiore", parsableEmployee.getAddress().getCity());
+        Assertions.assertEquals("84014", parsableEmployee.getAddress().getCap());
+        parsableEmployee = employees.get(1);
+        Assertions.assertEquals("Antonio", parsableEmployee.getName());
+        Assertions.assertEquals("Bianchi", parsableEmployee.getLastName());
+        Assertions.assertEquals(30, parsableEmployee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), parsableEmployee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2023, 1 , 12), parsableEmployee.getTerminationDate());
+        Assertions.assertEquals("Pero", parsableEmployee.getAddress().getCity());
+        Assertions.assertEquals("20016", parsableEmployee.getAddress().getCap());
     }
 }

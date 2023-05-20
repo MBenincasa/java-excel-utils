@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjectsSample;
+package io.github.mbenincasa.javaexcelutils.samples.convertExcelFileToObjects;
 
 import io.github.mbenincasa.javaexcelutils.model.converter.ExcelToObject;
 import io.github.mbenincasa.javaexcelutils.tools.Converter;

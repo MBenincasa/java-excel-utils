@@ -3,10 +3,7 @@ package io.github.mbenincasa.javaexcelutils.model.excel;
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
 import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.SneakyThrows;
+import lombok.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,9 +16,10 @@ import java.util.List;
  * @author Mirko Benincasa
  * @since 0.3.0
  */
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
+@Builder(access = AccessLevel.PRIVATE)
 public class ExcelRow {
 
     /**
@@ -33,6 +31,19 @@ public class ExcelRow {
      * The index of the Row in the Sheet
      */
     private Integer index;
+
+    /**
+     * Get to an ExcelRow instance from Apache POI Row
+     * @param row The Row instance to wrap
+     * @return The ExcelRow instance
+     * @since 0.5.0
+     */
+    public static ExcelRow of(Row row) {
+        return ExcelRow.builder()
+                .row(row)
+                .index(row.getRowNum())
+                .build();
+    }
 
     /**
      * Remove the selected Row
@@ -52,7 +63,7 @@ public class ExcelRow {
     public List<ExcelCell> getCells() {
         List<ExcelCell> excelCells = new LinkedList<>();
         for (Cell cell : this.row) {
-            excelCells.add(new ExcelCell(cell, cell.getColumnIndex()));
+            excelCells.add(ExcelCell.of(cell));
         }
         return excelCells;
     }
@@ -69,7 +80,7 @@ public class ExcelRow {
         if (cell == null) {
             throw new CellNotFoundException("There is not a cell in the index: " + index);
         }
-        return new ExcelCell(cell, cell.getColumnIndex());
+        return ExcelCell.of(cell);
     }
 
     /**
@@ -83,7 +94,7 @@ public class ExcelRow {
         if (cell == null) {
             return  createCell(index);
         }
-        return new ExcelCell(cell, cell.getColumnIndex());
+        return ExcelCell.of(cell);
     }
 
     /**
@@ -164,9 +175,7 @@ public class ExcelRow {
     @SneakyThrows
     public ExcelSheet getSheet() {
         Sheet sheet = this.row.getSheet();
-        ExcelWorkbook excelWorkbook = new ExcelWorkbook(sheet.getWorkbook());
-        String sheetName = sheet.getSheetName();
-        return new ExcelSheet(sheet, excelWorkbook.getSheet(sheetName).getIndex(), sheetName);
+        return ExcelSheet.of(sheet);
     }
 
     /**
@@ -175,7 +184,7 @@ public class ExcelRow {
      * @return A Cell
      */
     public ExcelCell createCell(Integer index) {
-        return new ExcelCell(this.row.createCell(index), index);
+        return ExcelCell.of(this.row.createCell(index));
     }
 
     /**

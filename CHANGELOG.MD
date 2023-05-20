@@ -1,3 +1,17 @@
+# v0.5.0
+### Features
+* Methods for writing a matrix of values starting from a source cell or in append and the method for deleting a matrix of cells has been added to Excel Sheet
+* Wrapper classes can be initialized with static of() methods
+* There are methods parseToObject() and parseToList() in ExcelSheet which allow, through defined rules, to assign the values of precise cells to the fields of an object.
+### Fixes
+* The readValue() method correctly returns the Date type
+* The readValue(Class<?> type) method checks better if the return value is a date
+### Removed
+* Methods that have been deprecated since v0.4.0 have been removed
+### Changes
+* Constructor methods of wrapper classes are now private
+* The writeValue() method uses the yyyy-MM-dd and yyyy-MM-dd HH:mm style to represent date and time
+
 # v0.4.2
 ### Features
 * Now there is a method to zip a list of files
