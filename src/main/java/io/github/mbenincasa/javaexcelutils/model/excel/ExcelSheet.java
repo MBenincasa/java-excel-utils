@@ -306,6 +306,7 @@ public class ExcelSheet {
      * @throws NoSuchMethodException If the setting method or empty constructor of the object is not found
      * @throws InstantiationException If an error occurs while instantiating a new object
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @since 0.5.0
      */
     public <T> List<T> parseToList(Class<T> clazz, ExcelListParserMapping mapping) throws ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List<T> objectList = new LinkedList<>();
