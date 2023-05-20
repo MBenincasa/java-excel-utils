@@ -1,6 +1,7 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
 import io.github.mbenincasa.javaexcelutils.exceptions.*;
+import io.github.mbenincasa.javaexcelutils.tools.utils.ParsableEmployee;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Assertions;
@@ -8,12 +9,15 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class ExcelSheetTest {
 
     private final File excelFile = new File("./src/test/resources/employee.xlsx");
+    private final File excelFileToParse = new File("./src/test/resources/parse_to_object.xlsx");
 
     @Test
     void getWorkbook() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException {
@@ -160,5 +164,19 @@ public class ExcelSheetTest {
         Assertions.assertEquals(sheet, excelSheet.getSheet());
         Assertions.assertEquals(sheet.getSheetName(), excelSheet.getName());
         Assertions.assertEquals(sheet.getWorkbook().getSheetIndex(sheet), excelSheet.getIndex());
+    }
+
+    @Test
+    void parseToObject() throws OpenWorkbookException, ExtensionNotValidException, IOException, SheetNotFoundException, ReadValueException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ExcelWorkbook excelWorkbook = ExcelWorkbook.open(excelFileToParse);
+        ExcelSheet excelSheet = excelWorkbook.getSheet("DATA");
+        ParsableEmployee employee = excelSheet.parseToObject(ParsableEmployee.class, "A1");
+        Assertions.assertEquals("Mario", employee.getName());
+        Assertions.assertEquals("Rossi", employee.getLastName());
+        Assertions.assertEquals(25, employee.getAge());
+        Assertions.assertEquals(LocalDate.of(2022, 1 , 12), employee.getHireDate());
+        Assertions.assertEquals(LocalDate.of(2022, 2 , 12), employee.getTerminationDate());
+        Assertions.assertEquals("Nocera Inferiore", employee.getAddress().getCity());
+        Assertions.assertEquals("84014", employee.getAddress().getCap());
     }
 }

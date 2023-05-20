@@ -1,4 +1,4 @@
-package io.github.mbenincasa.javaexcelutils.samples.convertObjectsToExcelFileSample;
+package io.github.mbenincasa.javaexcelutils.samples.convertObjectsToExcelFile;
 
 import io.github.mbenincasa.javaexcelutils.enums.Extension;
 import io.github.mbenincasa.javaexcelutils.model.converter.ObjectToExcel;

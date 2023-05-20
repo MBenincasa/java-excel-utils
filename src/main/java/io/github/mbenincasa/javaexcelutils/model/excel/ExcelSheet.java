@@ -1,7 +1,10 @@
 package io.github.mbenincasa.javaexcelutils.model.excel;
 
+import io.github.mbenincasa.javaexcelutils.annotations.ExcelCellMapping;
 import io.github.mbenincasa.javaexcelutils.exceptions.CellNotFoundException;
+import io.github.mbenincasa.javaexcelutils.exceptions.ReadValueException;
 import io.github.mbenincasa.javaexcelutils.exceptions.RowNotFoundException;
+import io.github.mbenincasa.javaexcelutils.model.parser.ExcelCellParser;
 import io.github.mbenincasa.javaexcelutils.tools.ExcelUtility;
 import lombok.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -9,6 +12,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -165,18 +170,6 @@ public class ExcelSheet {
         writeOrAppendCells(data, rowIndex, colIndex);
     }
 
-    private void writeOrAppendCells(Stream<Object[]> data, AtomicInteger rowIndex, int colIndex) {
-        data.forEach(rowData -> {
-            ExcelRow excelRow = getOrCreateRow(rowIndex.get());
-            for (int i = 0; i < rowData.length; i++) {
-                Object value = rowData[i];
-                ExcelCell excelCell = excelRow.getOrCreateCell(colIndex + i);
-                excelCell.writeValue(value);
-            }
-            rowIndex.getAndIncrement();
-        });
-    }
-
     /**
      * Method used to delete cells based on the selected range, for example: 'A1:B2'
      * @param cellRange The range of cells to be deleted
@@ -259,5 +252,57 @@ public class ExcelSheet {
         }
 
         return count;
+    }
+
+    /**
+     * @param clazz The class of the object to return
+     * @param startingCell The name of the source cell
+     * @param <T> The class parameter of the object
+     * @return The object parsed
+     * @throws NoSuchMethodException If the setting method or empty constructor of the object is not found
+     * @throws InvocationTargetException If an error occurs while instantiating a new object or setting a field
+     * @throws InstantiationException If an error occurs while instantiating a new object
+     * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
+     * @throws ReadValueException If an error occurs while reading a cell
+     * @since 0.5.0
+     */
+    public <T> T parseToObject(Class<T> clazz, String startingCell) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ReadValueException {
+        T obj = clazz.getDeclaredConstructor().newInstance();
+        int[] cellIndexes = ExcelUtility.getCellIndexes(startingCell);
+        int startingRow = cellIndexes[0];
+        int startingCol = cellIndexes[1];
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (Field field : fields) {
+            if (!field.isAnnotationPresent(ExcelCellMapping.class))
+                continue;
+
+            ExcelCellMapping excelCellMapping = field.getAnnotation(ExcelCellMapping.class);
+            int deltaRow = excelCellMapping.deltaRow();
+            int deltaCol = excelCellMapping.deltaCol();
+            ExcelRow excelRow = getOrCreateRow(startingRow + deltaRow);
+            ExcelCell excelCell = excelRow.getOrCreateCell(startingCol + deltaCol);
+            field.setAccessible(true);
+
+            Object value = ExcelCellParser.class.isAssignableFrom(field.getType())
+                    ? parseToObject(field.getType(), ExcelUtility.getCellName(startingRow + deltaRow, startingCol + deltaCol))
+                    : excelCell.readValue(field.getType());
+            field.set(obj, value);
+
+        }
+
+        return obj;
+    }
+
+    private void writeOrAppendCells(Stream<Object[]> data, AtomicInteger rowIndex, int colIndex) {
+        data.forEach(rowData -> {
+            ExcelRow excelRow = getOrCreateRow(rowIndex.get());
+            for (int i = 0; i < rowData.length; i++) {
+                Object value = rowData[i];
+                ExcelCell excelCell = excelRow.getOrCreateCell(colIndex + i);
+                excelCell.writeValue(value);
+            }
+            rowIndex.getAndIncrement();
+        });
     }
 }

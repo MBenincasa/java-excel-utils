@@ -171,7 +171,7 @@ public class Converter {
      * @throws HeaderNotPresentException If the first row is empty and does not contain the header
      * @throws InvocationTargetException If an error occurs while instantiating a new object or setting a field
      * @throws NoSuchMethodException If the setting method or empty constructor of the object is not found
-     * @throws InstantiationException f an error occurs while instantiating a new object
+     * @throws InstantiationException If an error occurs while instantiating a new object
      * @throws IllegalAccessException If a field or fields of the {@code clazz} could not be accessed
      * @throws ExtensionNotValidException If the input file extension does not belong to an Excel file
      * @since 0.4.0
